@@ -56,6 +56,10 @@
 #define _WIN32_WINDOWS 0x0410
 #define _WIN32_DCOM
 
+#if _MSC_VER<=1200
+#  define STRSAFE_NO_DEPRECATE
+#endif
+
 #include "CVUtil.h"              // Utility and debugging
 #include "CVVidCaptureDSWin32.h" // DirectShow video capture
 #include "CVDShowUtil.h"         // DirectShow utilities

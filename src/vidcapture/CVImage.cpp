@@ -94,6 +94,11 @@
 // functions into a seperate factory class or classes, especially
 // as file format support improves.
 #include "CVImageRGB24.h"
+#include "CVImageBGR24.h"
+#include "CVImageRGBX32.h"
+#include "CVImageBGRX32.h"
+#include "CVImageXRGB32.h"
+#include "CVImageXBGR32.h"
 #include "CVImageRGBFloat.h"
 #include "CVImageGrey.h"
 
@@ -482,11 +487,37 @@ CVRES CVImage::CreateFromWin32Bmp(  CVIMAGE_TYPE              imageType,
    switch (imageType)
    {
       case  CVIMAGE_DEFAULT:     // On a normal create, default = RGB24
-      case  CVIMAGE_RGB24:       dstImg = new CVImageRGB24();     break;
+      case  CVIMAGE_RGB24:
+			dstImg = new CVImageRGB24();
+			break;
 
-      case  CVIMAGE_RGBFLOAT:    dstImg = new CVImageRGBFloat();  break;
+      case  CVIMAGE_BGR24:
+			dstImg = new CVImageBGR24();
+			break;
+
+	  case  CVIMAGE_RGBX32:
+			dstImg = new CVImageRGBX32();
+			break;
+
+	  case  CVIMAGE_BGRX32:
+			dstImg = new CVImageBGRX32();
+			break;
+
+	  case  CVIMAGE_XRGB32:
+			dstImg = new CVImageXRGB32();
+			break;
+
+	  case  CVIMAGE_XBGR32:
+			dstImg = new CVImageXBGR32();
+			break;
+
+      case  CVIMAGE_RGBFLOAT:
+			dstImg = new CVImageRGBFloat();
+			break;
       
-      case  CVIMAGE_GREY:        dstImg = new CVImageGrey();      break;
+      case  CVIMAGE_GREY:
+			dstImg = new CVImageGrey();
+			break;
 
       //case  CVIMAGE_RGBINT:      
       //case  CVIMAGE_GREYINT:

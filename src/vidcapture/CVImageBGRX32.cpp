@@ -1,4 +1,4 @@
-// CVImageRGB24 - 24-bit RGB image class
+// CVImageBGRX32 - 24-bit RGB image class
 // Written by Michael Ellison
 //-------------------------------------------------------------------------
 //                      CodeVis's Free License
@@ -35,16 +35,16 @@
 // Modifications:
 //
 //---------------------------------------------------------------------------
-/// \file CVImageRGB24.cpp
-/// \brief CVImageRGB24.cpp implements a 24-bit color image class.
+/// \file CVImageBGRX32.cpp
+/// \brief CVImageBGRX32.cpp implements a 24-bit color image class.
 ///
-/// CVImageRGB24 is a 24-bit color image class derived from CVImage
+/// CVImageBGRX32 is a 24-bit color image class derived from CVImage
 /// Pixels are 8-bit per channel unsigned chars,
 /// and are stored as triplets in R,G,B order.
 /// 
 /// See CVImage.h for general documentation.
 ///
-/// $RCSfile: CVImageRGB24.cpp,v $
+/// $RCSfile: CVImageBGRX32.cpp,v $
 /// $Date: 2004/02/08 23:47:39 $
 /// $Revision: 1.1.1.1 $
 /// $Author: mikeellison $
@@ -52,16 +52,16 @@
 #include <memory.h>
 #include "CVUtil.h"
 #include "CVFile.h"
-#include "CVImageRGB24.h"
+#include "CVImageBGRX32.h"
 #include "CVUtil.h"
 
 //---------------------------------------------------------------------------
-CVImageRGB24::CVImageRGB24()
+CVImageBGRX32::CVImageBGRX32()
 :CVImage()
 {
 }
 //---------------------------------------------------------------------------
-CVImageRGB24::~CVImageRGB24()
+CVImageBGRX32::~CVImageBGRX32()
 {
    // Parent calls destroy
 }
@@ -70,27 +70,27 @@ CVImageRGB24::~CVImageRGB24()
 // GetNumChannels
 //    Retrieves the number channels per pixel
 //---------------------------------------------------------------------------
-int CVImageRGB24::GetNumChannels() const
+int CVImageBGRX32::GetNumChannels() const
 {
-   return 3;
+   return 4;
 }
 
 //---------------------------------------------------------------------------
 // GetBytesPerPixel
 //    Retrieves the number of bytes per pixel.
 //---------------------------------------------------------------------------
-int CVImageRGB24::GetBytesPerPixel() const
+int CVImageBGRX32::GetBytesPerPixel() const
 {
-   return 3;
+   return 4;
 }
 
 //--------------------------------------------------------------------------
 // GetImageType
 //    Retrieves the type of image - see CVIMAGE_TYPE enum in header
 //---------------------------------------------------------------------------
-CVImage::CVIMAGE_TYPE CVImageRGB24::GetImageType() const
+CVImage::CVIMAGE_TYPE CVImageBGRX32::GetImageType() const
 {
-   return CVIMAGE_RGB24;
+   return CVIMAGE_BGRX32;
 }
 
 //---------------------------------------------------------------------------
@@ -101,18 +101,19 @@ CVImage::CVIMAGE_TYPE CVImageRGB24::GetImageType() const
 //                       including preceeding '.'
 // \sa Load(), Save()
 //---------------------------------------------------------------------------
-const char *CVImageRGB24::GetPNMExtension() const
+const char *CVImageBGRX32::GetPNMExtension() const
 {
-   return ".ppm";
+   //return ".ppm";
+	return "";
 }
 
 //---------------------------------------------------------------------------
 // GetPNMMagicVal() retrieves the magic value for a pnm file
 // matching the current image format.
 //---------------------------------------------------------------------------
-char CVImageRGB24::GetPNMMagicVal() const
+char CVImageBGRX32::GetPNMMagicVal() const
 {
-   return '6';
+   return '0';
 }
 
 //---------------------------------------------------------------------------
@@ -127,7 +128,7 @@ char CVImageRGB24::GetPNMMagicVal() const
 // \return CVRES result code
 // \sa GetPixel(), SetPixel(), CVImage::GetMaxPixel()
 //---------------------------------------------------------------------------
-CVRES CVImageRGB24::GetMaxPixelValue(float& maxValue) const
+CVRES CVImageBGRX32::GetMaxPixelValue(float& maxValue) const
 {
    unsigned char maxPixel;   
    CVRES result = GetMaxPixel(maxPixel);   
@@ -143,7 +144,7 @@ CVRES CVImageRGB24::GetMaxPixelValue(float& maxValue) const
 // processing you'll need to work more directly with the image
 // buffer.
 //
-// Within CVImageRGB24, this returns the red, green, and blue values
+// Within CVImageBGRX32, this returns the red, green, and blue values
 // all of which will be between 0-255.
 //
 // \param x - x position within the image of the pixel
@@ -155,7 +156,7 @@ CVRES CVImageRGB24::GetMaxPixelValue(float& maxValue) const
 // \return CVRES result code.  CVRES_SUCCESS on success.
 // \sa SetPixel()
 //---------------------------------------------------------------------------
-CVRES CVImageRGB24::GetPixel( int      x,
+CVRES CVImageBGRX32::GetPixel( int      x,
                               int      y,
                               float&   r,
                               float&   g,
@@ -185,19 +186,19 @@ CVRES CVImageRGB24::GetPixel( int      x,
       
    
    // Offset of pixel on x axis in image data
-   int lineOffset = (this->XOffsetAbs() + x) * 3;
+   int lineOffset = (this->XOffsetAbs() + x) * 4;
 
    // Absolute length of line in fData in bytes ( >= fWidth * GetBytesPerPixel())
-   int lineLength = this->AbsWidth() * 3;
+   int lineLength = this->AbsWidth() * 4;
    
    // current position of start of buffer in source
    unsigned char* curPtr = fData + lineOffset + 
                            ((YOffsetAbs() + y) * lineLength);
 
    // pull out pixels
-   r = (float)curPtr[0];
+   r = (float)curPtr[2];
    g = (float)curPtr[1];
-   b = (float)curPtr[2];
+   b = (float)curPtr[0];
          
    return result;
 }
@@ -209,7 +210,7 @@ CVRES CVImageRGB24::GetPixel( int      x,
 // processing you'll need to work more directly with the image
 // buffer.
 //
-// Within CVImageRGB24, the values are truncated to be between
+// Within CVImageBGRX32, the values are truncated to be between
 // 0 (min) and 255 (max), then set.      
 //
 // Intensity values above 255 will be truncated to 255. Values
@@ -224,7 +225,7 @@ CVRES CVImageRGB24::GetPixel( int      x,
 // \return CVRES result code.  CVRES_SUCCESS on success.
 // \sa GetPixel()
 //---------------------------------------------------------------------------
-CVRES CVImageRGB24::SetPixel (   int      x,
+CVRES CVImageBGRX32::SetPixel (  int      x,
                                  int      y,
                                  float    r,
                                  float    g,
@@ -253,10 +254,10 @@ CVRES CVImageRGB24::SetPixel (   int      x,
    }
    
    // Offset of pixel on x axis in image data
-   int lineOffset = (this->XOffsetAbs() + x) * 3;
+   int lineOffset = (this->XOffsetAbs() + x) * 4;
 
    // Absolute length of line in fData in bytes ( >= fWidth * GetBytesPerPixel())
-   int lineLength = this->AbsWidth() * 3;
+   int lineLength = this->AbsWidth() * 4;
    
    // current position of start of buffer in source
    unsigned char* curPtr = fData + lineOffset + 
@@ -271,9 +272,9 @@ CVRES CVImageRGB24::SetPixel (   int      x,
    b = CVMin( 255.0f, b );
 
    // Store
-   curPtr[0] = (unsigned char)r;
+   curPtr[2] = (unsigned char)r;
    curPtr[1] = (unsigned char)g;
-   curPtr[2] = (unsigned char)b;
+   curPtr[0] = (unsigned char)b;
          
    return result;
 }
@@ -289,7 +290,7 @@ CVRES CVImageRGB24::SetPixel (   int      x,
 //    Only supports 24-bit RGB bitmaps.
 //
 //---------------------------------------------------------------------------
-CVRES CVImageRGB24::SetFromWin32Bmp(   const BITMAPINFOHEADER* bmih, 
+CVRES CVImageBGRX32::SetFromWin32Bmp(   const BITMAPINFOHEADER* bmih, 
                                        const unsigned char*    data)
 {  
    CVAssert(fData == 0, 
@@ -311,7 +312,8 @@ CVRES CVImageRGB24::SetFromWin32Bmp(   const BITMAPINFOHEADER* bmih,
                   false);
       
    // Set our starting position in the source image and step pos
-   unsigned char* dstPos   = fData;
+   //unsigned char* dstPos   = fData;
+   unsigned int* dstPosI   = reinterpret_cast<unsigned int*>(fData);
    unsigned char* srcPos   = 0;
 
    int srcStep    = -((int)bmih->biSizeImage / fHeight);    
@@ -328,16 +330,6 @@ CVRES CVImageRGB24::SetFromWin32Bmp(   const BITMAPINFOHEADER* bmih,
    }
 
    // Copy row by row from source image to destination image
-
-   // May want to optimize this one a bit.
-   // We're just flipping the red and blue channels while flipping from 
-   // bottom to top.  For windows-only development where we work with
-   // bitmaps, this is an unnecessary step. However, I like keeping all 
-   // my images in a neutral RGB 24-bit unpadded format for simplicity, 
-   // so unless it becomes a bottleneck, it makes it simpler.
-
-   // profiling - time it.
-   // CVStartTime();
          
    int y;
    for (y = 0; y < fHeight; y++)
@@ -348,11 +340,9 @@ CVRES CVImageRGB24::SetFromWin32Bmp(   const BITMAPINFOHEADER* bmih,
          for (x = 0; x < fWidth; x++)
          {
 			//
-			// TODO: This is very inefficient. We should read/write 3 DWORDS at once (4 pixels)
+			// TODO: this can still be improved by reading 3 DWORDS (four source pixels) at once
 			//
-			*dstPos = *(srcLine+2); dstPos++;
-            *dstPos = *(srcLine+1); dstPos++;
-            *dstPos = *(srcLine);   dstPos++;
+			*dstPosI++ = srcLine[0] | (srcLine[1]<<8) | (srcLine[2]<<16) | (255<<24);
             srcLine +=3;
          }
       }        

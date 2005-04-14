@@ -107,6 +107,12 @@
 				RelativePath="..\..\src\vidcapture\CVImage.cpp">
 			</File>
 			<File
+				RelativePath="..\..\src\vidcapture\CVImageBGR24.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\vidcapture\CVImageBGRX32.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\vidcapture\CVImageGrey.cpp">
 			</File>
 			<File
@@ -114,6 +120,15 @@
 			</File>
 			<File
 				RelativePath="..\..\src\vidcapture\CVImageRGBFloat.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\vidcapture\CVImageRGBX32.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\vidcapture\CVImageXBGR32.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\vidcapture\CVImageXRGB32.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\vidcapture\CVPlatformWin32.cpp">
@@ -133,6 +148,9 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
+				RelativePath="..\..\src\vidcapture\AutoLinkWindows.h">
+			</File>
+			<File
 				RelativePath="..\..\src\vidcapture\CVDShowUtil.h">
 			</File>
 			<File
@@ -140,6 +158,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\vidcapture\CVImage.h">
+			</File>
+			<File
+				RelativePath="..\..\src\vidcapture\CVImageBGR24.h">
+			</File>
+			<File
+				RelativePath="..\..\src\vidcapture\CVImageBGRX32.h">
 			</File>
 			<File
 				RelativePath="..\..\src\vidcapture\CVImageGrey.h">
@@ -151,7 +175,16 @@
 				RelativePath="..\..\src\vidcapture\CVImageRGBFloat.h">
 			</File>
 			<File
+				RelativePath="..\..\src\vidcapture\CVImageRGBX32.h">
+			</File>
+			<File
 				RelativePath="..\..\src\vidcapture\CVImageStructs.h">
+			</File>
+			<File
+				RelativePath="..\..\src\vidcapture\CVImageXBGR32.h">
+			</File>
+			<File
+				RelativePath="..\..\src\vidcapture\CVImageXRGB32.h">
 			</File>
 			<File
 				RelativePath="..\..\src\vidcapture\CVPlatform.h">

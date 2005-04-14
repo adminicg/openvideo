@@ -186,7 +186,7 @@ CVRES CVFile::Read( void* buffer,
       return CVRES_FILE_INVALID_BUFFER;
    }
 
-   amountRead = fread(buffer,1,length,fFilePtr);
+   amountRead = (int)fread(buffer,1,length,fFilePtr);
 
    // Check for EOF vs Read error
    if (amountRead != length)
@@ -277,7 +277,7 @@ CVRES CVFile::Write( const void*    buffer,
       return CVRES_FILE_INVALID_BUFFER;
    }
 
-   unsigned long amountWritten = fwrite(buffer,1,length,fFilePtr);
+   unsigned long amountWritten = (int)fwrite(buffer,1,length,fFilePtr);
 
    // Check for EOF vs Read error
    if (amountWritten != length)
@@ -299,7 +299,7 @@ CVRES CVFile::WriteString( const char* buffer)
       return CVRES_FILE_INVALID_BUFFER;
    }
 
-   return this->Write(buffer, strlen(buffer));
+   return (CVRES)this->Write(buffer, (int)strlen(buffer));
 }
 
 // SeekAbs()

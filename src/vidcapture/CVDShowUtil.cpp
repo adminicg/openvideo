@@ -1,5 +1,12 @@
 /// \file CVDShowUtil.cpp
 /// \brief DirectShow utility functions straight out of the DirectX 9.0 documentation.
+
+#if _MSC_VER<=1200
+#  define DWORD_PTR_DEFINED
+   typedef unsigned long DWORD_PTR;
+   typedef long LONG_PTR;
+#endif
+
 #include "CVDShowUtil.h"
 
 // GetUnconnectedPin

@@ -97,6 +97,14 @@ SOURCE=..\..\src\vidcapture\CVImage.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\vidcapture\CVImageBGR24.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\vidcapture\CVImageBGRX32.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\vidcapture\CVImageGrey.cpp
 # End Source File
 # Begin Source File
@@ -106,6 +114,18 @@ SOURCE=..\..\src\vidcapture\CVImageRGB24.cpp
 # Begin Source File
 
 SOURCE=..\..\src\vidcapture\CVImageRGBFloat.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\vidcapture\CVImageRGBX32.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\vidcapture\CVImageXBGR32.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\vidcapture\CVImageXRGB32.cpp
 # End Source File
 # Begin Source File
 
@@ -129,6 +149,10 @@ SOURCE=..\..\src\vidcapture\CVVidCaptureDSWin32.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=..\..\src\vidcapture\AutoLinkWindows.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\vidcapture\CVDShowUtil.h
 # End Source File
 # Begin Source File
@@ -138,6 +162,14 @@ SOURCE=..\..\src\vidcapture\CVFile.h
 # Begin Source File
 
 SOURCE=..\..\src\vidcapture\CVImage.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\vidcapture\CVImageBGR24.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\vidcapture\CVImageBGRX32.h
 # End Source File
 # Begin Source File
 
@@ -153,7 +185,19 @@ SOURCE=..\..\src\vidcapture\CVImageRGBFloat.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\vidcapture\CVImageRGBX32.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\vidcapture\CVImageStructs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\vidcapture\CVImageXBGR32.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\vidcapture\CVImageXRGB32.h
 # End Source File
 # Begin Source File
 

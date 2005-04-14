@@ -104,10 +104,10 @@ void _CVAssert(const char *expression,
    // If you change the text, make sure it 
    // stays below this for extra fields or increase it.  
    // We print out two lines, to take the larger buffer size of the two.
-   unsigned int bufferLength = _MAX_PATH + 100 + strlen(expression);
+   unsigned int bufferLength = _MAX_PATH + 100 + (int)strlen(expression);
    if (strlen(description) + 100 > bufferLength)
    {
-      bufferLength = strlen(description) + 100;
+      bufferLength = (int)strlen(description) + 100;
    }
       
    char* dbgMsgBuf = new char[bufferLength];

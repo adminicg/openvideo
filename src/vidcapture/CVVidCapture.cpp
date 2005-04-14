@@ -603,7 +603,7 @@ CVRES CVVidCapture::GetDeviceName  (  char*                   nameBuffer,
                                       int&                     maxLength )
 {
    int copyLen = maxLength;
-   maxLength = strlen(this->fDeviceName);
+   maxLength = (int)strlen(this->fDeviceName);
    
    if ((nameBuffer == 0) || (copyLen == 0))
    {

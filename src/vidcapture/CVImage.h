@@ -125,9 +125,22 @@ class CVImage
          
          /// 8-bit red, green, blue triplets
          CVIMAGE_RGB24     = CVIMAGETYPE_RGB24,
+
+		 CVIMAGE_BGR24     = CVIMAGETYPE_BGR24,
          
          /// 32-bit float red, green, blue triplets
          CVIMAGE_RGBFLOAT  = CVIMAGETYPE_RGBFLOAT,
+
+		 /*! 32-bit float red, green, blue triplets - added by Daniel */
+		 CVIMAGE_RGBX32 = CVIMAGETYPE_RGBX32,
+
+		 CVIMAGE_BGRX32 = CVIMAGETYPE_BGRX32,
+
+		 CVIMAGE_XRGB32 = CVIMAGETYPE_XRGB32,
+
+		 CVIMAGE_XBGR32 = CVIMAGETYPE_XBGR32,
+
+
          
          /// 8-bit intensity values
          CVIMAGE_GREY      = CVIMAGETYPE_GREY,

@@ -99,6 +99,13 @@
 #ifndef _CVVidCaptureDSWin32_H_
 #define _CVVidCaptureDSWin32_H_
 
+#if _MSC_VER<=1200
+#  define DWORD_PTR_DEFINED
+   typedef unsigned long DWORD_PTR;
+   typedef long LONG_PTR;
+#endif
+
+
 #include <Dshow.h>         // DirectShow (using DirectX 9.0 for dev)
 #include <qedit.h>         // Sample grabber defines
 #include "CVVidCapture.h"  // Parent class

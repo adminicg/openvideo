@@ -101,6 +101,8 @@
 #ifndef _CVVIDCAPTURE_H_
 #define _CVVIDCAPTURE_H_
 
+#include "AutoLinkWindows.h"
+
 #include "CVResVidCap.h"      // Result codes
 #include "CVImage.h"          // Image base class                             
 

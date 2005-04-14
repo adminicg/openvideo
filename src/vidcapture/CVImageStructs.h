@@ -67,7 +67,18 @@
    CVIMAGETYPE_RGBFLOAT  = 2,    
    /*! 8-bit intensity values */
    CVIMAGETYPE_GREY      = 3,
-   
+
+   /*! 32-bit float red, green, blue triplets - added by Daniel */
+   CVIMAGETYPE_RGBX32    = 7,
+
+   CVIMAGETYPE_BGRX32    = 8,
+
+   CVIMAGETYPE_XRGB32    = 9,
+
+   CVIMAGETYPE_XBGR32    = 10,
+
+   CVIMAGETYPE_BGR24     = 11,
+
    
    /* --- currently unimplemented below this line */
    CVIMAGETYPE_RGBINT    = 4,    /*! 32-bit integer red, green, blue triplets */
