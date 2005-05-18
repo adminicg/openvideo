@@ -60,13 +60,13 @@ void initVidCap()
 
 	printf("Initialized video capture object.\n");
 
-	if(!CVSUCCESS(vidCap->Connect(0)))
+/*	if(!CVSUCCESS(vidCap->Connect(0)))
 	{
 		vidCap->Uninit();
 		CVPlatform::GetPlatform()->Release(vidCap);      
 		printf("ERROR: connecting to camera failed.\n");
 		return;
-	}
+	}*/
 }
 
 
@@ -77,6 +77,8 @@ bool testDevice(int nWhich, int nStartMode, bool nListOnly)
 	vidCap->GetNumSupportedModes(numModes);
 
 	printf("Found %d supported capture modes\n", numModes);
+	if(numModes==0)
+		return false;
 
 	// Check each mode 
 	//
@@ -89,9 +91,7 @@ bool testDevice(int nWhich, int nStartMode, bool nListOnly)
 			{
 				if(CVFAILED(vidCap->SetMode(curmode)))
 				{
-					vidCap->Uninit();
-					CVPlatform::GetPlatform()->Release(vidCap);
-					printf("  ERROR: failed to set camera mode.\nIf the application crashes please restart with the next mode!\n");
+					printf("  ERROR: failed to set camera mode %d.\nIf the application crashes please restart with the next mode!\n", curmode);
 					continue;
 				}
 
@@ -141,18 +141,32 @@ void main(int argc, char** argv)
 
 	for(int i=startDevice; i<numDev; i++)
 	{
-		int devNameLen = 0;
+		CVVidCapture::VIDCAP_DEVICE deviceInfo;
+
+		vidCap->GetDeviceInfo(i, deviceInfo);
+		printf("\n\nUsing capture device %d: %s\n", i, deviceInfo.DeviceString);
+
+
+/*		int devNameLen = 0;
 		vidCap->GetDeviceName(0,devNameLen);
 		devNameLen++;
 		char* cameraName = new char[devNameLen];
-		vidCap->GetDeviceName(cameraName,devNameLen);
+		vidCap->GetDeviceName(cameraName,devNameLen);*/
 
-		printf("\n\nUsing capture device %d: %s\n", i, cameraName);
+		if(!CVSUCCESS(vidCap->Connect(i)))
+		{
+			printf("ERROR: connecting to camera device %d failed.\n", i);
+			continue;
+		}
+
 		printf("\nListing all available modes:\n");
-		testDevice(i, 0, true);
+		bool ok = testDevice(i, 0, true);
 
-		printf("\nTesting all modes (starting with mode %d)\n", startMode);
-		testDevice(i, startMode, false);
-		delete cameraName;
+		if(ok)
+		{
+			printf("\nTesting all modes (starting with mode %d)\n", startMode);
+			testDevice(i, startMode, false);
+		}
+		//delete cameraName;
 	}
 }
