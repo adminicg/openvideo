@@ -105,6 +105,10 @@ SOURCE=..\..\src\vidcapture\CVImageBGRX32.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\vidcapture\CVImageBGRX32flipped.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\vidcapture\CVImageGrey.cpp
 # End Source File
 # Begin Source File
@@ -170,6 +174,10 @@ SOURCE=..\..\src\vidcapture\CVImageBGR24.h
 # Begin Source File
 
 SOURCE=..\..\src\vidcapture\CVImageBGRX32.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\vidcapture\CVImageBGRX32flipped.h
 # End Source File
 # Begin Source File
 

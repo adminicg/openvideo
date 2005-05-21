@@ -79,6 +79,8 @@
 
    CVIMAGETYPE_BGR24     = 11,
 
+   CVIMAGETYPE_BGRX32_FLIPPED    = 12,
+
    
    /* --- currently unimplemented below this line */
    CVIMAGETYPE_RGBINT    = 4,    /*! 32-bit integer red, green, blue triplets */

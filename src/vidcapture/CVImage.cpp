@@ -97,6 +97,7 @@
 #include "CVImageBGR24.h"
 #include "CVImageRGBX32.h"
 #include "CVImageBGRX32.h"
+#include "CVImageBGRX32flipped.h"
 #include "CVImageXRGB32.h"
 #include "CVImageXBGR32.h"
 #include "CVImageRGBFloat.h"
@@ -501,6 +502,10 @@ CVRES CVImage::CreateFromWin32Bmp(  CVIMAGE_TYPE              imageType,
 
 	  case  CVIMAGE_BGRX32:
 			dstImg = new CVImageBGRX32();
+			break;
+
+	  case  CVIMAGE_BGRX32_FLIPPED:
+			dstImg = new CVImageBGRX32flipped();
 			break;
 
 	  case  CVIMAGE_XRGB32:
