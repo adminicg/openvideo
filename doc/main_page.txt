@@ -35,18 +35,19 @@
  *
  * @li SVN         - <a href="https://svn.icg.tu-graz.ac.at/svn/openvideo/trunk/">https://svn.icg.tu-graz.ac.at/svn/openvideo/trunk/</a>
  * A user account for anonymous and read-only access is available: guest/faust.
- * @li Zip Archive - <a href="">openvideo.zip</a>
- * @li Tarball     - <a href="">openvideo.tar.gz</a>  
+ * @li Zip Archive - <a href="http://www.studierstube.org/openvideo/download/openvideo.zip">openvideo.zip</a>
+ * @li Tarball     - <a href="http://www.studierstube.org/openvideo/download/openvideo.tar.gz">openvideo.tar.gz</a>  
  *
- * \subsection	externals External Libraries	
+ * \subsection	externals External Downloads
  *
  * @li Tinyxml - <a href="http://sourceforge.net/projects/tinyxml">http://sourceforge.net/projects/tinyxml</a>
  * @li ACE     - <a href="http://www.cs.wustl.edu/~schmidt/ACE.html">http://www.cs.wustl.edu/~schmidt/ACE.html</a>
- * Comming Up:
- * Whatch this site windows and linux binaries of OpenVideo, ACE and tinyxml. \n
+ *
+ * Coming Up:
+ * @li	Windows and Linux binaries of OpenVideo, ACE and tinyxml. 
+ * 
+ *
  * \n
- *
- *
  * @author Denis Kalkofen
  * @date 2005
  */

@@ -52,7 +52,7 @@
  * @defgroup core Core Classes
  *	The 'Core' classes provide OpenVideo with its basic functionality to construct and update a 
  *	directed acyclic graph like data structure, which consists of OpenVideo nodes and is given via 
- *	an xml based configuration file. To easily extend OpenVideo’s set of known nodes the core classes 
+ *	an xml based configuration file. To easily extend OpenVideo’s set of nodes the core classes 
  *	also implement an interface to derive new nodes from. 
  *	The Interface implements an ‘Abstract Factory Pattern[POSA96]’ which is outlined in the following chart.
  *	\image html abstractfactory.gif
