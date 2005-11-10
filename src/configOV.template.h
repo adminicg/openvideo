@@ -35,3 +35,11 @@
 #define  ENABLE_GLUTSINK
 #define  ENABLE_GL_TEXTURE_2D_SINK
 #define  ENABLE_TESTSRC
+
+
+//
+// if using TinyXML_MOD, uncomment one of the next two
+// definitions to choose between DLL and static linking
+//
+//#define TINYXML_MOD_DLL
+//#define TINYXML_MOD_STATIC
