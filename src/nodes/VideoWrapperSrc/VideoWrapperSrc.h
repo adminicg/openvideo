@@ -32,9 +32,12 @@
 #ifndef _VIDEOWRAPPERSRC_H
 #define _VIDEOWRAPPERSRC_H
 
-#include "openVideo.h"
-#include "core/Node.h"
+#include <openVideo.h>
+#include <core/Node.h>
 #include <string>
+
+#ifdef ENABLE_VIDEOWRAPPERSRC
+
 #include "VideoWrapper.h"
 
 
@@ -129,5 +132,6 @@ protected:
 };
 
 
+#endif // ENABLE_VIDEOWRAPPERSRC
 
-#endif
+#endif // _VIDEOWRAPPERSRC_H

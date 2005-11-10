@@ -31,6 +31,9 @@
  /* ======================================================================= */
 
 #include "GLUTSink.h"
+
+#ifdef ENABLE_GLUTSINK
+
 #include "core/Context.h"
 #include "core/Manager.h"
 #include <ace/Thread.h>
@@ -278,3 +281,5 @@ GLUTSink::mainDisplayFunc ()
     glutSwapBuffers();
 	
 }
+
+#endif //ENABLE_GLUTSINK

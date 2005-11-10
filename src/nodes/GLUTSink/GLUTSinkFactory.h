@@ -33,6 +33,11 @@
 #define _GLUTSINKFACTORY_H
 
 #include "openVideo.h"
+
+
+#ifdef ENABLE_GLUTSINK
+
+
 #include "core/NodeFactory.h"
 #include "GLUTSink.h"
 
@@ -67,4 +72,6 @@ class OPENVIDEO_API  GLUTSinkFactory
 };
 
 
-#endif
+#endif // ENABLE_GLUTSINK
+
+#endif // _GLUTSINKFACTORY_H

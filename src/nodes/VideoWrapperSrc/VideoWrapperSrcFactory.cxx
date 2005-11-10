@@ -32,6 +32,10 @@
 
 #include "VideoWrapperSrcFactory.h"
 
+
+#ifdef ENABLE_VIDEOWRAPPERSRC
+
+
 VideoWrapperSrcFactory::VideoWrapperSrcFactory()
 {
 }
@@ -54,3 +58,6 @@ VideoWrapperSrcFactory::getNodeTypeId()
 {
 	return "VideoWrapperSrc";
 }
+
+
+#endif //ENABLE_VIDEOWRAPPERSRC

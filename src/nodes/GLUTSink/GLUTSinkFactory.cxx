@@ -32,6 +32,10 @@
 
 #include "GLUTSinkFactory.h"
 
+
+#ifdef ENABLE_GLUTSINK
+
+
 GLUTSinkFactory::GLUTSinkFactory()
 {
 }
@@ -55,3 +59,6 @@ GLUTSinkFactory::getNodeTypeId()
 {
 	return "GLUTSink";
 }
+
+
+#endif //ENABLE_GLUTSINK

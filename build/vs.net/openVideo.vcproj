@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="openVideo"
 	ProjectGUID="{02FA65DB-E047-4F78-8653-AE8BCAC6F36D}"
+	RootNamespace="openVideo"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -19,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(OPENVIDEOROOT)/src&quot;;&quot;$(VIDEOWRAPPERROOT)/VideoWrapper/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/src&quot;;&quot;$(VIDEOWRAPPERROOT)/VideoWrapper/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="3"
@@ -35,7 +36,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="tinyxmld.lib aced.lib"
+				AdditionalDependencies="aced.lib"
 				OutputFile="$(OPENVIDEOROOT)/bin/openVideod.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -91,7 +92,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="tinyxml.lib ace.lib"
+				AdditionalDependencies="ace.lib"
 				OutputFile="$(OPENVIDEOROOT)/bin/openVideo.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(ACEROOT)\lib&quot;;&quot;$(VIDEOWRAPPERROOT)\VideoWrapper\lib&quot;;&quot;$(TINYXMLROOT)\lib&quot;"

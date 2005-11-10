@@ -34,6 +34,9 @@
 #define _VIDEOWRAPPERSRCFACTORY_H
 
 #include "openVideo.h"
+
+#ifdef ENABLE_VIDEOWRAPPERSRC
+
 #include "core/NodeFactory.h"
 #include "VideoWrapperSrc.h"
 
@@ -67,4 +70,6 @@ public:
 };
 
 
-#endif
+#endif // ENABLE_VIDEOWRAPPERSRC
+
+#endif // _VIDEOWRAPPERSRCFACTORY_H

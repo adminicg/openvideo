@@ -32,6 +32,8 @@
 
 #include "VideoWrapperSrc.h"
 
+#ifdef ENABLE_VIDEOWRAPPERSRC
+
 #ifdef WIN32
 	#ifdef _DEBUG
 		#pragma comment(lib,"VideoWrapperd.lib")
@@ -159,3 +161,5 @@ VideoWrapperSrc::setParameter(std::string key, std::string value)
 
 	return false;
 }
+
+#endif //ENABLE_VIDEOWRAPPERSRC

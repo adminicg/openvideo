@@ -35,7 +35,7 @@
 
 #include <map>
 #include <string>
-#include "openVideo.h"
+#include <openVideo.h>
 
 /**
 *@ingroup core
