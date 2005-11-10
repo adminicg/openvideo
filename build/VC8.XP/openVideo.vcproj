@@ -217,6 +217,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\core\PixelFormat.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\PixelFormat.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\Timer.cxx"
 				>
 			</File>
