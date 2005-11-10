@@ -26,9 +26,11 @@
   *
   * @author Denis Kalkofen
   *
-  * $Id: 
+  * $Id$
   * @file                                                                   */
  /* ======================================================================= */
+
+
 #ifndef _TIMERHANDLER_H
 #define _TIMERHANDLER_H
 
