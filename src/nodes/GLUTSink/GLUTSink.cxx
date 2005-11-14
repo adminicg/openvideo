@@ -34,7 +34,7 @@
 
 #ifdef ENABLE_GLUTSINK
 
-#include "core/Context.h"
+#include "core/State.h"
 #include "core/Manager.h"
 #include <ace/Thread.h>
 #include <GL/gl.h>
@@ -128,14 +128,14 @@ void
 GLUTSink::start()
 {
     printf("OV: GLUTSink -> start\n");
-    //context this sink lives in
-    context=this->inputs[0]->getContext();
-    if(context)
+    //state this sink lives in
+    state=this->inputs[0]->getState();
+    if(state)
     {
-	this->width=context->width;
-	this->height=context->height;
-	if(context->format!=0)
-	    this->format=context->format;
+	this->width=state->width;
+	this->height=state->height;
+	if(state->format!=0)
+	    this->format=state->format;
     }
     flip_h = false; 
     flip_v = true;
@@ -173,7 +173,7 @@ GLUTSink::start()
 void
 GLUTSink::process()
 {
-	if(context && context->frame){
+	if(state && state->frame){
 		updateLock->acquire();
 		updateVideo=true; //set flag to indicate a redraw
 		updateLock->release();
@@ -202,7 +202,7 @@ GLUTSink::updateTexture()
 	
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width,
 		    height, format, GL_UNSIGNED_BYTE,
-		    (void*)context->frame);
+		    (void*)state->frame);
     glDisable(GL_TEXTURE_2D);
 	
 }

@@ -31,7 +31,7 @@
  /* ======================================================================= */
 
 #include "Node.h"
-#include "core/Context.h"
+#include "core/State.h"
 
 // constructor
 Node::Node()
@@ -39,21 +39,21 @@ Node::Node()
 	name="";
 	curInDegree=0;
 	curOutDegree=0;
-	context=NULL;
+	state=NULL;
 }
 
 // destructor
 
 Node::~Node()
 {
-	if(context)
-		delete context;
+	if(state)
+		delete state;
 }
 
-Context* 
-Node::getContext()
+State* 
+Node::getState()
 {
-	return context;
+	return state;
 }
 
 bool 

@@ -35,7 +35,7 @@
 // constructor
 TestSrc::TestSrc()
 {
-    context=new Context();
+    state=new State();
     width=320;
     height=240;
     img=new unsigned char[width*height*3];
@@ -44,7 +44,7 @@ TestSrc::TestSrc()
 // destructor
 TestSrc::~TestSrc()
 {
-    delete context;
+    delete state;
     delete img;
 }
 
@@ -54,9 +54,9 @@ void
 TestSrc::start()
 {
     printf("OV: TestSrc -> start\n");
-    context->clear();
-    context->width=width;
-    context->height=height;
+    state->clear();
+    state->width=width;
+    state->height=height;
 
    
     for(int i=0;i<(width*height*3);i++)
@@ -123,6 +123,6 @@ TestSrc::process()
 	    ix++;
 	}
     }
-    context->frame=img;
+    state->frame=img;
 }
 

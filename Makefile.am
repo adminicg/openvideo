@@ -1,4 +1,4 @@
 ## $(top_srcdir)/Makefile.am
-SUBDIRS =  lib bin
+SUBDIRS =  lib/linux bin/linux
 noinst_HEADERS = bootstrap
 

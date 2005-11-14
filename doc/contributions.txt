@@ -6,5 +6,5 @@ I would like to thank the following people for contributing to OpenVideo :
 
 Dieter Schmalstieg \n
 Petter Risholm \n
-
+Daniel Wanger \n
 */

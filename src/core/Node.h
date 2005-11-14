@@ -34,7 +34,7 @@
 #define _NODE_H
 
 #include "openVideo.h"
-#include "Context.h"
+#include "State.h"
 #include <vector>
 #include <string>
 
@@ -91,9 +91,9 @@ public:
 	virtual bool setParameter(std::string key, std::string value);
 
 	/**
-	*	Returns the node's context;
+	*	Returns the node's state;
 	*/
-	Context* getContext();
+	State* getState();
 
 
 	/**
@@ -187,9 +187,9 @@ protected:
 	std::vector<Node*> inputs;
 
 	/**
-	*	The Context. Default=NULL.
+	*	The State. Default=NULL.
 	*/
-	Context *context;
+	State *state;
 
 	/**
 	*	Current input degree.

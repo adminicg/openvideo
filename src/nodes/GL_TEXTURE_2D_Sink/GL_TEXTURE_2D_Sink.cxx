@@ -31,7 +31,7 @@
  /* ======================================================================= */
 #include "GL_TEXTURE_2D_Sink.h"
 #include "ace/Mutex.h"
-#include "core/Context.h"
+#include "core/State.h"
 #include "core/Manager.h"
 #include <GL/gl.h>			
 #include <GL/glu.h>		    
@@ -83,13 +83,13 @@ GL_TEXTURE_2D_Sink::start()
 {
 	mutex->acquire();
     printf("OV: GL_TEXTURE_2D_Sink -> start\n");
-    context=this->inputs[0]->getContext();
-    if(context)
+    state=this->inputs[0]->getState();
+    if(state)
     {
-	this->width=context->width;
-	this->height=context->height;
-	if(context->format)
-	    this->format=context->format;
+	this->width=state->width;
+	this->height=state->height;
+	if(state->format)
+	    this->format=state->format;
     }
     
     
@@ -127,14 +127,14 @@ void
 GL_TEXTURE_2D_Sink::process()
 {
 	mutex->acquire();
-	if(context->frame)
+	if(state->frame)
 	{
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, video_texture_id);
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width,
 						height, format, GL_UNSIGNED_BYTE,
-						(void*)context->frame);
+						(void*)state->frame);
 
 		glDisable(GL_TEXTURE_2D);
 	}

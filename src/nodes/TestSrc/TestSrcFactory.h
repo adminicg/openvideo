@@ -32,7 +32,7 @@
 #ifndef _TESTSRCFACTORY_H
 #define _TESTSRCFACTORY_H
 
-#include <openVideo.h>
+#include "openVideo.h"
 #include "TestSrc.h"
 #include <core/NodeFactory.h>
 

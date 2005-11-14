@@ -44,7 +44,7 @@
 
 #endif
 
-#include "core/Context.h"
+#include "core/State.h"
 
 VideoWrapperSrc::VideoWrapperSrc()
 {
@@ -91,11 +91,11 @@ VideoWrapperSrc::start()
 	// display video properties
 	//printf("video is %d x %d, and format is %d \n", width,height, format);
 	
-	context=new Context();
-	context->clear();
-	context->width=width;
-	context->height=height;
-	context->format=format;	
+	state=new State();
+	state->clear();
+	state->width=width;
+	state->height=height;
+	state->format=format;	
 }
 
 void
@@ -103,8 +103,8 @@ VideoWrapperSrc::process()
 {
 	timeval timestamp;
 
-	context->frame=NULL;
-	VIDEO_getFrame(g_hVideo, &(context->frame), &timestamp);
+	state->frame=NULL;
+	VIDEO_getFrame(g_hVideo, &(state->frame), &timestamp);
 
 }
 
@@ -112,7 +112,7 @@ void
 VideoWrapperSrc::postProcess()
 {
 	VIDEO_releaseFrame(g_hVideo);
-	context->frame=NULL;
+	state->frame=NULL;
 }
 
 

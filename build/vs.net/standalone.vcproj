@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="test"
+	Name="standalone"
 	ProjectGUID="{DD73B9D2-11C6-454C-9262-C2A02DC821FD}"
 	Keyword="Win32Proj">
 	<Platforms>
@@ -33,9 +33,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="openVideod.lib"
-				OutputFile="$(OPENVIDEOROOT)/bin/ovStandaloned.exe"
+				OutputFile="$(OPENVIDEOROOT)/bin/win32/ovStandaloned.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(OPENVIDEOROOT)/lib"
+				AdditionalLibraryDirectories="$(OPENVIDEOROOT)/lib/win32"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/test.pdb"
 				SubSystem="1"
@@ -81,9 +81,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="openVideo.lib"
-				OutputFile="$(OPENVIDEOROOT)/bin/ovStandalone.exe"
+				OutputFile="$(OPENVIDEOROOT)/bin/win32/ovStandalone.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(OPENVIDEOROOT)/lib"
+				AdditionalLibraryDirectories="$(OPENVIDEOROOT)/lib/win32"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"

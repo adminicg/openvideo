@@ -22,7 +22,7 @@
 * ========================================================================
 * PROJECT: OpenVideo
 * ======================================================================== */
-/** The header file for the Context class.
+/** The source file for the all PixelFormat implementations.
 *
 * @author Daniel Wagner
 *

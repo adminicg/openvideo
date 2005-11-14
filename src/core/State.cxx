@@ -22,13 +22,13 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The source file for the Context class.
+/** The source file for the State class.
   *
   * @author Denis Kalkofen
   * 
-  * $Id$
+  * $Id: State.cxx 15 2005-11-10 19:23:15Z daniel $
   * @file                                                                   
  /* ======================================================================= */
-#include "Context.h"
+#include "State.h"
 
 //everything is inlined
