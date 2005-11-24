@@ -34,6 +34,8 @@
 #include "openVideo.h"
 #include "core/Node.h"
 #include <ace/Token.h>
+#include <ace/Condition_Thread_Mutex.h>
+#include <ace/Thread_Mutex.h>
 #include <ace/Mutex.h>
 
 /**
@@ -100,7 +102,12 @@ protected:
 	/**
 	*	A token to stop the 'process()' function untill the glut's main windos function has updated the texture.
 	*/
-    ACE_Token *updateLock;
+    ACE_Thread_Mutex updateLock;
+
+        /** 
+        *       A condition variable which waits for an update to updateLock.
+	*/
+    ACE_Condition_Thread_Mutex *updateLockCond;
 
 	/**
 	*	mutex to write to the variable which indicates a new glutPostRedisplay()

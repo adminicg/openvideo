@@ -40,7 +40,8 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <GL/glu.h>		   
-
+#include <ace/OS.h>
+#include <iostream>
 
 #ifdef WIN32
 #pragma comment(lib,"opengl32.lib")
@@ -59,7 +60,7 @@ GLUTSink::GLUTSink()
 	originX=originY=0;
 	width=height=0;
 	updateVideo=false;
-	updateLock=new ACE_Token();
+	updateLockCond=new ACE_Condition_Thread_Mutex(updateLock);
 	if(redrawLock==NULL){
 	    GLUTSink::redrawLock=new ACE_Mutex();
 	}
@@ -73,7 +74,8 @@ GLUTSink::GLUTSink()
 	
 GLUTSink::~GLUTSink()
 {
-	delete updateLock;
+	delete updateLockCond;
+
 	if(GLUTSink::redrawLock){
 		delete GLUTSink::redrawLock;
 		GLUTSink::redrawLock=NULL;
@@ -173,22 +175,20 @@ GLUTSink::start()
 void
 GLUTSink::process()
 {
-	if(state && state->frame){
-		updateLock->acquire();
-		updateVideo=true; //set flag to indicate a redraw
-		updateLock->release();
-
-		GLUTSink::redrawLock->acquire();
-		GLUTSink::glutRedraw=true;//idle func calls glutPostRedisplay();
-		GLUTSink::redrawLock->release();
-	
-		updateLock->acquire();
-		while(updateVideo){//wait untill the main loop starts to update and acquires the token 'updateLock'
-			updateLock->release();
-			updateLock->acquire();
-		} 
-		updateLock->release();
-	}
+  if(state && state->frame){
+  
+    updateLock.acquire();
+    updateVideo=true; //set flag to indicate a redraw
+    updateLock.release();
+    
+    GLUTSink::redrawLock->acquire();
+    GLUTSink::glutRedraw=true;//idle func calls glutPostRedisplay();
+    GLUTSink::redrawLock->release();
+    
+    updateLock.acquire();
+    updateLockCond->wait(); // Wait for an update to 
+    updateLock.release(); 
+  }  
 }
 
 
@@ -267,7 +267,7 @@ GLUTSink::mainDisplayFunc ()
     int size=(int)GLUTSink::glutSinks.size();
     for (int i=0;i<size;i++)
     {	
-		glutSinks[i]->updateLock->acquire();
+		glutSinks[i]->updateLock.acquire();
 		if(glutSinks[i]->updateVideo)
 		{	
 			glutSinks[i]->updateVideo=false;
@@ -275,7 +275,8 @@ GLUTSink::mainDisplayFunc ()
 			glutSinks[i]->updateTexture();
 			glutSinks[i]->redraw();
 		}
-		glutSinks[i]->updateLock->release();
+		glutSinks[i]->updateLockCond->broadcast();
+		glutSinks[i]->updateLock.release();
     }
 	
     glutSwapBuffers();
