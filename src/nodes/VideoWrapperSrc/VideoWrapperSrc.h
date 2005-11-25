@@ -68,6 +68,7 @@
 *	@li	scale = VideoWrapper's scale value
 */
 
+namespace openvideo {
 
 class OPENVIDEO_API VideoWrapperSrc : 
 	public Node
@@ -104,6 +105,8 @@ public:
 	*/
 	virtual void postProcess();
 
+	virtual void initPixelFormats();
+
 protected:
 	/**
 	*	the handle to the video stream
@@ -130,7 +133,7 @@ protected:
 	*/
 	float scale;
 };
-
+}//namespace openvideo {
 
 #endif // ENABLE_VIDEOWRAPPERSRC
 

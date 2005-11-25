@@ -43,6 +43,7 @@
 *	The NodeFactory class implements the 'AbstractFactory' part from the 'AbstractFactory' pattern [POSA96].
 *	
 */
+namespace openvideo {
 class OPENVIDEO_API  NodeFactory
 {
 public:
@@ -62,6 +63,6 @@ public:
 	*/
 	virtual const char* getNodeTypeId()=NULL;
 };
-
+}//namespace openvideo {
 
 #endif

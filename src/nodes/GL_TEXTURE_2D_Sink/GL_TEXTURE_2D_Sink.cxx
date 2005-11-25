@@ -43,18 +43,24 @@
 #endif
 
 
+using namespace openvideo;
+
+
 GL_TEXTURE_2D_Sink::GL_TEXTURE_2D_Sink()
 {
 	mutex = new ACE_Mutex();
 	width=height=0;	
 	isStarted=false;
-#ifdef WIN32
-	format=GL_BGR_EXT;
-#else
-	format=GL_RGB;
-#endif
+	internalFormat=0;
 }
-	
+
+void 
+GL_TEXTURE_2D_Sink::initPixelFormats()
+{
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8));
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8X8));
+}
+
 GL_TEXTURE_2D_Sink::~GL_TEXTURE_2D_Sink()
 {
 	delete mutex;
@@ -69,6 +75,7 @@ GL_TEXTURE_2D_Sink::acquire()
 	mutex->acquire();
 }
 
+
 /**
 *	releases the mutex.	
 */   
@@ -82,17 +89,81 @@ void
 GL_TEXTURE_2D_Sink::start()
 {
 	mutex->acquire();
-    printf("OV: GL_TEXTURE_2D_Sink -> start\n");
+
+	
+	/* glTexImage2D supported formats
+	/* original gl spec. 
+	GL_COLOR_INDEX 	Each element is a single value, a color index. It is converted to fixed point (with an unspecified number of 0 bits to the right of the binary point), shifted left or right depending on the value and sign of GL_INDEX_SHIFT, and added to GL_INDEX_OFFSET (see glPixelTransfer). The resulting index is converted to a set of color components using the GL_PIXEL_MAP_I_TO_R, GL_PIXEL_MAP_I_TO_G, GL_PIXEL_MAP_I_TO_B, and GL_PIXEL_MAP_I_TO_A tables, and clamped to the range [0,1].
+	GL_RED 	Each element is a single red component. It is converted to floating point and assembled into an RGBA element by attaching 0.0 for green and blue, and 1.0 for alpha. Each component is then multiplied by the signed scale factor GL_c_SCALE, added to the signed bias GL_c_BIAS, and clamped to the range [0,1] (see glPixelTransfer).
+	GL_GREEN 	Each element is a single green component. It is converted to floating point and assembled into an RGBA element by attaching 0.0 for red and blue, and 1.0 for alpha. Each component is then multiplied by the signed scale factor GL_c_SCALE, added to the signed bias GL_c_BIAS, and clamped to the range [0,1] (see glPixelTransfer).
+	GL_BLUE 	Each element is a single blue component. It is converted to floating point and assembled into an RGBA element by attaching 0.0 for red and green, and 1.0 for alpha. Each component is then multiplied by the signed scale factor GL_c_SCALE, added to the signed bias GL_c_BIAS, and clamped to the range [0,1] (see glPixelTransfer).
+	GL_ALPHA 	Each element is a single red component. It is converted to floating point and assembled into an RGBA element by attaching 0.0 for red, green, and blue. Each component is then multiplied by the signed scale factor GL_c_SCALE, added to the signed bias GL_c_BIAS, and clamped to the range [0,1] (see glPixelTransfer).
+	GL_RGB 	Each element is an RGB triple. It is converted to floating point and assembled into an RGBA element by attaching 1.0 for alpha. Each component is then multiplied by the signed scale factor GL_c_SCALE, added to the signed bias GL_c_BIAS, and clamped to the range [0,1] (see glPixelTransfer).
+	GL_RGBA 	Each element is a complete RGBA element. It is converted to floating point. Each component is then multiplied by the signed scale factor GL_c_SCALE, added to the signed bias GL_c_BIAS, and clamped to the range [0,1] (see glPixelTransfer).
+	GL_LUMINANCE 	Each element is a single luminance value. It is converted to floating point, and then assembled into an RGBA element by replicating the luminance value three times for red, green, and blue, and attaching 1.0 for alpha. Each component is then multiplied by the signed scale factor GL_c_SCALE, added to the signed bias GL_c_BIAS, and clamped to the range [0,1] (see glPixelTransfer).
+	GL_LUMINANCE_ALPHA 	Each element is a luminance/alpha pair. It is converted to floating point, and then assembled into an RGBA element by replicating the luminance value three times for red, green, and blue. Each component is then multiplied by the signed scale factor GL_c_SCALE, added to the signed bias GL_c_BIAS, and clamped to the range [0,1] (see glPixelTransfer).
+
+	// windows extension
+	GL_BGR_EXT 	Each pixel is a group of three components in this order: blue, green, red. GL_BGR_EXT provides a format that matches the memory layout of Windows device-independent bitmaps (DIBs). Thus your applications can use the same data with Win32 function calls and OpenGL pixel function calls.
+	GL_BGRA_EXT 	Each pixel is a group of four components in this order: blue, green, red, alpha. GL_BGRA_EXT provides a format that matches the memory layout of Windows device-independent bitmaps (DIBs). Thus your applications can use the same data with Win32 function calls and OpenGL pixel function calls.
+
+	*/
+	/*
+enum PIXEL_FORMAT {
+	FORMAT_R8G8B8	= 0,
+	FORMAT_B8G8R8	= 1,
+	FORMAT_R8G8B8X8	= 2,
+	FORMAT_B8G8R8X8	= 3,
+	FORMAT_R5G6B5	= 4,
+	FORMAT_L8		= 5,
+
+	FORMAT_UNKNOWN	= 6
+};
+	*/
+	// map ov to gl pixel format and set gl_texture_2d_sink's format
+	switch(curPixelFormat)
+	{
+		case FORMAT_R8G8B8:
+			format=GL_RGB;
+			internalFormat=3;
+			break;
+
+		case FORMAT_B8G8R8:
+//			format=;
+//			internalFormat
+			break;
+		
+		case FORMAT_R8G8B8X8:
+//			format=;
+			break;
+
+		case FORMAT_B8G8R8X8:
+			format=GL_BGR_EXT;
+			break;
+
+
+		case FORMAT_R5G6B5:
+//			format=;
+			break;
+
+		case FORMAT_L8:
+//			format=;
+			break;
+
+		default:
+			printf("GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
+				(PixelFormat::FormatToString(curPixelFormat)).c_str());
+			exit(-1);
+
+    }
+	//
+    printf("OVpenVideo: start GL_TEXTURE_2D_Sink '%s' \n",name.c_str());
     state=this->inputs[0]->getState();
     if(state)
     {
-	this->width=state->width;
-	this->height=state->height;
-	if(state->format)
-	    this->format=state->format;
-    }
-    
-    
+		this->width=state->width;
+		this->height=state->height;
+	}
     flip_h = false; 
     flip_v = true;
     float u_rt = (float)width / TEXTURE_WIDTH;
@@ -113,7 +184,7 @@ GL_TEXTURE_2D_Sink::start()
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glTexImage2D(GL_TEXTURE_2D, 0, 3, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
-		 format, GL_UNSIGNED_BYTE, data);
+		 GL_BGR_EXT, GL_UNSIGNED_BYTE, data);
     glDisable(GL_TEXTURE_2D);
     free(data);
     //////////////////////////////////////////////

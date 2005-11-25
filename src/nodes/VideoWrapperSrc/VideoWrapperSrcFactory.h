@@ -44,6 +44,7 @@
 *@ingroup nodes
 *	A factory to create VideoWrapperSrc nodes.
 */
+namespace openvideo {
 class OPENVIDEO_API  VideoWrapperSrcFactory
 	: public NodeFactory
 {
@@ -69,7 +70,7 @@ public:
 	virtual const char* getNodeTypeId();
 };
 
-
+}//namespace openvideo {
 #endif // ENABLE_VIDEOWRAPPERSRC
 
 #endif // _VIDEOWRAPPERSRCFACTORY_H

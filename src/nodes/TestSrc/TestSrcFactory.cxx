@@ -31,6 +31,8 @@
  /* ======================================================================= */
 #include "TestSrcFactory.h"
 
+using namespace openvideo;
+
 TestSrc* 
 TestSrcFactory::createNode()
 {

@@ -40,8 +40,14 @@ class ACE_Mutex;
 *@ingroup nodes
 *	This node implements a 2d texture which is updated every time the node is traversed.
 *	GL_TEXTURE_2D_Sink takes the context of it's first registered parent node. The node can be used to integrate an OpenVideo sink into another programm. therefore it implements a way to lock and unlock the texture it updates.
-*	Whenever 
+*
+*   Supported Pixel Formats:
+*	@li: R8G8B8
+*	@li: B8G8R8X8
 */
+
+namespace openvideo {
+
 class OPENVIDEO_API GL_TEXTURE_2D_Sink : 
 	public Node
 {
@@ -92,6 +98,7 @@ public:
 	*/
 	bool isStarted;
 
+	virtual void initPixelFormats();
 protected:
 	/**
 	*	mutext to lock the sink's data.
@@ -108,6 +115,11 @@ protected:
 	int format;
 
 	/**
+	*	Internal texture format. defines the number of color components in the texture. valid values = 1,2,3, or 4.
+	*/
+	int internalFormat;
+
+	/**
 	*	is the video fliped?
 	*/
 	bool flip_h, flip_v;
@@ -118,6 +130,6 @@ protected:
 	enum {TEXTURE_WIDTH = 1024, TEXTURE_HEIGHT = 1024};
 };
 
-
+} //namespace openvideo {
 
 #endif

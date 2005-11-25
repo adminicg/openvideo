@@ -41,6 +41,7 @@
 #ifdef WIN32
 	#define _WIN32_WINNT  0x0400
 	#define WIN32_LEAN_AND_MEAN
+	
 	#include "windows.h"
 	#include "wingdi.h"
 #endif
@@ -84,7 +85,7 @@
  *
  * @author Denis Kalkofen
  */
-
+namespace openvideo {
 class OPENVIDEO_API Manager 
 {
  public:
@@ -201,13 +202,14 @@ class OPENVIDEO_API Manager
 	*	THE GRAPH. 
 	*	This vector holds all nodes in the current OpenVideo graph in a list. 
     */
-	std::vector<Node *> nodes;
+	
+	std::vector<Node*> nodes;
 
     /**
     *   A vector to hold all 'DEF' marked nodes in the xml file. 
 	*	This list holds references to nodes which are previously marked for later referencing.
     */
-    std::vector<Node *> defNodes;
+	std::vector<Node *> defNodes;
     
     /**
     *   A vector which holds objects of all known node factories. 
@@ -253,6 +255,6 @@ class OPENVIDEO_API Manager
 	*/
 	static bool travBlock;
 };
-
+}//namespace openvideo 
 
 #endif

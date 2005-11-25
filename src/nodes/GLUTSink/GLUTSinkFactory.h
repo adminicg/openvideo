@@ -45,6 +45,7 @@
 *@ingroup nodes
 *	A factory to create GLUTSink nodes.
 */
+namespace openvideo {
 class OPENVIDEO_API  GLUTSinkFactory
 	: public NodeFactory
 {
@@ -64,13 +65,13 @@ class OPENVIDEO_API  GLUTSinkFactory
 	*/
     virtual const char* getNodeTypeId();
     
-	
 	/**
 	*	returns GLUTSink as the type of known objects
 	*/
     virtual GLUTSink* createNode();
 };
 
+} //namespace openvideo {
 
 #endif // ENABLE_GLUTSINK
 

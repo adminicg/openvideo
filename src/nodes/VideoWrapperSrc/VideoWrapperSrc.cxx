@@ -46,16 +46,25 @@
 
 #include "core/State.h"
 
+using namespace openvideo;
+
 VideoWrapperSrc::VideoWrapperSrc()
 {
 	strcpy(libId,"");
 	strcpy(formatId,"");
 	cameraNum=width=height=frameRate=format=0;
 	scale=0.0;
+	
 }
 	
 VideoWrapperSrc::~VideoWrapperSrc()
 {
+}
+
+void 
+VideoWrapperSrc::initPixelFormats()
+{
+	pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8));
 }
 
 void
@@ -161,5 +170,6 @@ VideoWrapperSrc::setParameter(std::string key, std::string value)
 
 	return false;
 }
+
 
 #endif //ENABLE_VIDEOWRAPPERSRC

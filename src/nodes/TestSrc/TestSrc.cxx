@@ -32,6 +32,8 @@
 #include "TestSrc.h"
 #include "core/Manager.h"
 
+using namespace openvideo;
+
 // constructor
 TestSrc::TestSrc()
 {
@@ -39,6 +41,12 @@ TestSrc::TestSrc()
     width=320;
     height=240;
     img=new unsigned char[width*height*3];
+}
+
+void 
+TestSrc::initPixelFormats()
+{
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8));
 }
 
 // destructor

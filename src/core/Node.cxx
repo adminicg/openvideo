@@ -33,6 +33,8 @@
 #include "Node.h"
 #include "core/State.h"
 
+using namespace openvideo;
+
 // constructor
 Node::Node()
 {
@@ -67,8 +69,31 @@ Node::setParameter(std::string key, std::string value)
 		defName=value;
 		return true;
 	}
+	else if(key=="pixelformat"){
+		curPixelFormat= PixelFormat::StringToFormat(value);
+		return true;
+	}
+
+	
+	return false;
+}
+
+bool 
+Node::validateCurrentPixelFormat()
+{
+	for(int i=0;i<(int)this->pixelFormats.size();i++)
+	{
+		if(pixelFormats.at(i)==this->curPixelFormat)
+			return true;
+	}
 
 	return false;
+}
+
+const char* 
+Node::getName()
+{
+	return this->name.c_str();
 }
 
 
@@ -91,12 +116,6 @@ Node::process()
 void 
 Node::postProcess( )
 {
-}
-
-const char*
-Node::getName()
-{
-	return name.c_str();
 }
 
 const char* 

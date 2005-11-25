@@ -41,6 +41,10 @@
 *@ingroup nodes
 *	A factory to create GL_TEXTURE_2D_Sink nodes.
 */
+
+namespace openvideo {
+
+
 class OPENVIDEO_API  GL_TEXTURE_2D_SinkFactory
 	: public NodeFactory
 {
@@ -65,6 +69,6 @@ public:
 	*/
 	virtual GL_TEXTURE_2D_Sink* createNode();
 };
-
+}
 
 #endif

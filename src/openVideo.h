@@ -34,8 +34,12 @@
 #ifndef _OPENVIDEO_H_
 #define _OPENVIDEO_H_
 
-#include "core/disable4251.h"
 #include "configOV.h"
+
+
+#ifdef WIN32
+#pragma warning(disable:4251)
+#endif
 
 #ifdef WIN32  
     #ifdef OPENVIDEO_EXPORTS
@@ -46,7 +50,6 @@
 #else
 	#define OPENVIDEO_API
 #endif
-
 
 /**
  * @defgroup core Core Classes

@@ -55,6 +55,8 @@ std::vector<GLUTSink*> GLUTSink::glutSinks;
 bool GLUTSink::glutRedraw=false;
 ACE_Mutex* GLUTSink::redrawLock=NULL;
 
+using namespace openvideo;
+
 GLUTSink::GLUTSink()
 {
 	originX=originY=0;
@@ -71,7 +73,13 @@ GLUTSink::GLUTSink()
 	format=GL_RGB;
 #endif
 }
-	
+
+void 
+GLUTSink::initPixelFormats()
+{
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8));
+}
+
 GLUTSink::~GLUTSink()
 {
 	delete updateLockCond;
@@ -89,37 +97,37 @@ GLUTSink::mainLoop(void *)
     glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE );
     for(int i=0;i<(int)GLUTSink::glutSinks.size();i++)
     {
-	GLUTSink *glutSink=GLUTSink::glutSinks[i];
-	glutInitWindowPosition (glutSink->originX, glutSink->originY );
-	int w,h;
-	if(glutSink->width==0)
-	    w=1;
-	else
-	    w=glutSink->width;
-	if( glutSink->height==0)
-	    h=1;
-	else
-	    h=glutSink->height;
-	glutInitWindowSize (w,h);
-	glutSink->winHandle=glutCreateWindow(glutSink->getName());
-	glutDisplayFunc(GLUTSink::mainDisplayFunc);
-	glutIdleFunc(GLUTSink::idleFunc);
-	//////////////////////////////////////////////
-	//create texture
-	glEnable(GL_TEXTURE_2D);
-	long data_size = 4 * sizeof(GLubyte) * TEXTURE_WIDTH * TEXTURE_HEIGHT;
-	GLubyte *data = (GLubyte*)malloc(data_size);
-	memset(data, 0xFF, data_size);
-	glGenTextures(1, &glutSink->video_texture_id);
-	glBindTexture(GL_TEXTURE_2D, glutSink->video_texture_id);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
-		     glutSink->format, GL_UNSIGNED_BYTE, data);
-	glDisable(GL_TEXTURE_2D);
-	free(data);
-	//////////////////////////////////////////////
+		GLUTSink *glutSink=GLUTSink::glutSinks[i];
+		glutInitWindowPosition (glutSink->originX, glutSink->originY );
+		int w,h;
+		if(glutSink->width==0)
+			w=1;
+		else
+			w=glutSink->width;
+		if( glutSink->height==0)
+			h=1;
+		else
+			h=glutSink->height;
+		glutInitWindowSize (w,h);
+		glutSink->winHandle=glutCreateWindow(glutSink->getName());
+		glutDisplayFunc(GLUTSink::mainDisplayFunc);
+		glutIdleFunc(GLUTSink::idleFunc);
+		//////////////////////////////////////////////
+		//create texture
+		glEnable(GL_TEXTURE_2D);
+		long data_size = 4 * sizeof(GLubyte) * TEXTURE_WIDTH * TEXTURE_HEIGHT;
+		GLubyte *data = (GLubyte*)malloc(data_size);
+		memset(data, 0xFF, data_size);
+		glGenTextures(1, &glutSink->video_texture_id);
+		glBindTexture(GL_TEXTURE_2D, glutSink->video_texture_id);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
+				glutSink->format, GL_UNSIGNED_BYTE, data);
+		glDisable(GL_TEXTURE_2D);
+		free(data);
+		//////////////////////////////////////////////
     }		
     glutMainLoop();
     
@@ -129,7 +137,7 @@ GLUTSink::mainLoop(void *)
 void
 GLUTSink::start()
 {
-    printf("OV: GLUTSink -> start\n");
+    printf("OpenVideo: start GLUTSink '%s' \n",name.c_str());
     //state this sink lives in
     state=this->inputs[0]->getState();
     if(state)

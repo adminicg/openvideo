@@ -49,7 +49,7 @@
 *	\image html Stategraph.gif
 *	
 */
-
+namespace openvideo {
 class OPENVIDEO_API State
 {
 public:
@@ -104,14 +104,20 @@ public:
 	void  removeElement(std::string key);
 
 protected:
+
+private:
 	/** 
 	*	A map to store additional data in the State.
     */
+
 	std::map<std::string,void*> elements;
 };
+}//namespace openvideo {
 
 // ----> inlines <-----
 // constructor method.
+using namespace openvideo;
+
 inline State::State()
 {
 	clear();

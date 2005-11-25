@@ -35,6 +35,7 @@
 
 #ifdef ENABLE_GLUTSINK
 
+using namespace openvideo;
 
 GLUTSinkFactory::GLUTSinkFactory()
 {

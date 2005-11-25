@@ -40,6 +40,9 @@
 *@ingroup nodes
 *	A factory to create TestSrc nodes.
 */
+
+namespace openvideo {
+
 class OPENVIDEO_API  TestSrcFactory :
 	public NodeFactory
 {
@@ -59,6 +62,6 @@ public:
 	*/
 	virtual TestSrc* createNode();
 };
-
+} //namespace openvideo {
 
 #endif

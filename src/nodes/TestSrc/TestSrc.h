@@ -40,6 +40,9 @@
 *	TestSrc implements an 320x240 image with a white background where a red,blue and green square moves 
 *	on. This node is used to test OpenVideo's environment with any input stream comming from a camera. 
 */
+
+namespace openvideo {
+
 class OPENVIDEO_API TestSrc :
 	public Node
 {
@@ -65,7 +68,8 @@ public:
 	*/
 	virtual void process( );
 	
-	
+	virtual void initPixelFormats();
+
  protected:
  	/**
 	*	image 
@@ -83,6 +87,6 @@ public:
 	int posX,posY;
 };
 
-
+} //namespace openvideo {
 
 #endif

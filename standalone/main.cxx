@@ -6,6 +6,10 @@
 #include <stdio.h>
 #include "core/Manager.h"
 
+
+using namespace openvideo;
+
+
 int main(int argc, char **argv)
 {
    if( argc != 2 )
@@ -18,6 +22,8 @@ int main(int argc, char **argv)
     printf("**** OpenVideo -standalone- v1.0 *****\n");
     printf("**************************************\n");
     
+	
+
     Manager manager;
     manager.parseConfiguration( argv[1] );
     printf("Parsing complete.\n");

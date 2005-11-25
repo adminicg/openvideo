@@ -34,6 +34,9 @@
 
 #include <ace/Reactor.h>
 #include "TimerHandler.h"
+
+using namespace openvideo;
+
 // constructor
 Timer::Timer()
 {

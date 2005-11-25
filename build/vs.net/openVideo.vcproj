@@ -142,6 +142,12 @@
 				RelativePath="..\..\src\core\NodeFactory.cxx">
 			</File>
 			<File
+				RelativePath="..\..\src\core\PixelFormat.cxx">
+			</File>
+			<File
+				RelativePath="..\..\src\core\PixelFormat.h">
+			</File>
+			<File
 				RelativePath="..\..\src\core\State.cxx">
 			</File>
 			<File
@@ -204,9 +210,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
 				RelativePath="..\..\src\configOV.h">
-			</File>
-			<File
-				RelativePath="..\..\src\core\disable4251.h">
 			</File>
 			<File
 				RelativePath="..\..\src\core\Manager.h">

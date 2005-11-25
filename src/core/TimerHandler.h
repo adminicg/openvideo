@@ -34,7 +34,7 @@
 #ifndef _TIMERHANDLER_H
 #define _TIMERHANDLER_H
 
-#include "openVideo.h"
+
 #include <ace/Event_Handler.h>
 
 /**
@@ -44,8 +44,7 @@
 *	timerCB.
 */
 
-
-class OPENVIDEO_API TimerHandler : public ACE_Event_Handler
+class TimerHandler : public ACE_Event_Handler
 {
 public:
 	/**
@@ -76,5 +75,6 @@ public:
 
 
 };
+
 
 #endif

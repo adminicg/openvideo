@@ -37,6 +37,8 @@
 	
 #include "configOV.h"
 
+using namespace openvideo;
+
 //known nodes
 #ifdef ENABLE_GLUTSINK
 #include "nodes/GLUTSink/GLUTSinkFactory.h"
@@ -214,6 +216,19 @@ Manager::setInitTravFunction(void (*initTravFunction)(void*),void* data)
 void 
 Manager::run()
 {
+	//validate pixel format
+
+	for(int i=0;i<(int)nodes.size();i++)
+	{
+		nodes[i]->initPixelFormats();
+
+		if(!nodes[i]->validateCurrentPixelFormat())
+		{
+			printf("OV: %s uses an unknown pixel format\n",nodes[i]->getName());
+			exit(-1);
+		}
+	}
+
 	(*Manager::initTraversalFunc)(initTraversalData);
 
 	Timer timer;
@@ -356,5 +371,6 @@ Manager::initNodeFactories()
 #ifdef ENABLE_TESTSRC
     factories.push_back(new TestSrcFactory());
 #endif
+
 }
 

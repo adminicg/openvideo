@@ -44,6 +44,9 @@
 *	It displays the frame buffer of the context element of it's first input node as a 2dtexture which gets updated every time a traversal takes place.
 *	The glut environment runs in it's own thread. it permanently checks in it's idle function if something has changed which forces a redraw of one of the glut windows.
 */
+
+namespace openvideo {
+
 class GLUTSink : 
 	public Node
 {
@@ -72,6 +75,9 @@ public:
 	*	'process()' then waits untill the main display function updates the texture with the new video data.
 	*/
     virtual void process();
+
+	virtual void initPixelFormats();
+
 
 protected:
 	/**
@@ -172,6 +178,8 @@ protected:
     enum {TEXTURE_WIDTH = 1024, TEXTURE_HEIGHT = 1024};
 
 };
+
+}//namespace openvideo {
 
 #endif
 

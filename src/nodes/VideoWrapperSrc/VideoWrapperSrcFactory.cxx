@@ -35,6 +35,7 @@
 
 #ifdef ENABLE_VIDEOWRAPPERSRC
 
+using namespace openvideo;
 
 VideoWrapperSrcFactory::VideoWrapperSrcFactory()
 {
@@ -43,14 +44,12 @@ VideoWrapperSrcFactory::VideoWrapperSrcFactory()
 
 VideoWrapperSrcFactory::~VideoWrapperSrcFactory()
 {
-
 }
 
 VideoWrapperSrc*
 VideoWrapperSrcFactory::createNode()
 {
 	return new VideoWrapperSrc();
-
 }
 
 const char* 

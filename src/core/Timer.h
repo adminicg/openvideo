@@ -40,7 +40,11 @@
 *	Implemtents a Timer, based on the timer implementations the ACE_Reactor provides. 
 *	It uses an instance of TimerHandler to schedule the timer. 
 */
+
 class TimerHandler;
+
+
+namespace openvideo {
 
 class OPENVIDEO_API Timer 
 {
@@ -74,11 +78,13 @@ public:
 	*/
 	static bool isEventLoopRunning;
 
+private:
 	/**
 	*	The timer handler .
 	*/
 	TimerHandler *htimer;
+
 };
 
-
+}//openvideo {
 #endif

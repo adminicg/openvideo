@@ -32,6 +32,10 @@
 
 #include "GL_TEXTURE_2D_SinkFactory.h"
 
+
+using namespace openvideo;
+
+
 GL_TEXTURE_2D_SinkFactory::GL_TEXTURE_2D_SinkFactory()
 {
 }

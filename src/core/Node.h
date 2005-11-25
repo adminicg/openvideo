@@ -37,6 +37,8 @@
 #include "State.h"
 #include <vector>
 #include <string>
+#include "PixelFormat.h"
+
 
 /**
 *@ingroup core
@@ -44,7 +46,7 @@
 *	None of the functions is pure virtual but a node implementation should 
 *	at least override the traversal function (process) to actually implement some action for a specific node.
 */
-
+namespace openvideo {
 class OPENVIDEO_API Node
 {
 public:
@@ -57,6 +59,21 @@ public:
 	*	The Destructor
 	*/
 	virtual ~Node();
+
+	/**
+	* return value = the number of supported input formats. the formats are stored in 'formatList'.
+	*/
+	virtual void initPixelFormats()=0;
+
+	/**
+	*
+	*/
+	virtual bool validateCurrentPixelFormat();
+
+	/**
+	*
+	*/
+	virtual const char*  getName();
 
 	/**
 	*	Is called once before the (process)traversal starts.
@@ -165,11 +182,6 @@ public:
 	void resetCurInOutDegree();
 
 	/**
-	*	Returns the nodes name.
-	*/
-	const char* getName();
-
-	/**
 	*	Return the nodes 'DEF' name.
 	*/
 	const char* getDefName();
@@ -215,8 +227,13 @@ protected:
 	*/
 	std::string defName;
 
+	/**
+	*	The node's 'DEF' name
+	*/
+	std::vector<PIXEL_FORMAT> pixelFormats;
 
+	PIXEL_FORMAT curPixelFormat;
 };
-
+} //namespace openvideo {
 
 #endif
