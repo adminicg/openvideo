@@ -24,7 +24,7 @@
  * ======================================================================== */
 /** The header file for the V4LSrcFactory class.
   *
-  * @author Denis Kalkofen
+  * @author Petter Risholm
   *
   * $Id: 
   * @file                                                                   */

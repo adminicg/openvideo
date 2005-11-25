@@ -42,8 +42,18 @@
 #include "v4l.h"
 
 /**
- * @ingroup nodes
- *   A source for grabbing video from v4l cards.
+ *   @ingroup nodes
+ *   A source for grabbing video from V4L cards.
+ *
+ *   This node can grab video from V4L cards (bt878 capture cards).
+ *   The node takes the following parameters (default values in parentheses):
+ *   width:        Width of capture frame (640).
+ *   height:       Height of capture frame (480).
+ *   device:       The device to capture from (/dev/video0)
+ *   format:       The pixel format to pass on to downstream nodes (B8G8R8).
+ *   videoMode:    The video mode to use for grabbing (PAL).
+ *   videoChannel: Channel to capture from (Composite).
+ *   
  */
 class OPENVIDEO_API V4LSrc : 
 public Node
@@ -101,29 +111,31 @@ public Node
   /// Height of video frame.
   int videoHeight;
 	
-  /// Video stream descriptor
-  int       videoFd;
-
-  /// Defines video format. Default is B8G8R8.
-  int videoFormat;
-
-  /// Defines video mode. Default is PAL.
+  /// Defines video mode. Can take values (PAL | NTSC). Default is PAL.
   int videoMode;
 
   /// Defines video channel. (Composite|SVideo|TV). Default is Composite.
-  int videoChannel;
+  VideoChannel videoChannel;
   
-  /// Switches between the frame buffers (2 are currently used)
-  int videoFrame;
-
   /// Holds the pixel format used.
   PIXEL_FORMAT pixelFormat;
+
+ private:
+
+  /// Defines the v4l pixel format (Used internally).
+  int videoPixelFormat;
 
   /// Video info.
   V4LMMInfo videoInfo;
 
   /// Capture buffer.
   unsigned char *videoBuffer;
+
+  /// Video stream descriptor
+  int videoFd;
+
+  /// Switches between the frame buffers (2 are currently used)
+  int videoFrame;
 };
 
 #endif // ENABLE_V4LSRC

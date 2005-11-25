@@ -44,11 +44,13 @@
 
 using namespace std;
 
-V4LSrc::V4LSrc() : videoWidth(640), videoHeight(480), videoFrame(0), videoFd(-1), pixelFormat(FORMAT_B8G8R8)
+// Initialize variable to default values.
+V4LSrc::V4LSrc() : videoWidth(640), videoHeight(480), 
+		   videoMode(VIDEO_MODE_PAL), videoChannel(VideoCompositeSource), 
+		   pixelFormat(FORMAT_B8G8R8), videoPixelFormat(V4L_FORMAT_RGB24), 
+		   videoBuffer(NULL), videoFd(-1), videoFrame(0) 
 {
   strcpy(videoDevice, "/dev/video0");
-  videoMode = VIDEO_MODE_NTSC;
-  videoChannel = VideoCompositeSource;
 
   state=new State();
   state->clear();
@@ -136,7 +138,7 @@ V4LSrc::start()
   V4LFormat  v4lFormat;
   v4lFormat.width  = videoWidth;
   v4lFormat.height = videoHeight;
-  v4lFormat.format = videoFormat;
+  v4lFormat.format = videoPixelFormat;
   
   V4LMSetFormat(&v4lFormat);
 
@@ -243,22 +245,22 @@ V4LSrc::setParameter(string key, string value)
       switch(pf) {
       case (FORMAT_B8G8R8):
 	pixelFormat = pf;
-	videoFormat = V4L_FORMAT_RGB24;
+	videoPixelFormat = V4L_FORMAT_RGB24;
 	break;
 
       case (FORMAT_B8G8R8X8):
 	pixelFormat = pf;
-	videoFormat = V4L_FORMAT_RGB32;
+	videoPixelFormat = V4L_FORMAT_RGB32;
 	break;
 
       case (FORMAT_R5G6B5):
 	pixelFormat = pf;
-	videoFormat = V4L_FORMAT_RGB16;
+	videoPixelFormat = V4L_FORMAT_RGB16;
 	break;
 
       case (FORMAT_L8):
 	pixelFormat = pf;
-	videoFormat = V4L_FORMAT_Y8;
+	videoPixelFormat = V4L_FORMAT_Y8;
 	break;
 
       default:

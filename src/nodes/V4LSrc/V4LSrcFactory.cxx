@@ -22,9 +22,9 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The source file for the VideoWrapperSrcFactory class.
+/** The source file for the V4LSrcFactory class.
   *
-  * @author Denis Kalkofen
+  * @author Petter Risholm
   * 
   * $Id: 
   * @file                                                                   
