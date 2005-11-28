@@ -193,13 +193,7 @@
 						RelativePath="..\..\src\nodes\VideoWrapperSrc\VideoWrapperSrc.cxx">
 					</File>
 					<File
-						RelativePath="..\..\src\nodes\VideoWrapperSrc\VideoWrapperSrc.h">
-					</File>
-					<File
 						RelativePath="..\..\src\nodes\VideoWrapperSrc\VideoWrapperSrcFactory.cxx">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\VideoWrapperSrc\VideoWrapperSrcFactory.h">
 					</File>
 				</Filter>
 				<Filter
@@ -209,13 +203,7 @@
 						RelativePath="..\..\src\nodes\GLUTSink\GLUTSink.cxx">
 					</File>
 					<File
-						RelativePath="..\..\src\nodes\GLUTSink\GLUTSink.h">
-					</File>
-					<File
 						RelativePath="..\..\src\nodes\GLUTSink\GLUTSinkFactory.cxx">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\GLUTSink\GLUTSinkFactory.h">
 					</File>
 				</Filter>
 				<Filter
@@ -225,13 +213,7 @@
 						RelativePath="..\..\src\nodes\GL_TEXTURE_2D_Sink\GL_TEXTURE_2D_Sink.cxx">
 					</File>
 					<File
-						RelativePath="..\..\src\nodes\GL_TEXTURE_2D_Sink\GL_TEXTURE_2D_Sink.h">
-					</File>
-					<File
 						RelativePath="..\..\src\nodes\GL_TEXTURE_2D_Sink\GL_TEXTURE_2D_SinkFactory.cxx">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\GL_TEXTURE_2D_Sink\GL_TEXTURE_2D_SinkFactory.h">
 					</File>
 				</Filter>
 				<Filter
@@ -241,13 +223,7 @@
 						RelativePath="..\..\src\nodes\TestSrc\TestSrc.cxx">
 					</File>
 					<File
-						RelativePath="..\..\src\nodes\TestSrc\TestSrc.h">
-					</File>
-					<File
 						RelativePath="..\..\src\nodes\TestSrc\TestSrcFactory.cxx">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\TestSrc\TestSrcFactory.h">
 					</File>
 				</Filter>
 			</Filter>
@@ -262,18 +238,42 @@
 				<Filter
 					Name="VideoWrapperSrc"
 					Filter="">
+					<File
+						RelativePath="..\..\src\nodes\VideoWrapperSrc\VideoWrapperSrc.h">
+					</File>
+					<File
+						RelativePath="..\..\src\nodes\VideoWrapperSrc\VideoWrapperSrcFactory.h">
+					</File>
 				</Filter>
 				<Filter
 					Name="GLSink"
 					Filter="">
+					<File
+						RelativePath="..\..\src\nodes\GLUTSink\GLUTSink.h">
+					</File>
+					<File
+						RelativePath="..\..\src\nodes\GLUTSink\GLUTSinkFactory.h">
+					</File>
 				</Filter>
 				<Filter
 					Name="GL_TEXTURE_2D_SinK"
 					Filter="">
+					<File
+						RelativePath="..\..\src\nodes\GL_TEXTURE_2D_Sink\GL_TEXTURE_2D_Sink.h">
+					</File>
+					<File
+						RelativePath="..\..\src\nodes\GL_TEXTURE_2D_Sink\GL_TEXTURE_2D_SinkFactory.h">
+					</File>
 				</Filter>
 				<Filter
 					Name="TestSrc"
 					Filter="">
+					<File
+						RelativePath="..\..\src\nodes\TestSrc\TestSrc.h">
+					</File>
+					<File
+						RelativePath="..\..\src\nodes\TestSrc\TestSrcFactory.h">
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>
