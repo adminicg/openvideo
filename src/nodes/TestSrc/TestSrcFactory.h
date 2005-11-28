@@ -31,10 +31,10 @@
  /* ======================================================================= */
 #ifndef _TESTSRCFACTORY_H
 #define _TESTSRCFACTORY_H
-
 #include "openVideo.h"
+#ifdef ENABLE_TESTSRC
 #include "TestSrc.h"
-#include <core/NodeFactory.h>
+#include "core/NodeFactory.h"
 
 /**
 *@ingroup nodes
@@ -44,7 +44,7 @@
 namespace openvideo {
 
 class OPENVIDEO_API  TestSrcFactory :
-	public NodeFactory
+	public openvideo::NodeFactory
 {
 public:
 	/**
@@ -60,8 +60,9 @@ public:
 	/**
 	*	returns TestSrc as the type of known objects
 	*/
-	virtual TestSrc* createNode();
+	virtual openvideo::TestSrc* createNode();
 };
 } //namespace openvideo {
 
+#endif //#ifdef ENABLE_TESTSRC
 #endif

@@ -31,15 +31,16 @@
  /* ======================================================================= */
 #include "Manager.h"
 
-#include "tinyxml.h"
-#include "Timer.h"
-
-	
 #include "configOV.h"
+#include "tinyxml.h"
 
+#include "core/Timer.h"
+#include "core/NodeFactory.h"
+#include "core/Node.h"
+	
 using namespace openvideo;
 
-//known nodes
+/////known nodes
 #ifdef ENABLE_GLUTSINK
 #include "nodes/GLUTSink/GLUTSinkFactory.h"
 #endif
@@ -274,6 +275,11 @@ Manager::initTopologicalSortedTraversal(void* nodeList)
     for (i=0;i<(int)sortedNodes.size();i++)
 	{
 		nodes->push_back(sortedNodes.at(i));
+    }
+    //init all nodes
+	for(i=0;i<(int)nodes->size();i++)
+    {
+		nodes->at(i)->init();
     }
     //start all nodes
     for(i=0;i<(int)nodes->size();i++)

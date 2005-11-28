@@ -34,11 +34,11 @@
 #define _NODE_H
 
 #include "openVideo.h"
-#include "State.h"
+
 #include <vector>
 #include <string>
-#include "PixelFormat.h"
 
+#include "PixelFormat.h"
 
 /**
 *@ingroup core
@@ -47,6 +47,7 @@
 *	at least override the traversal function (process) to actually implement some action for a specific node.
 */
 namespace openvideo {
+class State;
 class OPENVIDEO_API Node
 {
 public:
@@ -77,7 +78,14 @@ public:
 
 	/**
 	*	Is called once before the (process)traversal starts.
-	*	Start should be used to implement any initializations a specific node needs.
+	*	Init should be used to implement any initializations a specific node needs.
+	*/
+	virtual void init();
+
+
+	/**
+	*	Is called once before the (process)traversal starts.
+	*	Start should be used to implement any start routines a specific node needs.
 	*/
 	virtual void start();
 
@@ -110,31 +118,31 @@ public:
 	/**
 	*	Returns the node's state;
 	*/
-	State* getState();
+	openvideo::State* getState();
 
 
 	/**
 	*	Adds a new children(output) to the node.
 	*	This function gets called during the contruction of the graph and usually doesn't need to be overriden.
 	*/
-	void addOutput( Node * output);
+	void addOutput( openvideo::Node * output);
 
 	/**
 	*	Adds a new input node.
 	*	This function gets called during the contruction of the graph and usually doesn't need to be overriden.
 	*
 	*/
-	void addInput( Node * output);
+	void addInput( openvideo::Node * output);
 
 	/**
 	*	Returns a vector with all the output(children) nodes.
 	*/
-	std::vector<Node*>* getOutputs();
+	std::vector<openvideo::Node*>* getOutputs();
 
 	/**
 	*	Returns a vector with all the input(parent) nodes.
 	*/
-	std::vector<Node*>* getInputs();
+	std::vector<openvideo::Node*>* getInputs();
 
 	/**
 	*	Returns the total number of parents(inputs).
@@ -191,17 +199,17 @@ protected:
 	/**
 	*	A vector to hold the children (outputs)
 	*/
-	std::vector<Node*> outputs;
+	std::vector<openvideo::Node*> outputs;
 
 	/**
 	*	A vector to hold the children (inputs)
 	*/
-	std::vector<Node*> inputs;
+	std::vector<openvideo::Node*> inputs;
 
 	/**
 	*	The State. Default=NULL.
 	*/
-	State *state;
+	openvideo::State *state;
 
 	/**
 	*	Current input degree.

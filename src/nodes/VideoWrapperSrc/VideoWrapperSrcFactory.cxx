@@ -31,8 +31,7 @@
  /* ======================================================================= */
 
 #include "VideoWrapperSrcFactory.h"
-
-
+#include "openVideo.h"
 #ifdef ENABLE_VIDEOWRAPPERSRC
 
 using namespace openvideo;

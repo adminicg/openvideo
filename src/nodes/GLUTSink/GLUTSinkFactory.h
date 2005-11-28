@@ -31,15 +31,12 @@
  /* ======================================================================= */
 #ifndef _GLUTSINKFACTORY_H
 #define _GLUTSINKFACTORY_H
-
 #include "openVideo.h"
-
-
 #ifdef ENABLE_GLUTSINK
 
 
 #include "core/NodeFactory.h"
-#include "GLUTSink.h"
+#include "nodes/GLUTSink/GLUTSink.h"
 
 /**
 *@ingroup nodes
@@ -47,7 +44,7 @@
 */
 namespace openvideo {
 class OPENVIDEO_API  GLUTSinkFactory
-	: public NodeFactory
+	: public openvideo::NodeFactory
 {
  public:
    	/**
@@ -68,7 +65,7 @@ class OPENVIDEO_API  GLUTSinkFactory
 	/**
 	*	returns GLUTSink as the type of known objects
 	*/
-    virtual GLUTSink* createNode();
+	virtual openvideo::GLUTSink* createNode();
 };
 
 } //namespace openvideo {

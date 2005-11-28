@@ -30,23 +30,15 @@
   * @file                                                                   
  /* ======================================================================= */
 
-#include "TimerHandler.h"
+#include "core/TimerHandler.h"
 
-#include <ace/Reactor.h>
-#include <ace/OS.h>
-
-
-// constructor
+using namespace openvideo;
+	
 TimerHandler::TimerHandler()
-{
-}
-
-// destructor
+{}
 
 TimerHandler::~TimerHandler()
-{
-}
-
+{}
 
 int 
 TimerHandler::handle_timeout (const ACE_Time_Value &current_time,

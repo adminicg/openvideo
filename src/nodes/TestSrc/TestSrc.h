@@ -31,8 +31,8 @@
  /* ======================================================================= */
 #ifndef _TESTSRC_H
 #define _TESTSRC_H
-
 #include "openVideo.h"
+#ifdef ENABLE_TESTSRC
 #include "core/Node.h"
 
 /**
@@ -44,7 +44,7 @@
 namespace openvideo {
 
 class OPENVIDEO_API TestSrc :
-	public Node
+	public openvideo::Node
 {
 public:
 	/**
@@ -61,7 +61,7 @@ public:
 	/**
 	*	clears the image and sets the widht and height onto its context.
 	*/
-	virtual void start();
+	virtual void init();
 
 	/**
 	*	updates the image by moving the three squares by one pixel.
@@ -88,5 +88,5 @@ public:
 };
 
 } //namespace openvideo {
-
+#endif //#ifdef ENABLE_TESTSRC
 #endif

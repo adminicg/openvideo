@@ -31,8 +31,7 @@
  /* ======================================================================= */
 
 #include "GLUTSinkFactory.h"
-
-
+#include "openVideo.h"
 #ifdef ENABLE_GLUTSINK
 
 using namespace openvideo;

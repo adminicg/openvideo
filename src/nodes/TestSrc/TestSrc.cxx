@@ -30,7 +30,10 @@
   * @file                                                                   
  /* ======================================================================= */
 #include "TestSrc.h"
+#include "openVideo.h"
+#ifdef ENABLE_TESTSRC
 #include "core/Manager.h"
+#include "core/State.h"
 
 using namespace openvideo;
 
@@ -43,12 +46,6 @@ TestSrc::TestSrc()
     img=new unsigned char[width*height*3];
 }
 
-void 
-TestSrc::initPixelFormats()
-{
-	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8));
-}
-
 // destructor
 TestSrc::~TestSrc()
 {
@@ -56,13 +53,19 @@ TestSrc::~TestSrc()
     delete img;
 }
 
-
+void 
+TestSrc::initPixelFormats()
+{
+	pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8));
+	pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8));
+}
 
 void 
-TestSrc::start()
+TestSrc::init()
 {
     printf("OV: TestSrc -> start\n");
     state->clear();
+
     state->width=width;
     state->height=height;
 
@@ -133,4 +136,4 @@ TestSrc::process()
     }
     state->frame=img;
 }
-
+#endif //#ifdef ENABLE_TESTSRC

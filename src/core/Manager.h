@@ -35,8 +35,6 @@
 #include "openVideo.h"
 
 #include <vector>
-#include "NodeFactory.h"
-#include "Node.h"
 
 #ifdef WIN32
 	#define _WIN32_WINNT  0x0400
@@ -86,6 +84,9 @@
  * @author Denis Kalkofen
  */
 namespace openvideo {
+class Node;
+class NodeFactory;
+
 class OPENVIDEO_API Manager 
 {
  public:
@@ -102,7 +103,7 @@ class OPENVIDEO_API Manager
     /** 
 	*	adds a NodeFactory to the list of known factories'
 	*/
-    void addNodeFactory(NodeFactory *aFactory);
+	void addNodeFactory(openvideo::NodeFactory *aFactory);
     
     /** 
 	*	This method parses an xml configuartion of OpenVideo. 
@@ -114,7 +115,7 @@ class OPENVIDEO_API Manager
 	*	Constructs the sub graph for a given (tinyxml)Element. 
 	*	It adds all child nodes to 'parentNode'
 	*/
-    void buildSubGraph(void * parentElement, Node* parentNode);
+    void buildSubGraph(void * parentElement, openvideo::Node* parentNode);
     
 	/**
     *	Starts the manger's mainLoop. 
@@ -128,12 +129,12 @@ class OPENVIDEO_API Manager
 	*	to the managers list of nodes. 
 	*	Notice: The connections between all nodes are set in 'buildSubGraph(void * parentElement, Node* parentNode)'.
 	*/
-    Node* addNode(void *elem);
+    openvideo::Node* addNode(void *elem);
     
 	/**
 	*	Returns the node with the given 'nodeName'. NULL is returned if non of those currently exist. 
 	*/
-    Node* getNode(std::string nodeName);
+    openvideo::Node* getNode(std::string nodeName);
    
 	/**
     *   Stops the manger's mainLoop. 
@@ -203,19 +204,19 @@ class OPENVIDEO_API Manager
 	*	This vector holds all nodes in the current OpenVideo graph in a list. 
     */
 	
-	std::vector<Node*> nodes;
+	std::vector<openvideo::Node*> nodes;
 
     /**
     *   A vector to hold all 'DEF' marked nodes in the xml file. 
 	*	This list holds references to nodes which are previously marked for later referencing.
     */
-	std::vector<Node *> defNodes;
+	std::vector<openvideo::Node *> defNodes;
     
     /**
     *   A vector which holds objects of all known node factories. 
     *   This vector will be searched when a new node is going to be created.
     */
-    std::vector<NodeFactory*> factories;
+    std::vector<openvideo::NodeFactory*> factories;
     
     /**
     *   A pointer to the traversal function which is called by the run function. 

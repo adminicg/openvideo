@@ -31,7 +31,8 @@
  /* ======================================================================= */
 
 #include "GL_TEXTURE_2D_SinkFactory.h"
-
+#include "openVideo.h"
+#ifdef ENABLE_GL_TEXTURE_2D_SINK
 
 using namespace openvideo;
 
@@ -56,3 +57,5 @@ GL_TEXTURE_2D_SinkFactory::getNodeTypeId()
 {
 	return "GL_TEXTURE_2D_Sink";
 }
+
+#endif // ENABLE_GL_TEXTURE_2D_SINK

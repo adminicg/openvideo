@@ -41,10 +41,9 @@
 *	It uses an instance of TimerHandler to schedule the timer. 
 */
 
-class TimerHandler;
-
 
 namespace openvideo {
+class TimerHandler;
 
 class OPENVIDEO_API Timer 
 {
@@ -82,7 +81,7 @@ private:
 	/**
 	*	The timer handler .
 	*/
-	TimerHandler *htimer;
+	openvideo::TimerHandler *htimer;
 
 };
 

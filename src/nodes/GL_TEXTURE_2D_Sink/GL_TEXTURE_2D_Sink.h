@@ -31,8 +31,8 @@
  /* ======================================================================= */
 #ifndef _GL_TEXTURE_2D_SINK_H
 #define _GL_TEXTURE_2D_SINK_H
-
 #include "openVideo.h"
+#ifdef  ENABLE_GL_TEXTURE_2D_SINK
 
 #include "core/Node.h"
 class ACE_Mutex;
@@ -43,13 +43,16 @@ class ACE_Mutex;
 *
 *   Supported Pixel Formats:
 *	@li: R8G8B8
+*	@li: B8G8R8
+*	@li: R8G8B8X8
 *	@li: B8G8R8X8
+*	@li: L8
 */
 
 namespace openvideo {
 
 class OPENVIDEO_API GL_TEXTURE_2D_Sink : 
-	public Node
+	public openvideo::Node
 {
 public:
 	/**
@@ -65,7 +68,7 @@ public:
 	/**
 	*	creates the texture.
 	*/
-	virtual void start();
+	virtual void init();
 
 	/**
 	*	updates the texture with the video frame in it's context.	
@@ -131,5 +134,7 @@ protected:
 };
 
 } //namespace openvideo {
+
+#endif // ENABLE_GL_TEXTURE_2D_SINK
 
 #endif

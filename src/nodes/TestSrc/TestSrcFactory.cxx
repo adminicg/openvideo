@@ -30,7 +30,8 @@
   * @file                                                                   
  /* ======================================================================= */
 #include "TestSrcFactory.h"
-
+#include "openVideo.h"
+#ifdef ENABLE_TESTSRC
 using namespace openvideo;
 
 TestSrc* 
@@ -44,3 +45,4 @@ TestSrcFactory::getNodeTypeId()
 {
 	return "TestSrc";
 }
+#endif //#ifdef ENABLE_TESTSRC

@@ -31,8 +31,9 @@
  /* ======================================================================= */
 
 #include "VideoWrapperSrc.h"
-
+#include "openVideo.h"
 #ifdef ENABLE_VIDEOWRAPPERSRC
+#include <VideoWrapper.h>
 
 #ifdef WIN32
 	#ifdef _DEBUG
@@ -68,7 +69,7 @@ VideoWrapperSrc::initPixelFormats()
 }
 
 void
-VideoWrapperSrc::start()
+VideoWrapperSrc::init()
 {
 	printf("OpenVideo: start VideoWrapperSrc\n");
 

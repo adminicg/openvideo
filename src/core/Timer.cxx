@@ -31,9 +31,8 @@
  /* ======================================================================= */
 
 #include "Timer.h"
-
 #include <ace/Reactor.h>
-#include "TimerHandler.h"
+#include "core/TimerHandler.h"
 
 using namespace openvideo;
 
@@ -55,7 +54,7 @@ Timer::~Timer()
 void 
 Timer::schedule(void (*timerCB)(void*),void* data,double interval)
 {
-	htimer=new TimerHandler();
+	htimer=new openvideo::TimerHandler();
 	htimer->timerCB=timerCB;
 	htimer->data=data;
 	ACE_Time_Value initialDelay (0);

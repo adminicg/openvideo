@@ -31,14 +31,12 @@
  /* ======================================================================= */
 #ifndef _VIDEOWRAPPERSRC_H
 #define _VIDEOWRAPPERSRC_H
-
-#include <openVideo.h>
-#include <core/Node.h>
-#include <string>
-
+#include "openVideo.h"
 #ifdef ENABLE_VIDEOWRAPPERSRC
 
-#include "VideoWrapper.h"
+#include <string>
+
+#include "core/Node.h"
 
 
 /**
@@ -66,12 +64,15 @@
 *	@li	height = video height
 *	@li	frameRate = VideoWrapper's update rate
 *	@li	scale = VideoWrapper's scale value
+*	\n
+*   Supported Pixel Formats: \n
+*	@li: R8G8B8
 */
 
 namespace openvideo {
 
 class OPENVIDEO_API VideoWrapperSrc : 
-	public Node
+	public openvideo::Node
 {
 public:
 	/**
@@ -93,7 +94,7 @@ public:
 	*	This function calls intializes the videowrapper lib. it then opens and starts the video stream.
 	*	Finally it creates a new context where it puts the video specific data on.
 	*/
-	virtual void start();
+	virtual void init();
 
 	/**
 	*	Updates the video frame at its context object.
@@ -111,7 +112,7 @@ protected:
 	/**
 	*	the handle to the video stream
 	*/
-	VWHVideo g_hVideo;
+	unsigned short g_hVideo;
 
 	/**
 	*	videowrapper's library id.

@@ -32,21 +32,18 @@
 
 #ifndef _VIDEOWRAPPERSRCFACTORY_H
 #define _VIDEOWRAPPERSRCFACTORY_H
-
 #include "openVideo.h"
-
 #ifdef ENABLE_VIDEOWRAPPERSRC
 
 #include "core/NodeFactory.h"
-#include "VideoWrapperSrc.h"
-
+#include "nodes/VideoWrapperSrc/VideoWrapperSrc.h"
 /**
 *@ingroup nodes
 *	A factory to create VideoWrapperSrc nodes.
 */
 namespace openvideo {
 class OPENVIDEO_API  VideoWrapperSrcFactory
-	: public NodeFactory
+	: public openvideo::NodeFactory
 {
 public:
 	/**
@@ -62,7 +59,7 @@ public:
 	/**
 	*	creates videowrappersrc nodes
 	*/
-	virtual VideoWrapperSrc* createNode();
+	virtual openvideo::VideoWrapperSrc* createNode();
 
 	/**
 	*	returns VideoWrapperSrc as the type of known objects

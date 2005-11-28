@@ -42,6 +42,7 @@ Node::Node()
 	curInDegree=0;
 	curOutDegree=0;
 	state=NULL;
+	curPixelFormat=PIXEL_FORMAT(FORMAT_UNKNOWN);
 }
 
 // destructor
@@ -81,9 +82,9 @@ Node::setParameter(std::string key, std::string value)
 bool 
 Node::validateCurrentPixelFormat()
 {
-	for(int i=0;i<(int)this->pixelFormats.size();i++)
+	for(int i=0;i<(int)pixelFormats.size();i++)
 	{
-		if(pixelFormats.at(i)==this->curPixelFormat)
+		if(pixelFormats.at(i)==curPixelFormat)
 			return true;
 	}
 
@@ -96,6 +97,10 @@ Node::getName()
 	return this->name.c_str();
 }
 
+void 
+Node::init()
+{
+}
 
 void 
 Node::start()

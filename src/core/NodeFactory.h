@@ -34,8 +34,6 @@
 #define _ABSTRACTNODEFACTORY_H
 
 #include "openVideo.h"
-#include "core/Node.h"
-
 
 /**
 *@ingroup core
@@ -44,6 +42,8 @@
 *	
 */
 namespace openvideo {
+class Node;
+
 class OPENVIDEO_API  NodeFactory
 {
 public:
@@ -55,13 +55,13 @@ public:
 	/**
 	*	The function to construct a Node.
 	*/
-	virtual Node* createNode()=NULL;
+	virtual openvideo::Node* createNode()=0;
 	
 	/**
 	*	Returns the node name. 
 	*	With this function a factory can be 'asked' which type of nodes it can 'produce'.
 	*/
-	virtual const char* getNodeTypeId()=NULL;
+	virtual const char* getNodeTypeId()=0;
 };
 }//namespace openvideo {
 

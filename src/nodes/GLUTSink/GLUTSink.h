@@ -32,23 +32,31 @@
 #ifndef _GLUTSINK_H
 #define _GLUTSINK_H
 #include "openVideo.h"
+#ifdef ENABLE_GLUTSINK
+
+
 #include "core/Node.h"
-#include <ace/Token.h>
-#include <ace/Condition_Thread_Mutex.h>
-#include <ace/Thread_Mutex.h>
-#include <ace/Mutex.h>
+
+
+class  ACE_Thread_Mutex;
+class  ACE_Condition_Thread_Mutex;
+class  ACE_Mutex;
 
 /**
 *@ingroup nodes
 *	GLUTSink implements an OpenVideo node to display a certain video stream. 
 *	It displays the frame buffer of the context element of it's first input node as a 2dtexture which gets updated every time a traversal takes place.
 *	The glut environment runs in it's own thread. it permanently checks in it's idle function if something has changed which forces a redraw of one of the glut windows.
+*
+*	\n
+*   Supported Pixel Formats: \n
+*	@li: R8G8B8
 */
 
 namespace openvideo {
 
 class GLUTSink : 
-	public Node
+	public openvideo::Node
 {
 public:
 	/**
@@ -68,6 +76,11 @@ public:
 	*/
 	virtual void start();
 
+	/**
+	*	Is called once before the (process)traversal starts.
+	*	Init should be used to implement any initializations a specific node needs.
+	*/
+	virtual void init();
 
 	/**
 	*	Sets a flag which is read by glut's idle function, which afterwards calls a 'glutPostRedisplay()'.
@@ -108,7 +121,7 @@ protected:
 	/**
 	*	A token to stop the 'process()' function untill the glut's main windos function has updated the texture.
 	*/
-    ACE_Thread_Mutex updateLock;
+    ACE_Thread_Mutex *updateLock;
 
         /** 
         *       A condition variable which waits for an update to updateLock.
@@ -134,7 +147,7 @@ protected:
 	/**
 	*	static list off all glut sinks currently running. 
 	*/
-    static std::vector<GLUTSink*> glutSinks;
+	static std::vector<openvideo::GLUTSink*> glutSinks;
 	
 	/**
 	*	function which updated the texture with the new video frame.
@@ -152,9 +165,14 @@ protected:
     int width,height,originX,originY;
 
 	/**
-	*	self explaining 
+	*	texture format.
 	*/
-    int format;
+	int format;
+
+	/**
+	*	Internal texture format. defines the number of color components in the texture. valid values = 1,2,3, or 4.
+	*/
+	int internalFormat;
 
     /**
 	*	open gl's texture id
@@ -180,6 +198,6 @@ protected:
 };
 
 }//namespace openvideo {
-
+#endif //#ifdef ENABLE_GLUTSINK
 #endif
 

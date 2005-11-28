@@ -32,10 +32,11 @@
 
 #ifndef _GL_TEXTURE_2D_SinkFACTORY_H
 #define _GL_TEXTURE_2D_SinkFACTORY_H
-
 #include "openVideo.h"
+#ifdef  ENABLE_GL_TEXTURE_2D_SINK
+
 #include "core/NodeFactory.h"
-#include "GL_TEXTURE_2D_Sink.h"
+#include "nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.h"
 
 /**
 *@ingroup nodes
@@ -46,7 +47,7 @@ namespace openvideo {
 
 
 class OPENVIDEO_API  GL_TEXTURE_2D_SinkFactory
-	: public NodeFactory
+	: public openvideo::NodeFactory
 {
 public:
 	/**
@@ -71,4 +72,5 @@ public:
 };
 }
 
+#endif //#include "openVideo.h"
 #endif

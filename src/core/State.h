@@ -32,10 +32,11 @@
 
 #ifndef _STATE_H
 #define _STATE_H
+#include "openVideo.h"
 
 #include <map>
 #include <string>
-#include <openVideo.h>
+
 
 /**
 *@ingroup core

@@ -31,58 +31,71 @@
  /* ======================================================================= */
 
 #include "GLUTSink.h"
-
+#include "openVideo.h"
 #ifdef ENABLE_GLUTSINK
 
 #include "core/State.h"
 #include "core/Manager.h"
-#include <ace/Thread.h>
+
 #include <GL/gl.h>
 #include <GL/glut.h>
-#include <GL/glu.h>		   
+#include <GL/glu.h>
+
 #include <ace/OS.h>
+#include <ace/Thread.h>
+#include <ace/Condition_Thread_Mutex.h>
+#include <ace/Thread_Mutex.h>
+#include <ace/Mutex.h>
+
 #include <iostream>
 
 #ifdef WIN32
-#pragma comment(lib,"opengl32.lib")
-#pragma comment(lib,"glu32.lib")
 #pragma comment(lib,"glut32.lib")
 #else //linux
 #endif
+
+using namespace openvideo;
 
 bool GLUTSink::isGlutThread=false;
 std::vector<GLUTSink*> GLUTSink::glutSinks;
 bool GLUTSink::glutRedraw=false;
 ACE_Mutex* GLUTSink::redrawLock=NULL;
 
-using namespace openvideo;
 
 GLUTSink::GLUTSink()
 {
+	state=NULL;
 	originX=originY=0;
 	width=height=0;
 	updateVideo=false;
-	updateLockCond=new ACE_Condition_Thread_Mutex(updateLock);
+	updateLock=new ACE_Thread_Mutex();
+	updateLockCond=new ACE_Condition_Thread_Mutex(*updateLock);
 	if(redrawLock==NULL){
 	    GLUTSink::redrawLock=new ACE_Mutex();
 	}
+	internalFormat=0;
 
-#ifdef WIN32
-	format=GL_BGR_EXT;
-#else
-	format=GL_RGB;
-#endif
 }
 
 void 
 GLUTSink::initPixelFormats()
 {
+	//format_r8g8b8	= 0,
+	//format_b8g8r8	= 1,
+	//format_r8g8b8x8	= 2,
+	//format_b8g8r8x8	= 3,
+	//format_l8		= 5,
 	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8));
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8));
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8X8));
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8X8));
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_L8));
 }
 
 GLUTSink::~GLUTSink()
 {
 	delete updateLockCond;
+	delete updateLock;
 
 	if(GLUTSink::redrawLock){
 		delete GLUTSink::redrawLock;
@@ -95,6 +108,9 @@ void*
 GLUTSink::mainLoop(void *)
 {
     glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE );
+
+	//wait 'till all glutsinks are loaded ='till the process() call happens
+
     for(int i=0;i<(int)GLUTSink::glutSinks.size();i++)
     {
 		GLUTSink *glutSink=GLUTSink::glutSinks[i];
@@ -123,8 +139,9 @@ GLUTSink::mainLoop(void *)
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glTexImage2D(GL_TEXTURE_2D, 0, 3, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
-				glutSink->format, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, glutSink->internalFormat, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
+					glutSink->format, GL_UNSIGNED_BYTE, data);
+
 		glDisable(GL_TEXTURE_2D);
 		free(data);
 		//////////////////////////////////////////////
@@ -134,69 +151,144 @@ GLUTSink::mainLoop(void *)
     return 0;
 }
 
-void
-GLUTSink::start()
+void 
+GLUTSink::init()
 {
-    printf("OpenVideo: start GLUTSink '%s' \n",name.c_str());
-    //state this sink lives in
+   printf("OpenVideo: init GLUTSink '%s' \n",name.c_str());
+	//glteximage2d supported formats
+	//glteximage2d supported formats
+	///original gl spec. 
+	//gl_color_index 	each element is a single value, a color index. it is converted to fixed point (with an unspecified number of 0 bits to the right of the binary point), shifted left or right depending on the value and sign of gl_index_shift, and added to gl_index_offset (see glpixeltransfer). the resulting index is converted to a set of color components using the gl_pixel_map_i_to_r, gl_pixel_map_i_to_g, gl_pixel_map_i_to_b, and gl_pixel_map_i_to_a tables, and clamped to the range [0,1].
+	//gl_red 	each element is a single red component. it is converted to floating point and assembled into an rgba element by attaching 0.0 for green and blue, and 1.0 for alpha. each component is then multiplied by the signed scale factor gl_c_scale, added to the signed bias gl_c_bias, and clamped to the range [0,1] (see glpixeltransfer).
+	//gl_green 	each element is a single green component. it is converted to floating point and assembled into an rgba element by attaching 0.0 for red and blue, and 1.0 for alpha. each component is then multiplied by the signed scale factor gl_c_scale, added to the signed bias gl_c_bias, and clamped to the range [0,1] (see glpixeltransfer).
+	//gl_blue 	each element is a single blue component. it is converted to floating point and assembled into an rgba element by attaching 0.0 for red and green, and 1.0 for alpha. each component is then multiplied by the signed scale factor gl_c_scale, added to the signed bias gl_c_bias, and clamped to the range [0,1] (see glpixeltransfer).
+	//gl_alpha 	each element is a single red component. it is converted to floating point and assembled into an rgba element by attaching 0.0 for red, green, and blue. each component is then multiplied by the signed scale factor gl_c_scale, added to the signed bias gl_c_bias, and clamped to the range [0,1] (see glpixeltransfer).
+	//gl_rgb 	each element is an rgb triple. it is converted to floating point and assembled into an rgba element by attaching 1.0 for alpha. each component is then multiplied by the signed scale factor gl_c_scale, added to the signed bias gl_c_bias, and clamped to the range [0,1] (see glpixeltransfer).
+	//gl_rgba 	each element is a complete rgba element. it is converted to floating point. each component is then multiplied by the signed scale factor gl_c_scale, added to the signed bias gl_c_bias, and clamped to the range [0,1] (see glpixeltransfer).
+	//gl_luminance 	each element is a single luminance value. it is converted to floating point, and then assembled into an rgba element by replicating the luminance value three times for red, green, and blue, and attaching 1.0 for alpha. each component is then multiplied by the signed scale factor gl_c_scale, added to the signed bias gl_c_bias, and clamped to the range [0,1] (see glpixeltransfer).
+	//gl_luminance_alpha 	each element is a luminance/alpha pair. it is converted to floating point, and then assembled into an rgba element by replicating the luminance value three times for red, green, and blue. each component is then multiplied by the signed scale factor gl_c_scale, added to the signed bias gl_c_bias, and clamped to the range [0,1] (see glpixeltransfer).
+
+	//windows extension
+	//gl_bgr_ext 	each pixel is a group of three components in this order: blue, green, red. gl_bgr_ext provides a format that matches the memory layout of windows device-independent bitmaps (dibs). thus your applications can use the same data with win32 function calls and opengl pixel function calls.
+	//gl_bgra_ext 	each pixel is a group of four components in this order: blue, green, red, alpha. gl_bgra_ext provides a format that matches the memory layout of windows device-independent bitmaps (dibs). thus your applications can use the same data with win32 function calls and opengl pixel function calls.
+
+	//
+	//enum pixel_format {
+	//format_r8g8b8	= 0,
+	//format_b8g8r8	= 1,
+	//format_r8g8b8x8	= 2,
+	//format_b8g8r8x8	= 3,
+	//format_r5g6b5	= 4,
+	//format_l8		= 5,
+
+	//format_unknown	= 6
+	//};
+	
+	// map ov to gl pixel format and set gl_texture_2d_sink's format
+	switch(curPixelFormat)
+	{
+		case FORMAT_R8G8B8:
+			format=GL_RGB;
+			internalFormat=3;
+			break;
+
+		case FORMAT_B8G8R8:
+			format=GL_BGR_EXT;
+			internalFormat=3;
+			break;
+		
+		case FORMAT_R8G8B8X8:
+			format=GL_RGBA;
+			internalFormat=4;
+			break;
+
+		case FORMAT_B8G8R8X8:
+			format=GL_BGRA_EXT;
+			internalFormat=4;
+			break;
+
+
+//		case FORMAT_R5G6B5:
+//			format=;
+//			internalFormat=;
+//			break;
+
+		case FORMAT_L8:
+			format=GL_LUMINANCE;
+			internalFormat=GL_LUMINANCE8;
+			break;
+
+		default:
+			printf("GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
+				(PixelFormat::FormatToString(curPixelFormat)).c_str());
+			exit(-1);
+
+    }
+	//get the first state 
+	
+	//state this sink lives in
+   	if(inputs.size()<=0)
+		return;
     state=this->inputs[0]->getState();
     if(state)
     {
-	this->width=state->width;
-	this->height=state->height;
-	if(state->format!=0)
-	    this->format=state->format;
-    }
-    flip_h = false; 
-    flip_v = true;
-    
-    float u_rt = (float)width / TEXTURE_WIDTH;
-    float v_rt = (float)height / TEXTURE_HEIGHT;
-    
-    t_u0 = (flip_h ? u_rt : 0   );
-    t_u1 = (flip_h ?    0 : u_rt);
-    t_v0 = (flip_v ? v_rt : 0   );
-    t_v1 = (flip_v ?    0 : v_rt);
-    //
-    GLUTSink::glutSinks.push_back(this);
-	
+		this->width=state->width;
+		this->height=state->height;
+
+		flip_h = false; 
+		flip_v = true;
+	    
+		float u_rt = (float)width / TEXTURE_WIDTH;
+		float v_rt = (float)height / TEXTURE_HEIGHT;
+	    
+		t_u0 = (flip_h ? u_rt : 0   );
+		t_u1 = (flip_h ?    0 : u_rt);
+		t_v0 = (flip_v ? v_rt : 0   );
+		t_v1 = (flip_v ?    0 : v_rt);
+		//
+		GLUTSink::glutSinks.push_back(this);
+	}// if(state)
+}
+
+void
+GLUTSink::start()
+{
 	if(!GLUTSink::isGlutThread){
 		//start glut in a new thread
 		GLUTSink::isGlutThread=true;
 		ACE_hthread_t* threadHandle = new ACE_hthread_t();
 		if(ACE_Thread::spawn((ACE_THR_FUNC)GLUTSink::mainLoop,
-			     0, 	
-			     THR_NEW_LWP|THR_JOINABLE, 	
-			     0, 	
-			     threadHandle,
-			     0, 	
-			     0, 	
-			     0
-	       )==-1)
+				0, 	
+				THR_NEW_LWP|THR_JOINABLE, 	
+				0, 	
+				threadHandle,
+				0, 	
+				0, 	
+				0
+		)==-1)
 		{ 
-		    printf("Error in spawning thread\n"); 
+			printf("Error in spawning thread\n"); 
 		}
-		return ;
-    }
+	}
 }
 
 void
 GLUTSink::process()
 {
-  if(state && state->frame){
-  
-    updateLock.acquire();
+  if(state && state->frame)
+  {
+    updateLock->acquire();
     updateVideo=true; //set flag to indicate a redraw
-    updateLock.release();
+
     
     GLUTSink::redrawLock->acquire();
     GLUTSink::glutRedraw=true;//idle func calls glutPostRedisplay();
     GLUTSink::redrawLock->release();
-    
-    updateLock.acquire();
+   
+
     updateLockCond->wait(); // Wait for an update to 
-    updateLock.release(); 
-  }  
+    updateLock->release(); 
+  } 
 }
 
 
@@ -208,9 +300,9 @@ GLUTSink::updateTexture()
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, video_texture_id);
 	
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width,
-		    height, format, GL_UNSIGNED_BYTE,
-		    (void*)state->frame);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
+					width,height, this->format, GL_UNSIGNED_BYTE,
+					(void*)state->frame);
     glDisable(GL_TEXTURE_2D);
 	
 }
@@ -275,7 +367,7 @@ GLUTSink::mainDisplayFunc ()
     int size=(int)GLUTSink::glutSinks.size();
     for (int i=0;i<size;i++)
     {	
-		glutSinks[i]->updateLock.acquire();
+		glutSinks[i]->updateLock->acquire();
 		if(glutSinks[i]->updateVideo)
 		{	
 			glutSinks[i]->updateVideo=false;
@@ -284,7 +376,7 @@ GLUTSink::mainDisplayFunc ()
 			glutSinks[i]->redraw();
 		}
 		glutSinks[i]->updateLockCond->broadcast();
-		glutSinks[i]->updateLock.release();
+		glutSinks[i]->updateLock->release();
     }
 	
     glutSwapBuffers();
