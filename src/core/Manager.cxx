@@ -73,6 +73,7 @@ Manager::Manager()
 	setInitTravFunction(&Manager::initTopologicalSortedTraversal,&(nodes));
 	setTravFunction(&Manager::topologicalSortedTraversal,&(nodes));
 	updateRate=30;
+	glContext=NULL;
 }
 
 // Destructor method.
@@ -330,37 +331,37 @@ Manager::getNode(std::string nodeName)
     return NULL;
 }
 
-void 
-Manager::shareGLContext(void* shareList)
-{
 #ifdef WIN32
-	wglShareLists((HGLRC)glContext, (HGLRC) shareList);
-#else
-#endif
-}
+void 
+Manager::createShareActivateGLContext(HDC hdcShared, HGLRC glContextShared)
+{
+	if(glContext)
+		return;
 
-void 
-Manager::activateGLContext()
-{
-#ifdef WIN32
-	wglMakeCurrent(hdc,glContext);
-#else
-#endif
-}
-
-void 
-Manager::createGLContext(void *dc)
-{
-#ifdef WIN32
-    hdc=(HDC)dc;
+	printf("Manager::createShareActivateGLContext(HDC hdcShared, HGLRC glContextShared)\n");
     PIXELFORMATDESCRIPTOR pfd;
-    DescribePixelFormat(hdc, 1, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
-    ChoosePixelFormat(hdc, &pfd );
-    glContext=wglCreateContext(hdc);	
-#else //linux 
-    
-#endif
+    DescribePixelFormat(hdcShared, 1, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
+    ChoosePixelFormat(hdcShared, &pfd );
+   
+	glContext=wglCreateContext(hdcShared);	
+	if(!glContext){
+		printf("OV: failed to create opengl context \n");
+		return ;
+	}
+	
+	if(!wglShareLists(glContext, glContextShared)){
+		printf("OV: failed to share opengl context \n");
+		return ;
+	}
+
+	if(!wglMakeCurrent(hdcShared,glContext)){
+		printf("OV: failed to activate opengl context \n");
+		return ;
+	}
 }
+#else
+#endif
+
 
 void 
 Manager::initNodeFactories()

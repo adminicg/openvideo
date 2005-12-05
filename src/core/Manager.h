@@ -153,37 +153,27 @@ class OPENVIDEO_API Manager
 	*	Sets the function and data to be called before the actual traversal begins.
 	*/
     void setInitTravFunction(void (*initTravFunction)(void*),void* data);
-    
-	/**
-	*	Create an opengl context by a given device context.
-	*/
-    void createGLContext(void *dc);
 	
-	/**
-	*	Share the current gl context with 'shareList'. Need if OpenVideo wants to share gl specific data with other programms. 
-	*	Notice: This needs a 'createGLContext' to be called before a context can be shared.
-	*/
-    void shareGLContext(void* shareList);
-	
-	/**
-	*	Activates the current gl context
-	*/
-	void activateGLContext();
-
-	/**
-	*	A pointer to the current device context.
-	*/
 #ifdef WIN32
-	HDC hdc;
-#else
-#endif
 	/**
 	*	The current gl redering context; created by "void createGLContext(void *dc)"
 	*/
-#ifdef WIN32	
-    HGLRC glContext;
+	HGLRC glContext;
+	
+	/**
+	*	A pointer to the current device context.
+	*/
+	HDC hdc;
+	/**
+	*	Create an opengl context by a given device context.
+	*	Share the current gl context with 'shareList'. Need if OpenVideo wants to share gl specific data with other programms. 
+	*	Activates the current gl context
+	*/
+	void createShareActivateGLContext(HDC hdcShared, HGLRC glContextShared);
 #else
 #endif
+
+
 
  protected:
 	/** 
