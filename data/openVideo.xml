@@ -9,11 +9,12 @@
 	width="320"
 	height="240"
 	frameRate="15"
-	scale="0"> 
+	scale="0"
+  pixelformat="R8G8B8"> 
 
-<GLUTSink name="glsink1" /> 
-<!- <GLUTSink name="glsink3"/--> 
-<GL_TEXTURE_2D_Sink name="stbSink"/>
+<GLUTSink name="glsink1" pixelformat="R8G8B8"/> 
+<!- <GLUTSink name="glsink3" pixelformat="R8G8B8"/--> 
+<GL_TEXTURE_2D_Sink name="stbSink" pixelformat="R8G8B8"/>
 </VideoWrapperSrc>
 
 

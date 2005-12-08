@@ -22,7 +22,7 @@ VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
-top_builddir = ..
+top_builddir = ../..
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 INSTALL = @INSTALL@
 install_sh_DATA = $(install_sh) -c -m 644
@@ -40,7 +40,7 @@ build_triplet = @build@
 host_triplet = @host@
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/Makefile.common
-subdir = lib
+subdir = lib/linux
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -57,22 +57,15 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libopenvideo_la_DEPENDENCIES =
-am_libopenvideo_la_OBJECTS = Manager.lo Context.lo NodeFactory.lo \
-	Node.lo Timer.lo TimerHandle.lo TestSrcFactory.lo TestSrc.lo \
-	GLUTSinkFactory.lo GLUTSink.lo GL_TEXTURE_2D_SinkFactory.lo \
-	GL_TEXTURE_2D_Sink.lo
+am_libopenvideo_la_OBJECTS = Manager.lo State.lo NodeFactory.lo \
+	Node.lo Timer.lo TimerHandler.lo PixelFormat.lo \
+	TestSrcFactory.lo TestSrc.lo GLUTSinkFactory.lo GLUTSink.lo \
+	GL_TEXTURE_2D_SinkFactory.lo GL_TEXTURE_2D_Sink.lo V4LSrc.lo \
+	V4LSrcFactory.lo v4l.lo
 libopenvideo_la_OBJECTS = $(am_libopenvideo_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
-LTCXXCOMPILE = $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) \
-	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(AM_CXXFLAGS) $(CXXFLAGS)
-CXXLD = $(CXX)
-CXXLINK = $(LIBTOOL) --mode=link --tag=CXX $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile --tag=CC $(CC) $(DEFS) \
@@ -81,6 +74,14 @@ LTCOMPILE = $(LIBTOOL) --mode=compile --tag=CC $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link --tag=CC $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CXXFLAGS) $(CXXFLAGS)
+CXXLD = $(CXX)
+CXXLINK = $(LIBTOOL) --mode=link --tag=CXX $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libopenvideo_la_SOURCES)
 DIST_SOURCES = $(libopenvideo_la_SOURCES)
 ETAGS = etags
@@ -189,16 +190,18 @@ libopenvideo_la_SOURCES = $(top_srcdir)/src/openVideo.h \
 			$(top_srcdir)/src/configOV.h \
 			$(top_srcdir)/src/core/Manager.h \
 			$(top_srcdir)/src/core/Manager.cxx \
-			$(top_srcdir)/src/core/Context.h \
-			$(top_srcdir)/src/core/Context.cxx \
+			$(top_srcdir)/src/core/State.h \
+			$(top_srcdir)/src/core/State.cxx \
 			$(top_srcdir)/src/core/NodeFactory.h \
 			$(top_srcdir)/src/core/NodeFactory.cxx \
 			$(top_srcdir)/src/core/Node.h  \
 			$(top_srcdir)/src/core/Node.cxx \
 			$(top_srcdir)/src/core/Timer.h \
 			$(top_srcdir)/src/core/Timer.cxx \
-			$(top_srcdir)/src/core/TimerHandle.h \
-			$(top_srcdir)/src/core/TimerHandle.cxx \
+			$(top_srcdir)/src/core/TimerHandler.h \
+			$(top_srcdir)/src/core/TimerHandler.cxx \
+			$(top_srcdir)/src/core/PixelFormat.h \
+			$(top_srcdir)/src/core/PixelFormat.cxx \
 			$(top_srcdir)/src/nodes/TestSrc/TestSrcFactory.h \
 			$(top_srcdir)/src/nodes/TestSrc/TestSrcFactory.cxx \
 			$(top_srcdir)/src/nodes/TestSrc/TestSrc.h \
@@ -210,14 +213,21 @@ libopenvideo_la_SOURCES = $(top_srcdir)/src/openVideo.h \
 			$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_SinkFactory.h \
 			$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_SinkFactory.cxx \
 			$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.h \
-			$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.cxx
+			$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.cxx \
+			$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx \
+			$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.h \
+			$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx \
+			$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.h \
+			$(top_srcdir)/src/nodes/V4LSrc/v4l.h \
+			$(top_srcdir)/src/nodes/V4LSrc/v4l.c \
+			$(top_srcdir)/src/nodes/V4LSrc/types.h
 
-libopenvideo_la_LDFLAGS = -L/usr/local/lib 
+libopenvideo_la_LDFLAGS = -L/usr/local/lib -L$(TINYXMLROOT)
 libopenvideo_la_LIBADD = -ltinyxml -lACE -lGL -lGLU -lglut
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cxx .lo .o .obj
+.SUFFIXES: .c .cxx .lo .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(top_srcdir)/Makefile.common $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -227,9 +237,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(top_srcdir)/Makefile.common $(am
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  lib/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  lib/linux/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  lib/Makefile
+	  $(AUTOMAKE) --gnu  lib/linux/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -283,7 +293,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Context.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GLUTSink.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GLUTSinkFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GL_TEXTURE_2D_Sink.Plo@am__quote@
@@ -291,10 +300,43 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Node.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NodeFactory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PixelFormat.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/State.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestSrc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestSrcFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Timer.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimerHandle.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimerHandler.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/V4LSrc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/V4LSrcFactory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/v4l.Plo@am__quote@
+
+.c.o:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+
+.c.obj:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+
+.c.lo:
+@am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+v4l.lo: $(top_srcdir)/src/nodes/V4LSrc/v4l.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile --tag=CC $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT v4l.lo -MD -MP -MF "$(DEPDIR)/v4l.Tpo" -c -o v4l.lo `test -f '$(top_srcdir)/src/nodes/V4LSrc/v4l.c' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/V4LSrc/v4l.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/v4l.Tpo" "$(DEPDIR)/v4l.Plo"; else rm -f "$(DEPDIR)/v4l.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(top_srcdir)/src/nodes/V4LSrc/v4l.c' object='v4l.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile --tag=CC $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o v4l.lo `test -f '$(top_srcdir)/src/nodes/V4LSrc/v4l.c' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/V4LSrc/v4l.c
 
 .cxx.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -324,12 +366,12 @@ Manager.lo: $(top_srcdir)/src/core/Manager.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Manager.lo `test -f '$(top_srcdir)/src/core/Manager.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/core/Manager.cxx
 
-Context.lo: $(top_srcdir)/src/core/Context.cxx
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Context.lo -MD -MP -MF "$(DEPDIR)/Context.Tpo" -c -o Context.lo `test -f '$(top_srcdir)/src/core/Context.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/core/Context.cxx; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/Context.Tpo" "$(DEPDIR)/Context.Plo"; else rm -f "$(DEPDIR)/Context.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/core/Context.cxx' object='Context.lo' libtool=yes @AMDEPBACKSLASH@
+State.lo: $(top_srcdir)/src/core/State.cxx
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT State.lo -MD -MP -MF "$(DEPDIR)/State.Tpo" -c -o State.lo `test -f '$(top_srcdir)/src/core/State.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/core/State.cxx; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/State.Tpo" "$(DEPDIR)/State.Plo"; else rm -f "$(DEPDIR)/State.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/core/State.cxx' object='State.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Context.lo `test -f '$(top_srcdir)/src/core/Context.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/core/Context.cxx
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o State.lo `test -f '$(top_srcdir)/src/core/State.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/core/State.cxx
 
 NodeFactory.lo: $(top_srcdir)/src/core/NodeFactory.cxx
 @am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT NodeFactory.lo -MD -MP -MF "$(DEPDIR)/NodeFactory.Tpo" -c -o NodeFactory.lo `test -f '$(top_srcdir)/src/core/NodeFactory.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/core/NodeFactory.cxx; \
@@ -352,12 +394,19 @@ Timer.lo: $(top_srcdir)/src/core/Timer.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Timer.lo `test -f '$(top_srcdir)/src/core/Timer.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/core/Timer.cxx
 
-TimerHandle.lo: $(top_srcdir)/src/core/TimerHandle.cxx
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT TimerHandle.lo -MD -MP -MF "$(DEPDIR)/TimerHandle.Tpo" -c -o TimerHandle.lo `test -f '$(top_srcdir)/src/core/TimerHandle.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/core/TimerHandle.cxx; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/TimerHandle.Tpo" "$(DEPDIR)/TimerHandle.Plo"; else rm -f "$(DEPDIR)/TimerHandle.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/core/TimerHandle.cxx' object='TimerHandle.lo' libtool=yes @AMDEPBACKSLASH@
+TimerHandler.lo: $(top_srcdir)/src/core/TimerHandler.cxx
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT TimerHandler.lo -MD -MP -MF "$(DEPDIR)/TimerHandler.Tpo" -c -o TimerHandler.lo `test -f '$(top_srcdir)/src/core/TimerHandler.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/core/TimerHandler.cxx; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/TimerHandler.Tpo" "$(DEPDIR)/TimerHandler.Plo"; else rm -f "$(DEPDIR)/TimerHandler.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/core/TimerHandler.cxx' object='TimerHandler.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TimerHandle.lo `test -f '$(top_srcdir)/src/core/TimerHandle.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/core/TimerHandle.cxx
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TimerHandler.lo `test -f '$(top_srcdir)/src/core/TimerHandler.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/core/TimerHandler.cxx
+
+PixelFormat.lo: $(top_srcdir)/src/core/PixelFormat.cxx
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PixelFormat.lo -MD -MP -MF "$(DEPDIR)/PixelFormat.Tpo" -c -o PixelFormat.lo `test -f '$(top_srcdir)/src/core/PixelFormat.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/core/PixelFormat.cxx; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/PixelFormat.Tpo" "$(DEPDIR)/PixelFormat.Plo"; else rm -f "$(DEPDIR)/PixelFormat.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/core/PixelFormat.cxx' object='PixelFormat.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PixelFormat.lo `test -f '$(top_srcdir)/src/core/PixelFormat.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/core/PixelFormat.cxx
 
 TestSrcFactory.lo: $(top_srcdir)/src/nodes/TestSrc/TestSrcFactory.cxx
 @am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT TestSrcFactory.lo -MD -MP -MF "$(DEPDIR)/TestSrcFactory.Tpo" -c -o TestSrcFactory.lo `test -f '$(top_srcdir)/src/nodes/TestSrc/TestSrcFactory.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/TestSrc/TestSrcFactory.cxx; \
@@ -400,6 +449,20 @@ GL_TEXTURE_2D_Sink.lo: $(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.cxx' object='GL_TEXTURE_2D_Sink.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GL_TEXTURE_2D_Sink.lo `test -f '$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.cxx
+
+V4LSrc.lo: $(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT V4LSrc.lo -MD -MP -MF "$(DEPDIR)/V4LSrc.Tpo" -c -o V4LSrc.lo `test -f '$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/V4LSrc.Tpo" "$(DEPDIR)/V4LSrc.Plo"; else rm -f "$(DEPDIR)/V4LSrc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx' object='V4LSrc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o V4LSrc.lo `test -f '$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx
+
+V4LSrcFactory.lo: $(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT V4LSrcFactory.lo -MD -MP -MF "$(DEPDIR)/V4LSrcFactory.Tpo" -c -o V4LSrcFactory.lo `test -f '$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/V4LSrcFactory.Tpo" "$(DEPDIR)/V4LSrcFactory.Plo"; else rm -f "$(DEPDIR)/V4LSrcFactory.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx' object='V4LSrcFactory.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o V4LSrcFactory.lo `test -f '$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -460,7 +523,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/..
+	$(mkdir_p) $(distdir)/../..
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

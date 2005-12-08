@@ -5,7 +5,7 @@
  */
 #include <stdio.h>
 #include "core/Manager.h"
-
+#include <string>
 
 using namespace openvideo;
 
@@ -25,7 +25,8 @@ int main(int argc, char **argv)
 	
 
     Manager manager;
-    manager.parseConfiguration( argv[1] );
+    std::string ovConfig=argv[1];
+    manager.parseConfiguration(ovConfig);
     printf("Parsing complete.\n");
     
     manager.run();

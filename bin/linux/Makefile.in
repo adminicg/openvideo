@@ -22,7 +22,7 @@ VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
-top_builddir = ..
+top_builddir = ../..
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 INSTALL = @INSTALL@
 install_sh_DATA = $(install_sh) -c -m 644
@@ -41,7 +41,7 @@ host_triplet = @host@
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/Makefile.common
 bin_PROGRAMS = openvideo$(EXEEXT)
-subdir = bin
+subdir = bin/linux
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -53,7 +53,7 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_openvideo_OBJECTS = main.$(OBJEXT)
 openvideo_OBJECTS = $(am_openvideo_OBJECTS)
-openvideo_DEPENDENCIES = $(top_srcdir)/lib/libopenvideo.la
+openvideo_DEPENDENCIES = $(top_srcdir)/lib/linux/libopenvideo.la
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -168,10 +168,8 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 TINYXMLROOT = /home/denis/tinyxml
 INCLUDES = -I$(top_srcdir)/src 
-openvideo_SOURCES = $(top_srcdir)/standalone/main.cxx \
-			$(top_srcdir)/bin/openVideo.xml
-
-openvideo_LDADD = $(top_srcdir)/lib/libopenvideo.la
+openvideo_SOURCES = $(top_srcdir)/standalone/main.cxx 
+openvideo_LDADD = $(top_srcdir)/lib/linux/libopenvideo.la
 all: all-am
 
 .SUFFIXES:
@@ -185,9 +183,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(top_srcdir)/Makefile.common $(am
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  bin/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  bin/linux/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  bin/Makefile
+	  $(AUTOMAKE) --gnu  bin/linux/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -339,7 +337,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/..
+	$(mkdir_p) $(distdir)/../..
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

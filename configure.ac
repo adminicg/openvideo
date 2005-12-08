@@ -4,4 +4,4 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
-AC_OUTPUT(Makefile lib/Makefile bin/Makefile)
+AC_OUTPUT(Makefile lib/linux/Makefile bin/linux/Makefile)

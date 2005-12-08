@@ -73,7 +73,9 @@ Manager::Manager()
 	setInitTravFunction(&Manager::initTopologicalSortedTraversal,&(nodes));
 	setTravFunction(&Manager::topologicalSortedTraversal,&(nodes));
 	updateRate=30;
+#ifdef WIN32
 	glContext=NULL;
+#endif
 }
 
 // Destructor method.

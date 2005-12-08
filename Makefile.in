@@ -168,7 +168,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-SUBDIRS = lib bin
+SUBDIRS = lib/linux bin/linux
 noinst_HEADERS = bootstrap
 all: all-recursive
 
