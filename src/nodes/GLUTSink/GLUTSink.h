@@ -119,12 +119,12 @@ protected:
     static bool isGlutThread;
 
 	/**
-	*	A token to stop the 'process()' function untill the glut's main windos function has updated the texture.
+	*	Mutex used in updateLockCond .
 	*/
     ACE_Thread_Mutex *updateLock;
 
-        /** 
-        *       A condition variable which waits for an update to updateLock.
+    /** 
+    *       A condition variable which waits for an update to updateLock.
 	*/
     ACE_Condition_Thread_Mutex *updateLockCond;
 

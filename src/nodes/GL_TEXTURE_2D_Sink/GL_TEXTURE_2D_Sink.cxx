@@ -161,13 +161,13 @@ GL_TEXTURE_2D_Sink::init()
 			break;
 
 		default:
-			printf("GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
+			printf("OpenVideo: GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
 				(PixelFormat::FormatToString(curPixelFormat)).c_str());
 			exit(-1);
 
     }
 	//
-    printf("OVpenVideo: start GL_TEXTURE_2D_Sink '%s' \n",name.c_str());
+    printf("OpenVideo: start GL_TEXTURE_2D_Sink '%s' \n",name.c_str());
     state=this->inputs[0]->getState();
     if(state)
     {
