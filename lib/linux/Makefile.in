@@ -14,6 +14,7 @@
 
 @SET_MAKE@
 
+
 SOURCES = $(libopenvideo_la_SOURCES)
 
 srcdir = @srcdir@
@@ -38,8 +39,11 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(top_srcdir)/Makefile.common
+DIST_COMMON = $(core_include_HEADERS) \
+	$(gl_TEXTURE_2D_Sink_include_HEADERS) \
+	$(glutsink_include_HEADERS) $(ov_include_HEADERS) \
+	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	$(testSrc_include_HEADERS) $(top_srcdir)/Makefile.common
 subdir = lib/linux
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -53,27 +57,21 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(libdir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(core_includedir)" \
+	"$(DESTDIR)$(gl_TEXTURE_2D_Sink_includedir)" \
+	"$(DESTDIR)$(glutsink_includedir)" \
+	"$(DESTDIR)$(ov_includedir)" "$(DESTDIR)$(testSrc_includedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libopenvideo_la_DEPENDENCIES =
 am_libopenvideo_la_OBJECTS = Manager.lo State.lo NodeFactory.lo \
 	Node.lo Timer.lo TimerHandler.lo PixelFormat.lo \
 	TestSrcFactory.lo TestSrc.lo GLUTSinkFactory.lo GLUTSink.lo \
-	GL_TEXTURE_2D_SinkFactory.lo GL_TEXTURE_2D_Sink.lo V4LSrc.lo \
-	V4LSrcFactory.lo v4l.lo
+	GL_TEXTURE_2D_SinkFactory.lo GL_TEXTURE_2D_Sink.lo
 libopenvideo_la_OBJECTS = $(am_libopenvideo_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --mode=compile --tag=CC $(CC) $(DEFS) \
-	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(LIBTOOL) --mode=link --tag=CC $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) \
@@ -84,6 +82,15 @@ CXXLINK = $(LIBTOOL) --mode=link --tag=CXX $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libopenvideo_la_SOURCES)
 DIST_SOURCES = $(libopenvideo_la_SOURCES)
+core_includeHEADERS_INSTALL = $(INSTALL_HEADER)
+gl_TEXTURE_2D_Sink_includeHEADERS_INSTALL = $(INSTALL_HEADER)
+glutsink_includeHEADERS_INSTALL = $(INSTALL_HEADER)
+ov_includeHEADERS_INSTALL = $(INSTALL_HEADER)
+testSrc_includeHEADERS_INSTALL = $(INSTALL_HEADER)
+HEADERS = $(core_include_HEADERS) \
+	$(gl_TEXTURE_2D_Sink_include_HEADERS) \
+	$(glutsink_include_HEADERS) $(ov_include_HEADERS) \
+	$(testSrc_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -186,48 +193,56 @@ target_alias = @target_alias@
 TINYXMLROOT = /home/denis/tinyxml
 lib_LTLIBRARIES = libopenvideo.la
 INCLUDES = -I$(top_srcdir)/src  -I$(TINYXMLROOT) 
-libopenvideo_la_SOURCES = $(top_srcdir)/src/openVideo.h \
-			$(top_srcdir)/src/configOV.h \
-			$(top_srcdir)/src/core/Manager.h \
-			$(top_srcdir)/src/core/Manager.cxx \
-			$(top_srcdir)/src/core/State.h \
+ov_includedir = ${prefix}/include/openvideo
+ov_include_HEADERS = \
+	$(top_srcdir)/src/openVideo.h \
+	$(top_srcdir)/src/configOV.h
+
+core_includedir = ${prefix}/include/openvideo/core
+core_include_HEADERS = \
+	$(top_srcdir)/src/core/Manager.h \
+	$(top_srcdir)/src/core/State.h \
+	$(top_srcdir)/src/core/NodeFactory.h \
+	$(top_srcdir)/src/core/Node.h  \
+	$(top_srcdir)/src/core/Timer.h \
+	$(top_srcdir)/src/core/TimerHandler.h \
+	$(top_srcdir)/src/core/PixelFormat.h 
+
+testSrc_includedir = ${prefix}/include/openvideo/nodes/TestSrc
+testSrc_include_HEADERS = \
+	$(top_srcdir)/src/nodes/TestSrc/TestSrcFactory.h \
+	$(top_srcdir)/src/nodes/TestSrc/TestSrc.h
+
+glutsink_includedir = ${prefix}/include/openvideo/nodes/GLUTSink
+glutsink_include_HEADERS = \
+	$(top_srcdir)/src/nodes/GLUTSink/GLUTSinkFactory.h \
+	$(top_srcdir)/src/nodes/GLUTSink/GLUTSink.h
+
+gl_TEXTURE_2D_Sink_includedir = ${prefix}/include/openvideo/nodes/GL_TEXTURE_2D_Sink
+gl_TEXTURE_2D_Sink_include_HEADERS = \
+	$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_SinkFactory.h \
+	$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.h 
+
+libopenvideo_la_SOURCES = $(top_srcdir)/src/core/Manager.cxx \
 			$(top_srcdir)/src/core/State.cxx \
-			$(top_srcdir)/src/core/NodeFactory.h \
 			$(top_srcdir)/src/core/NodeFactory.cxx \
-			$(top_srcdir)/src/core/Node.h  \
 			$(top_srcdir)/src/core/Node.cxx \
-			$(top_srcdir)/src/core/Timer.h \
 			$(top_srcdir)/src/core/Timer.cxx \
-			$(top_srcdir)/src/core/TimerHandler.h \
 			$(top_srcdir)/src/core/TimerHandler.cxx \
-			$(top_srcdir)/src/core/PixelFormat.h \
 			$(top_srcdir)/src/core/PixelFormat.cxx \
-			$(top_srcdir)/src/nodes/TestSrc/TestSrcFactory.h \
 			$(top_srcdir)/src/nodes/TestSrc/TestSrcFactory.cxx \
-			$(top_srcdir)/src/nodes/TestSrc/TestSrc.h \
 			$(top_srcdir)/src/nodes/TestSrc/TestSrc.cxx \
-			$(top_srcdir)/src/nodes/GLUTSink/GLUTSinkFactory.h \
 			$(top_srcdir)/src/nodes/GLUTSink/GLUTSinkFactory.cxx \
-			$(top_srcdir)/src/nodes/GLUTSink/GLUTSink.h \
 			$(top_srcdir)/src/nodes/GLUTSink/GLUTSink.cxx \
-			$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_SinkFactory.h \
 			$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_SinkFactory.cxx \
-			$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.h \
-			$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.cxx \
-			$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx \
-			$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.h \
-			$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx \
-			$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.h \
-			$(top_srcdir)/src/nodes/V4LSrc/v4l.h \
-			$(top_srcdir)/src/nodes/V4LSrc/v4l.c \
-			$(top_srcdir)/src/nodes/V4LSrc/types.h
+			$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.cxx  
 
 libopenvideo_la_LDFLAGS = -L/usr/local/lib -L$(TINYXMLROOT)
 libopenvideo_la_LIBADD = -ltinyxml -lACE -lGL -lGLU -lglut
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .cxx .lo .o .obj
+.SUFFIXES: .cxx .lo .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(top_srcdir)/Makefile.common $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -306,37 +321,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestSrcFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Timer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimerHandler.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/V4LSrc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/V4LSrcFactory.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/v4l.Plo@am__quote@
-
-.c.o:
-@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c $<
-
-.c.obj:
-@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-
-.c.lo:
-@am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-
-v4l.lo: $(top_srcdir)/src/nodes/V4LSrc/v4l.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile --tag=CC $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT v4l.lo -MD -MP -MF "$(DEPDIR)/v4l.Tpo" -c -o v4l.lo `test -f '$(top_srcdir)/src/nodes/V4LSrc/v4l.c' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/V4LSrc/v4l.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/v4l.Tpo" "$(DEPDIR)/v4l.Plo"; else rm -f "$(DEPDIR)/v4l.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(top_srcdir)/src/nodes/V4LSrc/v4l.c' object='v4l.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile --tag=CC $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o v4l.lo `test -f '$(top_srcdir)/src/nodes/V4LSrc/v4l.c' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/V4LSrc/v4l.c
 
 .cxx.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -450,20 +434,6 @@ GL_TEXTURE_2D_Sink.lo: $(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GL_TEXTURE_2D_Sink.lo `test -f '$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.cxx
 
-V4LSrc.lo: $(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT V4LSrc.lo -MD -MP -MF "$(DEPDIR)/V4LSrc.Tpo" -c -o V4LSrc.lo `test -f '$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/V4LSrc.Tpo" "$(DEPDIR)/V4LSrc.Plo"; else rm -f "$(DEPDIR)/V4LSrc.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx' object='V4LSrc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o V4LSrc.lo `test -f '$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/V4LSrc/V4LSrc.cxx
-
-V4LSrcFactory.lo: $(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT V4LSrcFactory.lo -MD -MP -MF "$(DEPDIR)/V4LSrcFactory.Tpo" -c -o V4LSrcFactory.lo `test -f '$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/V4LSrcFactory.Tpo" "$(DEPDIR)/V4LSrcFactory.Plo"; else rm -f "$(DEPDIR)/V4LSrcFactory.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx' object='V4LSrcFactory.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile --tag=CXX $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o V4LSrcFactory.lo `test -f '$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx' || echo '$(srcdir)/'`$(top_srcdir)/src/nodes/V4LSrc/V4LSrcFactory.cxx
-
 mostlyclean-libtool:
 	-rm -f *.lo
 
@@ -473,6 +443,91 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+install-core_includeHEADERS: $(core_include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(core_includedir)" || $(mkdir_p) "$(DESTDIR)$(core_includedir)"
+	@list='$(core_include_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(core_includeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(core_includedir)/$$f'"; \
+	  $(core_includeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(core_includedir)/$$f"; \
+	done
+
+uninstall-core_includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(core_include_HEADERS)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(core_includedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(core_includedir)/$$f"; \
+	done
+install-gl_TEXTURE_2D_Sink_includeHEADERS: $(gl_TEXTURE_2D_Sink_include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(gl_TEXTURE_2D_Sink_includedir)" || $(mkdir_p) "$(DESTDIR)$(gl_TEXTURE_2D_Sink_includedir)"
+	@list='$(gl_TEXTURE_2D_Sink_include_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(gl_TEXTURE_2D_Sink_includeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(gl_TEXTURE_2D_Sink_includedir)/$$f'"; \
+	  $(gl_TEXTURE_2D_Sink_includeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(gl_TEXTURE_2D_Sink_includedir)/$$f"; \
+	done
+
+uninstall-gl_TEXTURE_2D_Sink_includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(gl_TEXTURE_2D_Sink_include_HEADERS)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(gl_TEXTURE_2D_Sink_includedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(gl_TEXTURE_2D_Sink_includedir)/$$f"; \
+	done
+install-glutsink_includeHEADERS: $(glutsink_include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(glutsink_includedir)" || $(mkdir_p) "$(DESTDIR)$(glutsink_includedir)"
+	@list='$(glutsink_include_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(glutsink_includeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(glutsink_includedir)/$$f'"; \
+	  $(glutsink_includeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(glutsink_includedir)/$$f"; \
+	done
+
+uninstall-glutsink_includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(glutsink_include_HEADERS)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(glutsink_includedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(glutsink_includedir)/$$f"; \
+	done
+install-ov_includeHEADERS: $(ov_include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(ov_includedir)" || $(mkdir_p) "$(DESTDIR)$(ov_includedir)"
+	@list='$(ov_include_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(ov_includeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(ov_includedir)/$$f'"; \
+	  $(ov_includeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(ov_includedir)/$$f"; \
+	done
+
+uninstall-ov_includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(ov_include_HEADERS)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(ov_includedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(ov_includedir)/$$f"; \
+	done
+install-testSrc_includeHEADERS: $(testSrc_include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(testSrc_includedir)" || $(mkdir_p) "$(DESTDIR)$(testSrc_includedir)"
+	@list='$(testSrc_include_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(testSrc_includeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(testSrc_includedir)/$$f'"; \
+	  $(testSrc_includeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(testSrc_includedir)/$$f"; \
+	done
+
+uninstall-testSrc_includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(testSrc_include_HEADERS)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(testSrc_includedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(testSrc_includedir)/$$f"; \
+	done
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -523,7 +578,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/../..
+	$(mkdir_p) $(distdir)/../.. $(distdir)/../../src $(distdir)/../../src/core $(distdir)/../../src/nodes/GLUTSink $(distdir)/../../src/nodes/GL_TEXTURE_2D_Sink $(distdir)/../../src/nodes/TestSrc
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -552,9 +607,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(core_includedir)" "$(DESTDIR)$(gl_TEXTURE_2D_Sink_includedir)" "$(DESTDIR)$(glutsink_includedir)" "$(DESTDIR)$(ov_includedir)" "$(DESTDIR)$(testSrc_includedir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -602,7 +657,10 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-core_includeHEADERS \
+	install-gl_TEXTURE_2D_Sink_includeHEADERS \
+	install-glutsink_includeHEADERS install-ov_includeHEADERS \
+	install-testSrc_includeHEADERS
 
 install-exec-am: install-libLTLIBRARIES
 
@@ -630,20 +688,30 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES
+uninstall-am: uninstall-core_includeHEADERS \
+	uninstall-gl_TEXTURE_2D_Sink_includeHEADERS \
+	uninstall-glutsink_includeHEADERS uninstall-info-am \
+	uninstall-libLTLIBRARIES uninstall-ov_includeHEADERS \
+	uninstall-testSrc_includeHEADERS
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
 	clean-libLTLIBRARIES clean-libtool ctags distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-strip installcheck \
+	install install-am install-core_includeHEADERS install-data \
+	install-data-am install-exec install-exec-am \
+	install-gl_TEXTURE_2D_Sink_includeHEADERS \
+	install-glutsink_includeHEADERS install-info install-info-am \
+	install-libLTLIBRARIES install-man install-ov_includeHEADERS \
+	install-strip install-testSrc_includeHEADERS installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-info-am \
-	uninstall-libLTLIBRARIES
+	tags uninstall uninstall-am uninstall-core_includeHEADERS \
+	uninstall-gl_TEXTURE_2D_Sink_includeHEADERS \
+	uninstall-glutsink_includeHEADERS uninstall-info-am \
+	uninstall-libLTLIBRARIES uninstall-ov_includeHEADERS \
+	uninstall-testSrc_includeHEADERS
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
