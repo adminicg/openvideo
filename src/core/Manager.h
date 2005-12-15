@@ -41,7 +41,6 @@
 	#define WIN32_LEAN_AND_MEAN
 	
 	#include "windows.h"
-	#include "wingdi.h"
 #endif
 
 /**@ingroup core
@@ -90,11 +89,7 @@ class NodeFactory;
 class OPENVIDEO_API Manager 
 {
  public:
-    /** 
-	*	constructor 
-	*/
-    Manager();
-    
+	static Manager* getInstance();
     /** 
 	*	destructor 
 	*/
@@ -153,29 +148,14 @@ class OPENVIDEO_API Manager
 	*	Sets the function and data to be called before the actual traversal begins.
 	*/
     void setInitTravFunction(void (*initTravFunction)(void*),void* data);
-	
-#ifdef WIN32
-	/**
-	*	The current gl redering context; created by "void createGLContext(void *dc)"
-	*/
-	HGLRC glContext;
-	
-	/**
-	*	A pointer to the current device context.
-	*/
-	HDC hdc;
-	/**
-	*	Create an opengl context by a given device context.
-	*	Share the current gl context with 'shareList'. Need if OpenVideo wants to share gl specific data with other programms. 
-	*	Activates the current gl context
-	*/
-	void createShareActivateGLContext(HDC hdcShared, HGLRC glContextShared);
-#else
-#endif
-
-
 
  protected:
+	 /** 
+	 *	constructor 
+	 */
+	 Manager();
+
+	static Manager* instance;
 	/** 
 	*	Initializes all factories. 
 	*	Adds all known (hard coded) factories to the manager's list of node factories' 

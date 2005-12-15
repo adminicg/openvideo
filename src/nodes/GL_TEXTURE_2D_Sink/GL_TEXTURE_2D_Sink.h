@@ -94,7 +94,7 @@ public:
 	/**
 	*	opengl's texture id.
 	*/
-	unsigned int video_texture_id;
+	unsigned int get_video_texture_id();
 
 	/**
 	*	indicated whether the sink is started or not.
@@ -107,6 +107,12 @@ protected:
 	*	mutext to lock the sink's data.
 	*/
 	ACE_Mutex* mutex;
+
+	bool doubleBufferFlag;
+
+	int buffer;
+
+	unsigned int video_texture_id[2];
 	/**
 	*	video widht & height.
 	*/

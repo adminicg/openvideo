@@ -50,8 +50,9 @@
 #include <iostream>
 
 #ifdef WIN32
+#pragma comment(lib,"opengl32.lib")
+#pragma comment(lib,"glu32.lib")
 #pragma comment(lib,"glut32.lib")
-#else //linux
 #endif
 
 using namespace openvideo;

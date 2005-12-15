@@ -9,7 +9,6 @@
 
 using namespace openvideo;
 
-
 int main(int argc, char **argv)
 {
    if( argc != 2 )
@@ -24,12 +23,12 @@ int main(int argc, char **argv)
     
 	
 
-    Manager manager;
+	Manager* manager=Manager::getInstance();
     std::string ovConfig=argv[1];
-    manager.parseConfiguration(ovConfig);
+    manager->parseConfiguration(ovConfig);
     printf("Parsing complete.\n");
     
-    manager.run();
+    manager->run();
 
     return 0;
 }

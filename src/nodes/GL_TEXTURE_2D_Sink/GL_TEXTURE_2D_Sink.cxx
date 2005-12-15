@@ -32,7 +32,10 @@
 #include "GL_TEXTURE_2D_Sink.h"
 #include "openVideo.h"
 #ifdef  ENABLE_GL_TEXTURE_2D_SINK
-
+#ifdef WIN32
+#pragma comment(lib,"opengl32.lib")
+#pragma comment(lib,"glu32.lib")
+#endif
 #include <ace/Mutex.h>
 
 #include <GL/gl.h>			
@@ -43,6 +46,17 @@ using namespace openvideo;
 #include "core/State.h"
 #include "core/Manager.h"
 
+unsigned int 
+GL_TEXTURE_2D_Sink::get_video_texture_id()
+{
+	unsigned int id;
+	if(buffer)
+		id=video_texture_id[0];
+	else
+		id=video_texture_id[1];
+	return id;
+
+}
 
 GL_TEXTURE_2D_Sink::GL_TEXTURE_2D_Sink()
 {
@@ -50,6 +64,7 @@ GL_TEXTURE_2D_Sink::GL_TEXTURE_2D_Sink()
 	width=height=0;	
 	isStarted=false;
 	internalFormat=0;
+	buffer=0;
 }
 
 void 
@@ -94,6 +109,7 @@ GL_TEXTURE_2D_Sink::release()
 void
 GL_TEXTURE_2D_Sink::init()
 {
+	printf("OpenVideo: init GL_TEXTURE_2D_Sink '%s' \n",name.c_str());
 	mutex->acquire();
 
 	
@@ -167,7 +183,7 @@ GL_TEXTURE_2D_Sink::init()
 
     }
 	//
-    printf("OpenVideo: start GL_TEXTURE_2D_Sink '%s' \n",name.c_str());
+
     state=this->inputs[0]->getState();
     if(state)
     {
@@ -188,18 +204,38 @@ GL_TEXTURE_2D_Sink::init()
     long data_size = 4 * sizeof(GLubyte) * TEXTURE_WIDTH * TEXTURE_HEIGHT;
     GLubyte *data = (GLubyte*)malloc(data_size);
     memset(data, 0xFF, data_size);
-    glGenTextures(1, &video_texture_id);
-    glBindTexture(GL_TEXTURE_2D, video_texture_id);
+    glGenTextures(1, &video_texture_id[0]);
+	glBindTexture(GL_TEXTURE_2D, video_texture_id[0]);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glTexImage2D(GL_TEXTURE_2D, 0, this->internalFormat, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
 				this->format, GL_UNSIGNED_BYTE, data);
+
+	glGenTextures(1, &video_texture_id[1]);	
+	glBindTexture(GL_TEXTURE_2D, video_texture_id[1]);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexImage2D(GL_TEXTURE_2D, 0, this->internalFormat, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
+				this->format, GL_UNSIGNED_BYTE, data);
+
     glDisable(GL_TEXTURE_2D);
     free(data);
+	mutex->release();
+	//check gl errors
+	int i = 0;
+	GLenum e;
+
+	if ((e = glGetError ()) != GL_NO_ERROR)
+	{	
+		printf("GL error: %s\n", gluErrorString(e));
+		printf("OpenVideo: unable to init GL_TEXTURE_2D_Sink -> check if an opengl context is set");
+		return ;
+	}
     //////////////////////////////////////////////
     isStarted=true;
-	mutex->release();
+	
 }
 
 
@@ -207,18 +243,27 @@ GL_TEXTURE_2D_Sink::init()
 void
 GL_TEXTURE_2D_Sink::process()
 {
-	mutex->acquire();
+	if(!isStarted)
+		return;
+	printf("write");
 	if(state->frame)
 	{
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, video_texture_id);
+		glBindTexture(GL_TEXTURE_2D, video_texture_id[buffer]);
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width,
 						height, this->format, GL_UNSIGNED_BYTE,
 						(void*)state->frame);
 
 		glDisable(GL_TEXTURE_2D);
 	}
+	
+	//switchBuffer()
+	mutex->acquire();
+	if(buffer)
+		buffer=0;
+	else
+		buffer=1;
 	mutex->release();
 }
 

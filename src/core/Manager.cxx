@@ -57,6 +57,9 @@ using namespace openvideo;
 #include "nodes/VideoWrapperSrc/VideoWrapperSrcFactory.h"
 #endif
 
+#ifdef ENABLE_VIDEOSINK
+#include "nodes/VideoSink/VideoSinkFactory.h"
+#endif
 
 #include <iostream>
 
@@ -65,6 +68,7 @@ void (*Manager::initTraversalFunc)(void*)=NULL;
 void* Manager::traversalData=NULL;
 void* Manager::initTraversalData=NULL;
 bool  Manager::travBlock=false;
+Manager* Manager::instance=NULL;
 
 Manager::Manager()
 {
@@ -73,9 +77,6 @@ Manager::Manager()
 	setInitTravFunction(&Manager::initTopologicalSortedTraversal,&(nodes));
 	setTravFunction(&Manager::topologicalSortedTraversal,&(nodes));
 	updateRate=30;
-#ifdef WIN32
-	glContext=NULL;
-#endif
 }
 
 // Destructor method.
@@ -90,6 +91,16 @@ Manager::~Manager()
 	nodes.clear();
 }
 
+Manager* 
+Manager::getInstance()
+{
+	if(!Manager::instance)
+		Manager::instance=new Manager();
+
+	return Manager::instance;
+		
+
+}
 
 void
 Manager::buildSubGraph(void * parentElement, Node* parentNode)
@@ -333,36 +344,6 @@ Manager::getNode(std::string nodeName)
     return NULL;
 }
 
-#ifdef WIN32
-void 
-Manager::createShareActivateGLContext(HDC hdcShared, HGLRC glContextShared)
-{
-	if(glContext)
-		return;
-
-	printf("Manager::createShareActivateGLContext(HDC hdcShared, HGLRC glContextShared)\n");
-    PIXELFORMATDESCRIPTOR pfd;
-    DescribePixelFormat(hdcShared, 1, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
-    ChoosePixelFormat(hdcShared, &pfd );
-   
-	glContext=wglCreateContext(hdcShared);	
-	if(!glContext){
-		printf("OV: failed to create opengl context \n");
-		return ;
-	}
-	
-	if(!wglShareLists(glContext, glContextShared)){
-		printf("OV: failed to share opengl context \n");
-		return ;
-	}
-
-	if(!wglMakeCurrent(hdcShared,glContext)){
-		printf("OV: failed to activate opengl context \n");
-		return ;
-	}
-}
-#else
-#endif
 
 
 void 
@@ -379,6 +360,9 @@ Manager::initNodeFactories()
 #endif
 #ifdef ENABLE_TESTSRC
     factories.push_back(new TestSrcFactory());
+#endif
+#ifdef ENABLE_VIDEOSINK
+	factories.push_back(new VideoSinkFactory());
 #endif
 
 }
