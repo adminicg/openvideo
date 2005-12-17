@@ -112,7 +112,7 @@ protected:
 
 	int buffer;
 
-	unsigned int video_texture_id[2];
+	unsigned int video_texture_id[1];
 	/**
 	*	video widht & height.
 	*/

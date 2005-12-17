@@ -49,12 +49,8 @@ using namespace openvideo;
 unsigned int 
 GL_TEXTURE_2D_Sink::get_video_texture_id()
 {
-	unsigned int id;
-	if(buffer)
-		id=video_texture_id[0];
-	else
-		id=video_texture_id[1];
-	return id;
+
+	return video_texture_id[0];
 
 }
 
@@ -212,14 +208,6 @@ GL_TEXTURE_2D_Sink::init()
 	glTexImage2D(GL_TEXTURE_2D, 0, this->internalFormat, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
 				this->format, GL_UNSIGNED_BYTE, data);
 
-	glGenTextures(1, &video_texture_id[1]);	
-	glBindTexture(GL_TEXTURE_2D, video_texture_id[1]);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	glTexImage2D(GL_TEXTURE_2D, 0, this->internalFormat, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
-				this->format, GL_UNSIGNED_BYTE, data);
-
     glDisable(GL_TEXTURE_2D);
     free(data);
 	mutex->release();
@@ -245,26 +233,21 @@ GL_TEXTURE_2D_Sink::process()
 {
 	if(!isStarted)
 		return;
-	printf("write");
+	
 	if(state->frame)
 	{
+		mutex->acquire();
+		glEnable(GL_TEXTURE_2D);
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, video_texture_id[buffer]);
+		glBindTexture(GL_TEXTURE_2D, video_texture_id[0]);
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width,
 						height, this->format, GL_UNSIGNED_BYTE,
 						(void*)state->frame);
 
 		glDisable(GL_TEXTURE_2D);
+		mutex->release();
 	}
-	
-	//switchBuffer()
-	mutex->acquire();
-	if(buffer)
-		buffer=0;
-	else
-		buffer=1;
-	mutex->release();
 }
 
 #endif  //ENABLE_GL_TEXTURE_2D_SINK
