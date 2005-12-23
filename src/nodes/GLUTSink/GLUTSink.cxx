@@ -290,6 +290,7 @@ GLUTSink::process()
     updateLockCond->wait(); // Wait for an update to 
     updateLock->release(); 
   } 
+
 }
 
 

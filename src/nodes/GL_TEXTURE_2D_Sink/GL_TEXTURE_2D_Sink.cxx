@@ -61,6 +61,7 @@ GL_TEXTURE_2D_Sink::GL_TEXTURE_2D_Sink()
 	isStarted=false;
 	internalFormat=0;
 	buffer=0;
+	video_texture_id[0]=0;
 }
 
 void 
@@ -201,29 +202,27 @@ GL_TEXTURE_2D_Sink::init()
     GLubyte *data = (GLubyte*)malloc(data_size);
     memset(data, 0xFF, data_size);
     glGenTextures(1, &video_texture_id[0]);
-	glBindTexture(GL_TEXTURE_2D, video_texture_id[0]);
+    glBindTexture(GL_TEXTURE_2D, video_texture_id[0]);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	glTexImage2D(GL_TEXTURE_2D, 0, this->internalFormat, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
-				this->format, GL_UNSIGNED_BYTE, data);
-
+    glTexImage2D(GL_TEXTURE_2D, 0, this->internalFormat, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
+		 this->format, GL_UNSIGNED_BYTE, data);
+    
     glDisable(GL_TEXTURE_2D);
     free(data);
-	mutex->release();
-	//check gl errors
-	int i = 0;
-	GLenum e;
-
-	if ((e = glGetError ()) != GL_NO_ERROR)
-	{	
-		printf("GL error: %s\n", gluErrorString(e));
-		printf("OpenVideo: unable to init GL_TEXTURE_2D_Sink -> check if an opengl context is set");
-		return ;
-	}
+    mutex->release();
+    //check gl errors
+    GLenum e;
+    if ((e = glGetError ()) != GL_NO_ERROR)
+    {	
+	printf("GL error: %s\n", gluErrorString(e));
+	printf("OpenVideo: unable to init GL_TEXTURE_2D_Sink -> check if an opengl context is set");
+	return ;
+    }
     //////////////////////////////////////////////
     isStarted=true;
-	
+
 }
 
 

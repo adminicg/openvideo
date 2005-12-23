@@ -73,9 +73,10 @@ Manager* Manager::instance=NULL;
 Manager::Manager()
 {
 	initNodeFactories();
-
+	
 	setInitTravFunction(&Manager::initTopologicalSortedTraversal,&(nodes));
 	setTravFunction(&Manager::topologicalSortedTraversal,&(nodes));
+	isOVStarted=false;
 	updateRate=30;
 }
 
@@ -89,6 +90,12 @@ Manager::~Manager()
       delete nodes.at(i);
     }
 	nodes.clear();
+}
+
+bool
+Manager::isStarted()
+{
+    return isOVStarted;
 }
 
 Manager* 
@@ -245,7 +252,7 @@ Manager::run()
 	}
 
 	(*Manager::initTraversalFunc)(initTraversalData);
-
+	isOVStarted=true;
 	Timer timer;
 	timer.schedule(Manager::traversalFunc,Manager::traversalData,double(1.0/(double)updateRate));
 	printf("\nOpenVideo: start main loop !\n");

@@ -149,6 +149,9 @@ class OPENVIDEO_API Manager
 	*/
     void setInitTravFunction(void (*initTravFunction)(void*),void* data);
 
+    bool isStarted();
+
+
  protected:
 	 /** 
 	 *	constructor 
@@ -162,6 +165,7 @@ class OPENVIDEO_API Manager
 	*/
     void initNodeFactories();
 
+    bool     isOVStarted;
 	/**
 	*	Defines the graph’s number of updates per second.
 	*	Notice: This variable describes the maximal number of updates per second. 

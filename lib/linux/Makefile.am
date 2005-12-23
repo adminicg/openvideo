@@ -3,7 +3,7 @@
 include $(top_srcdir)/Makefile.common
 
 lib_LTLIBRARIES   = libopenvideo.la
-INCLUDES =  -I$(top_srcdir)/src  -I$(TINYXMLROOT) 
+INCLUDES =  -I$(top_srcdir)/src  -I$(TINYXML_INCLUDE) 
 
 ov_includedir=${prefix}/include/openvideo
 ov_include_HEADERS= \
@@ -50,5 +50,5 @@ libopenvideo_la_SOURCES = $(top_srcdir)/src/core/Manager.cxx \
 			$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_SinkFactory.cxx \
 			$(top_srcdir)/src/nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.cxx  
 
-libopenvideo_la_LDFLAGS = -L/usr/local/lib -L$(TINYXMLROOT)
-libopenvideo_la_LIBADD   = -ltinyxml -lACE -lGL -lGLU -lglut
+libopenvideo_la_LDFLAGS = -L/usr/local/lib 
+libopenvideo_la_LIBADD   =  -lACE -lGL  -ltinyxml -lGLU -lglut 
