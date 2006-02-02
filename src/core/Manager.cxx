@@ -206,15 +206,17 @@ Manager::parseConfiguration(const std::string& filename)
         return false;
 	}
 	//
-	TiXmlElement* element = document->FirstChildElement();
-	while(element)
-	{
-		Node* curNode=addNode(element);
-		buildSubGraph(element,curNode);
-		element = element->NextSiblingElement();
-	}
-	
-	///	parsing is done
+	TiXmlElement* root = document->RootElement();
+
+	TiXmlElement* element = root->FirstChildElement();
+	//while(element)
+	//{
+	//	Node* curNode=addNode(element);
+	//	buildSubGraph(element,curNode);
+	//	element = element->NextSiblingElement();
+	//}
+	//
+	/////	parsing is done
 	document->Clear();
 	delete document;
 
