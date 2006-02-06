@@ -89,6 +89,19 @@ VideoSink::process()
 	
 }
 
+void
+VideoSink::postProcess()
+{
+	for(int i=0;i<size_subscribers;i++)
+	{
+		if(subsrcibers[i]->isResourceInUse())
+		{
+			//wait till 
+		}
+	}
+
+
+}
 
 void 
 VideoSink::subscribe(VideoSinkSubscriber* aSubscriber)
