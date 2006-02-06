@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/src&quot;;&quot;$(VIDEOWRAPPERROOT)/VideoWrapper/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLROOT)/include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/VideoWrapper/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLROOT)/include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="3"
@@ -132,119 +132,67 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
-			<File
-				RelativePath="..\..\src\core\Manager.cxx">
-			</File>
-			<File
-				RelativePath="..\..\src\core\Manager.h">
-			</File>
-			<File
-				RelativePath="..\..\src\core\Node.cxx">
-			</File>
-			<File
-				RelativePath="..\..\src\core\Node.h">
-			</File>
-			<File
-				RelativePath="..\..\src\core\NodeFactory.cxx">
-			</File>
-			<File
-				RelativePath="..\..\src\core\NodeFactory.h">
-			</File>
-			<File
-				RelativePath="..\..\src\openVideo.h">
-			</File>
-			<File
-				RelativePath="..\..\src\core\PixelFormat.cxx">
-			</File>
-			<File
-				RelativePath="..\..\src\core\PixelFormat.h">
-			</File>
-			<File
-				RelativePath="..\..\src\core\State.cxx">
-			</File>
-			<File
-				RelativePath="..\..\src\core\State.h">
-			</File>
-			<File
-				RelativePath="..\..\src\core\Timer.cxx">
-			</File>
-			<File
-				RelativePath="..\..\src\core\Timer.h">
-			</File>
-			<File
-				RelativePath="..\..\src\core\TimerHandler.cxx">
-			</File>
-			<File
-				RelativePath="..\..\src\core\TimerHandler.h">
-			</File>
-			<File
-				RelativePath="..\..\src\core\TinyXML.cxx">
-			</File>
 			<Filter
 				Name="Nodes"
 				Filter="">
-				<Filter
-					Name="VideoWrapperSrc"
-					Filter="">
-					<File
-						RelativePath="..\..\src\nodes\VideoWrapperSrc\VideoWrapperSrc.cxx">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\VideoWrapperSrc\VideoWrapperSrcFactory.cxx">
-					</File>
-				</Filter>
-				<Filter
-					Name="GLSink"
-					Filter="">
-					<File
-						RelativePath="..\..\src\nodes\GLUTSink\GLUTSink.cxx">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\GLUTSink\GLUTSinkFactory.cxx">
-					</File>
-				</Filter>
-				<Filter
-					Name="GL_TEXTURE_2D_SinK"
-					Filter="">
-					<File
-						RelativePath="..\..\src\nodes\GL_TEXTURE_2D_Sink\GL_TEXTURE_2D_Sink.cxx">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\GL_TEXTURE_2D_Sink\GL_TEXTURE_2D_SinkFactory.cxx">
-					</File>
-				</Filter>
-				<Filter
-					Name="TestSrc"
-					Filter="">
-					<File
-						RelativePath="..\..\src\nodes\TestSrc\TestSrc.cxx">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\TestSrc\TestSrcFactory.cxx">
-					</File>
-				</Filter>
-				<Filter
-					Name="VideoSink"
-					Filter="">
-					<File
-						RelativePath="..\..\src\nodes\VideoSink\VideoSink.cxx">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\VideoSink\VideoSink.h">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\VideoSink\VideoSinkFactory.cxx">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\VideoSink\VideoSinkFactory.h">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\VideoSink\VideoSinkSubscriber.cxx">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\VideoSink\VideoSinkSubscriber.h">
-					</File>
-				</Filter>
+				<File
+					RelativePath="..\..\src\nodes\GL_TEXTURE_2D_Sink.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\GL_TEXTURE_2D_SinkFactory.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\GLUTSink.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\GLUTSinkFactory.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\TestSrc.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\TestSrcFactory.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\VideoSink.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\VideoSinkFactory.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\VideoSinkSubscriber.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\VideoWrapperSrc.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\VideoWrapperSrcFactory.cxx">
+				</File>
+			</Filter>
+			<Filter
+				Name="core"
+				Filter="">
+				<File
+					RelativePath="..\..\src\core\Manager.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\core\Node.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\core\PixelFormat.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\core\State.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\core\Timer.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\core\TimerHandler.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\core\TinyXML.cxx">
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -254,46 +202,67 @@
 			<Filter
 				Name="Nodes"
 				Filter="">
-				<Filter
-					Name="VideoWrapperSrc"
-					Filter="">
-					<File
-						RelativePath="..\..\src\nodes\VideoWrapperSrc\VideoWrapperSrc.h">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\VideoWrapperSrc\VideoWrapperSrcFactory.h">
-					</File>
-				</Filter>
-				<Filter
-					Name="GLSink"
-					Filter="">
-					<File
-						RelativePath="..\..\src\nodes\GLUTSink\GLUTSink.h">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\GLUTSink\GLUTSinkFactory.h">
-					</File>
-				</Filter>
-				<Filter
-					Name="GL_TEXTURE_2D_SinK"
-					Filter="">
-					<File
-						RelativePath="..\..\src\nodes\GL_TEXTURE_2D_Sink\GL_TEXTURE_2D_Sink.h">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\GL_TEXTURE_2D_Sink\GL_TEXTURE_2D_SinkFactory.h">
-					</File>
-				</Filter>
-				<Filter
-					Name="TestSrc"
-					Filter="">
-					<File
-						RelativePath="..\..\src\nodes\TestSrc\TestSrc.h">
-					</File>
-					<File
-						RelativePath="..\..\src\nodes\TestSrc\TestSrcFactory.h">
-					</File>
-				</Filter>
+				<File
+					RelativePath="..\..\include\nodes\GL_TEXTURE_2D_Sink.h">
+				</File>
+				<File
+					RelativePath="..\..\include\nodes\GL_TEXTURE_2D_SinkFactory.h">
+				</File>
+				<File
+					RelativePath="..\..\include\nodes\GLUTSink.h">
+				</File>
+				<File
+					RelativePath="..\..\include\nodes\GLUTSinkFactory.h">
+				</File>
+				<File
+					RelativePath="..\..\include\nodes\TestSrc.h">
+				</File>
+				<File
+					RelativePath="..\..\include\nodes\TestSrcFactory.h">
+				</File>
+				<File
+					RelativePath="..\..\include\nodes\VideoSink.h">
+				</File>
+				<File
+					RelativePath="..\..\include\nodes\VideoSinkFactory.h">
+				</File>
+				<File
+					RelativePath="..\..\include\nodes\VideoSinkSubscriber.h">
+				</File>
+				<File
+					RelativePath="..\..\include\nodes\VideoWrapperSrc.h">
+				</File>
+				<File
+					RelativePath="..\..\include\nodes\VideoWrapperSrcFactory.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="core"
+				Filter="">
+				<File
+					RelativePath="..\..\include\Manager.h">
+				</File>
+				<File
+					RelativePath="..\..\include\Node.h">
+				</File>
+				<File
+					RelativePath="..\..\include\NodeFactory.h">
+				</File>
+				<File
+					RelativePath="..\..\include\openVideo.h">
+				</File>
+				<File
+					RelativePath="..\..\include\PixelFormat.h">
+				</File>
+				<File
+					RelativePath="..\..\include\State.h">
+				</File>
+				<File
+					RelativePath="..\..\include\Timer.h">
+				</File>
+				<File
+					RelativePath="..\..\include\TimerHandler.h">
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -302,7 +271,7 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 		</Filter>
 		<File
-			RelativePath="..\..\src\configOV.h">
+			RelativePath="..\..\include\configOV.h">
 		</File>
 	</Files>
 	<Globals>

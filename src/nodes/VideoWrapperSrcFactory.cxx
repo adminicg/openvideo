@@ -26,11 +26,11 @@
   *
   * @author Denis Kalkofen
   * 
-  * $Id$
+  * $Id: VideoWrapperSrcFactory.cxx 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   
  /* ======================================================================= */
 
-#include "VideoWrapperSrcFactory.h"
+#include "nodes/VideoWrapperSrcFactory.h"
 #include "openVideo.h"
 #ifdef ENABLE_VIDEOWRAPPERSRC
 

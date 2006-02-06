@@ -31,7 +31,7 @@
  /* ======================================================================= */
 
 
-#include "../configOV.h"
+#include "configOV.h"
 
 #  include <tinyxml.h>
 

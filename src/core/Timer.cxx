@@ -32,7 +32,7 @@
 
 #include "Timer.h"
 #include <ace/Reactor.h>
-#include "core/TimerHandler.h"
+#include "TimerHandler.h"
 
 using namespace openvideo;
 

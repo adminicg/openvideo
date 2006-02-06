@@ -22,47 +22,60 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the TestSrcFactory class.
+/** The header file for the TimerHandler class.
   *
   * @author Denis Kalkofen
   *
-  * $Id$
+  * $Id: TimerHandler.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
-#ifndef _TESTSRCFACTORY_H
-#define _TESTSRCFACTORY_H
+
+#ifndef _TIMERHANDLER_H
+#define _TIMERHANDLER_H
 #include "openVideo.h"
-#ifdef ENABLE_TESTSRC
-#include "TestSrc.h"
-#include "core/NodeFactory.h"
+#include <ace/Event_Handler.h>
 
 /**
-*@ingroup nodes
-*	A factory to create TestSrc nodes.
+*@ingroup core
+*	Class to handle time out events. 
+*	The function handle_timout will call the previsouly registered callback function 
+*	timerCB.
 */
 
-namespace openvideo {
-
-class OPENVIDEO_API  TestSrcFactory :
-	public openvideo::NodeFactory
+namespace openvideo{
+class OPENVIDEO_API TimerHandler : 
+	public ACE_Event_Handler
 {
 public:
 	/**
-	*	constructor
+	*	Constructor
 	*/
-	TestSrcFactory(){};
+	TimerHandler();
 
 	/**
-	*	creates TestSrc nodes
+	*	Destructor
 	*/
-	virtual const char* getNodeTypeId();
+	~TimerHandler();
 	
 	/**
-	*	returns TestSrc as the type of known objects
-	*/
-	virtual openvideo::TestSrc* createNode();
-};
-} //namespace openvideo {
+	*	The callback function. This functions is called by 'handle_timeout'
+	*/  
+	void (*timerCB)(void*);
 
-#endif //#ifdef ENABLE_TESTSRC
+	/**
+	*	The callback data.
+	*/
+	void* data;
+
+	/**
+	*	The function which is called by the Timer.
+	*/
+	int handle_timeout (const ACE_Time_Value &current_time,
+                        const void *);
+
+
+};
+
+} //namespace
+
 #endif

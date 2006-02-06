@@ -22,33 +22,27 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The source file for the VideoSinkSubscriber class.
+/** The source file for the TestSrcFactory class.
   *
   * @author Denis Kalkofen
   * 
-  * $Id: VideoSinkSubscriber.cxx 31 2005-12-10 15:42:59Z denis $
+  * $Id: TestSrcFactory.cxx 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   
  /* ======================================================================= */
-#include "VideoSinkSubscriber.h"
+#include "nodes/TestSrcFactory.h"
 #include "openVideo.h"
-#ifdef  ENABLE_VIDEOSINK
-
+#ifdef ENABLE_TESTSRC
 using namespace openvideo;
 
-VideoSinkSubscriber::VideoSinkSubscriber()
+TestSrc* 
+TestSrcFactory::createNode()
 {
-	useResource=false;
+	return (new TestSrc());
 }
 
-VideoSinkSubscriber::~VideoSinkSubscriber()
-{	
-}
-
-bool
-VideoSinkSubscriber::isResourceInUse()
+const char* 
+TestSrcFactory::getNodeTypeId()
 {
-	return useResource;
+	return "TestSrc";
 }
-
-
-#endif  //ENABLE_VideoSink
+#endif //#ifdef ENABLE_TESTSRC

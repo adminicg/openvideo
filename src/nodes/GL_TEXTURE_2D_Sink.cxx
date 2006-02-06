@@ -22,64 +22,50 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The source file for the GLUTSink class.
+/** The source file for the GL_TEXTURE_2D_Sink class.
   *
   * @author Denis Kalkofen
   * 
-  * $Id$
+  * $Id: GL_TEXTURE_2D_Sink.cxx 35 2005-12-23 17:42:35Z denis $
   * @file                                                                   
  /* ======================================================================= */
-
-#include "GLUTSink.h"
+#include "nodes/GL_TEXTURE_2D_Sink.h"
 #include "openVideo.h"
-#ifdef ENABLE_GLUTSINK
-
-#include "core/State.h"
-#include "core/Manager.h"
-
-#include <GL/gl.h>
-#include <GL/glut.h>
-#include <GL/glu.h>
-
-#include <ace/OS.h>
-#include <ace/Thread.h>
-#include <ace/Condition_Thread_Mutex.h>
-#include <ace/Thread_Mutex.h>
-#include <ace/Mutex.h>
-
-#include <iostream>
-
+#ifdef  ENABLE_GL_TEXTURE_2D_SINK
 #ifdef WIN32
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glu32.lib")
-#pragma comment(lib,"glut32.lib")
 #endif
+#include <ace/Mutex.h>
+
+#include <GL/gl.h>			
+#include <GL/glu.h>		    
 
 using namespace openvideo;
 
-bool GLUTSink::isGlutThread=false;
-std::vector<GLUTSink*> GLUTSink::glutSinks;
-bool GLUTSink::glutRedraw=false;
-ACE_Mutex* GLUTSink::redrawLock=NULL;
+#include "State.h"
+#include "Manager.h"
 
-
-GLUTSink::GLUTSink()
+unsigned int 
+GL_TEXTURE_2D_Sink::get_video_texture_id()
 {
-	state=NULL;
-	originX=originY=0;
-	width=height=0;
-	updateVideo=false;
-	updateLock=new ACE_Thread_Mutex();
-	updateLockCond=new ACE_Condition_Thread_Mutex(*updateLock);
-	if(redrawLock==NULL){
-	    GLUTSink::redrawLock=new ACE_Mutex();
-	}
-	internalFormat=0;
+
+	return video_texture_id[0];
 
 }
 
+GL_TEXTURE_2D_Sink::GL_TEXTURE_2D_Sink()
+{
+	mutex = new ACE_Mutex();
+	width=height=0;	
+	isStarted=false;
+	internalFormat=0;
+	buffer=0;
+	video_texture_id[0]=0;
+}
+
 void 
-GLUTSink::initPixelFormats()
+GL_TEXTURE_2D_Sink::initPixelFormats()
 {
 	//format_r8g8b8	= 0,
 	//format_b8g8r8	= 1,
@@ -93,69 +79,37 @@ GLUTSink::initPixelFormats()
 	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_L8));
 }
 
-GLUTSink::~GLUTSink()
+GL_TEXTURE_2D_Sink::~GL_TEXTURE_2D_Sink()
 {
-	delete updateLockCond;
-	delete updateLock;
-
-	if(GLUTSink::redrawLock){
-		delete GLUTSink::redrawLock;
-		GLUTSink::redrawLock=NULL;
-	}
+	delete mutex;
 }
 
-
-void*
-GLUTSink::mainLoop(void *)
-{
-    glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE );
-
-	//wait 'till all glutsinks are loaded ='till the process() call happens
-
-    for(int i=0;i<(int)GLUTSink::glutSinks.size();i++)
-    {
-		GLUTSink *glutSink=GLUTSink::glutSinks[i];
-		glutInitWindowPosition (glutSink->originX, glutSink->originY );
-		int w,h;
-		if(glutSink->width==0)
-			w=1;
-		else
-			w=glutSink->width;
-		if( glutSink->height==0)
-			h=1;
-		else
-			h=glutSink->height;
-		glutInitWindowSize (w,h);
-		glutSink->winHandle=glutCreateWindow(glutSink->getName());
-		glutDisplayFunc(GLUTSink::mainDisplayFunc);
-		glutIdleFunc(GLUTSink::idleFunc);
-		//////////////////////////////////////////////
-		//create texture
-		glEnable(GL_TEXTURE_2D);
-		long data_size = 4 * sizeof(GLubyte) * TEXTURE_WIDTH * TEXTURE_HEIGHT;
-		GLubyte *data = (GLubyte*)malloc(data_size);
-		memset(data, 0xFF, data_size);
-		glGenTextures(1, &glutSink->video_texture_id);
-		glBindTexture(GL_TEXTURE_2D, glutSink->video_texture_id);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glTexImage2D(GL_TEXTURE_2D, 0, glutSink->internalFormat, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
-					glutSink->format, GL_UNSIGNED_BYTE, data);
-
-		glDisable(GL_TEXTURE_2D);
-		free(data);
-		//////////////////////////////////////////////
-    }		
-    glutMainLoop();
-    
-    return 0;
-}
-
+/**
+*	aquires the mutex	
+*/   
 void 
-GLUTSink::init()
+GL_TEXTURE_2D_Sink::acquire()
 {
-   printf("OpenVideo: init GLUTSink '%s' \n",name.c_str());
+	mutex->acquire();
+}
+
+
+/**
+*	releases the mutex.	
+*/   
+void 
+GL_TEXTURE_2D_Sink::release()
+{
+	mutex->release();
+}
+
+void
+GL_TEXTURE_2D_Sink::init()
+{
+	printf("OpenVideo: init GL_TEXTURE_2D_Sink '%s' \n",name.c_str());
+	mutex->acquire();
+
+	
 	//glteximage2d supported formats
 	//glteximage2d supported formats
 	///original gl spec. 
@@ -220,169 +174,79 @@ GLUTSink::init()
 			break;
 
 		default:
-			printf("GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
+			printf("OpenVideo: GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
 				(PixelFormat::FormatToString(curPixelFormat)).c_str());
 			exit(-1);
 
     }
-	//get the first state 
-	
-	//state this sink lives in
-   	if(inputs.size()<=0)
-		return;
+	//
+
     state=this->inputs[0]->getState();
     if(state)
     {
 		this->width=state->width;
 		this->height=state->height;
+	}
+    flip_h = false; 
+    flip_v = true;
+    float u_rt = (float)width / TEXTURE_WIDTH;
+    float v_rt = (float)height / TEXTURE_HEIGHT;
+    t_u0 = (flip_h ? u_rt : 0   );
+    t_u1 = (flip_h ?    0 : u_rt);
+    t_v0 = (flip_v ? v_rt : 0   );
+    t_v1 = (flip_v ?    0 : v_rt);
+    //
+    //create texture
+    glEnable(GL_TEXTURE_2D);
+    long data_size = 4 * sizeof(GLubyte) * TEXTURE_WIDTH * TEXTURE_HEIGHT;
+    GLubyte *data = (GLubyte*)malloc(data_size);
+    memset(data, 0xFF, data_size);
+    glGenTextures(1, &video_texture_id[0]);
+    glBindTexture(GL_TEXTURE_2D, video_texture_id[0]);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glTexImage2D(GL_TEXTURE_2D, 0, this->internalFormat, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
+		 this->format, GL_UNSIGNED_BYTE, data);
+    
+    glDisable(GL_TEXTURE_2D);
+    free(data);
+    mutex->release();
+    //check gl errors
+    GLenum e;
+    if ((e = glGetError ()) != GL_NO_ERROR)
+    {	
+	printf("GL error: %s\n", gluErrorString(e));
+	printf("OpenVideo: unable to init GL_TEXTURE_2D_Sink -> check if an opengl context is set");
+	return ;
+    }
+    //////////////////////////////////////////////
+    isStarted=true;
 
-		flip_h = false; 
-		flip_v = true;
-	    
-		float u_rt = (float)width / TEXTURE_WIDTH;
-		float v_rt = (float)height / TEXTURE_HEIGHT;
-	    
-		t_u0 = (flip_h ? u_rt : 0   );
-		t_u1 = (flip_h ?    0 : u_rt);
-		t_v0 = (flip_v ? v_rt : 0   );
-		t_v1 = (flip_v ?    0 : v_rt);
-		//
-		GLUTSink::glutSinks.push_back(this);
-	}// if(state)
 }
 
+
+
 void
-GLUTSink::start()
+GL_TEXTURE_2D_Sink::process()
 {
-	if(!GLUTSink::isGlutThread){
-		//start glut in a new thread
-		GLUTSink::isGlutThread=true;
-		ACE_hthread_t* threadHandle = new ACE_hthread_t();
-		if(ACE_Thread::spawn((ACE_THR_FUNC)GLUTSink::mainLoop,
-				0, 	
-				THR_NEW_LWP|THR_JOINABLE, 	
-				0, 	
-				threadHandle,
-				0, 	
-				0, 	
-				0
-		)==-1)
-		{ 
-			printf("Error in spawning thread\n"); 
-		}
+	if(!isStarted)
+		return;
+	
+	if(state->frame)
+	{
+		mutex->acquire();
+		glEnable(GL_TEXTURE_2D);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, video_texture_id[0]);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width,
+						height, this->format, GL_UNSIGNED_BYTE,
+						(void*)state->frame);
+
+		glDisable(GL_TEXTURE_2D);
+		mutex->release();
 	}
 }
 
-void
-GLUTSink::process()
-{
-  if(state && state->frame)
-  {
-    updateLock->acquire();
-    updateVideo=true; //set flag to indicate a redraw
-
-    
-    GLUTSink::redrawLock->acquire();
-    GLUTSink::glutRedraw=true;//idle func calls glutPostRedisplay();
-    GLUTSink::redrawLock->release();
-   
-
-    updateLockCond->wait(); // Wait for an update to 
-    updateLock->release(); 
-  } 
-
-}
-
-
-void 
-GLUTSink::updateTexture()
-{	
-
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, video_texture_id);
-	
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
-					width,height, this->format, GL_UNSIGNED_BYTE,
-					(void*)state->frame);
-    glDisable(GL_TEXTURE_2D);
-	
-}
-
-void 
-GLUTSink::redraw()
-{
-    //preGLCalls()
-    glPushMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glDisable(GL_DEPTH_TEST);
-    glDepthMask(GL_FALSE);
-    glDisable(GL_LIGHTING);
-    glDisable(GL_ALPHA_TEST);
-    glDisable(GL_BLEND);
-    ///////////////////////    
-    
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glEnable(GL_TEXTURE_2D);
-    
-    // redraw texture
-    glBindTexture(GL_TEXTURE_2D, video_texture_id);
-    glBegin(GL_QUADS);
-    // video backplate
-    glTexCoord2f(t_u0,t_v0); glVertex3f(-1.0f, -1.0f,  0.0f);
-    glTexCoord2f(t_u1,t_v0); glVertex3f( 1.0f, -1.0f,  0.0f);
-    glTexCoord2f(t_u1,t_v1); glVertex3f( 1.0f,  1.0f,  0.0f);
-    glTexCoord2f(t_u0,t_v1); glVertex3f(-1.0f,  1.0f,  0.0f);
-    glEnd();
-    
-    glDisable(GL_TEXTURE_2D);
-	
-    ///postGLCalls()
-    glPopAttrib();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-}
-
-void 
-GLUTSink::idleFunc ()
-{
-    GLUTSink::redrawLock->acquire();
-    if(GLUTSink::glutRedraw)
-    {
-		GLUTSink::glutRedraw=false;
-		glutPostRedisplay();
-    }
-    GLUTSink::redrawLock->release();
-   
-}
-
-void 
-GLUTSink::mainDisplayFunc ()
-{
-    int size=(int)GLUTSink::glutSinks.size();
-    for (int i=0;i<size;i++)
-    {	
-		glutSinks[i]->updateLock->acquire();
-		if(glutSinks[i]->updateVideo)
-		{	
-			glutSinks[i]->updateVideo=false;
-			glutSetWindow(glutSinks[i]->winHandle);
-			glutSinks[i]->updateTexture();
-			glutSinks[i]->redraw();
-		}
-		glutSinks[i]->updateLockCond->broadcast();
-		glutSinks[i]->updateLock->release();
-    }
-	
-    glutSwapBuffers();
-	
-}
-
-#endif //ENABLE_GLUTSINK
+#endif  //ENABLE_GL_TEXTURE_2D_SINK

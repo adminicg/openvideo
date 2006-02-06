@@ -22,43 +22,54 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The source file for the GLUTSinkFactory class.
+/** The header file for the GLUTSinkFactory class.
   *
   * @author Denis Kalkofen
-  * 
-  * $Id$
-  * @file                                                                   
+  *
+  * $Id: GLUTSinkFactory.h 30 2005-12-10 12:10:50Z denis $
+  * @file                                                                   */
  /* ======================================================================= */
-
-#include "GLUTSinkFactory.h"
+#ifndef _GLUTSINKFACTORY_H
+#define _GLUTSINKFACTORY_H
 #include "openVideo.h"
 #ifdef ENABLE_GLUTSINK
 
-using namespace openvideo;
 
-GLUTSinkFactory::GLUTSinkFactory()
+#include "core/NodeFactory.h"
+#include "nodes/GLUTSink/GLUTSink.h"
+
+/**
+*@ingroup nodes
+*	A factory to create GLUTSink nodes.
+*/
+namespace openvideo {
+class OPENVIDEO_API  GLUTSinkFactory
+	: public openvideo::NodeFactory
 {
-}
+ public:
+   	/**
+	*	constructor
+	*/
+    GLUTSinkFactory();
+    
+   	/**
+	*	destructor
+	*/
+    ~GLUTSinkFactory();
+    
+	/**
+	*	creates GLUTSink nodes
+	*/
+    virtual const char* getNodeTypeId();
+    
+	/**
+	*	returns GLUTSink as the type of known objects
+	*/
+	virtual openvideo::GLUTSink* createNode();
+};
 
+} //namespace openvideo {
 
-GLUTSinkFactory::~GLUTSinkFactory()
-{
+#endif // ENABLE_GLUTSINK
 
-}
-
-GLUTSink*
-GLUTSinkFactory::createNode()
-{
-	
-	return new GLUTSink();
-
-}
-
-const char* 
-GLUTSinkFactory::getNodeTypeId()
-{
-	return "GLUTSink";
-}
-
-
-#endif //ENABLE_GLUTSINK
+#endif // _GLUTSINKFACTORY_H

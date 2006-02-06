@@ -22,47 +22,33 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the NodeFactory class.
+/** The source file for the VideoSinkSubscriber class.
   *
   * @author Denis Kalkofen
-  *
-  * $Id$
-  * @file                                                                   */
+  * 
+  * $Id: VideoSinkSubscriber.cxx 31 2005-12-10 15:42:59Z denis $
+  * @file                                                                   
  /* ======================================================================= */
-
-#ifndef _ABSTRACTNODEFACTORY_H
-#define _ABSTRACTNODEFACTORY_H
-
+#include "nodes/VideoSinkSubscriber.h"
 #include "openVideo.h"
+#ifdef  ENABLE_VIDEOSINK
 
-/**
-*@ingroup core
-*
-*	The NodeFactory class implements the 'AbstractFactory' part from the 'AbstractFactory' pattern [POSA96].
-*	
-*/
-namespace openvideo {
-class Node;
+using namespace openvideo;
 
-class OPENVIDEO_API  NodeFactory
+VideoSinkSubscriber::VideoSinkSubscriber()
 {
-public:
-	/**
-	*	Constructor
-	*/
-	NodeFactory(){};
+	useResource=false;
+}
 
-	/**
-	*	The function to construct a Node.
-	*/
-	virtual openvideo::Node* createNode()=0;
-	
-	/**
-	*	Returns the node name. 
-	*	With this function a factory can be 'asked' which type of nodes it can 'produce'.
-	*/
-	virtual const char* getNodeTypeId()=0;
-};
-}//namespace openvideo {
+VideoSinkSubscriber::~VideoSinkSubscriber()
+{	
+}
 
-#endif
+bool
+VideoSinkSubscriber::isResourceInUse()
+{
+	return useResource;
+}
+
+
+#endif  //ENABLE_VideoSink

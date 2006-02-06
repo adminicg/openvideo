@@ -26,7 +26,7 @@
   *
   * @author Denis Kalkofen
   *
-  * $Id$
+  * $Id: VideoWrapperSrc.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
 #ifndef _VIDEOWRAPPERSRC_H

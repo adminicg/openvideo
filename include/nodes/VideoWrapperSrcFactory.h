@@ -22,60 +22,52 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the TimerHandler class.
+/** The header file for the VideoWrapperSrcFactory class.
   *
   * @author Denis Kalkofen
   *
-  * $Id$
+  * $Id: VideoWrapperSrcFactory.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
 
-#ifndef _TIMERHANDLER_H
-#define _TIMERHANDLER_H
+#ifndef _VIDEOWRAPPERSRCFACTORY_H
+#define _VIDEOWRAPPERSRCFACTORY_H
 #include "openVideo.h"
-#include <ace/Event_Handler.h>
+#ifdef ENABLE_VIDEOWRAPPERSRC
 
+#include "core/NodeFactory.h"
+#include "nodes/VideoWrapperSrc/VideoWrapperSrc.h"
 /**
-*@ingroup core
-*	Class to handle time out events. 
-*	The function handle_timout will call the previsouly registered callback function 
-*	timerCB.
+*@ingroup nodes
+*	A factory to create VideoWrapperSrc nodes.
 */
-
-namespace openvideo{
-class OPENVIDEO_API TimerHandler : 
-	public ACE_Event_Handler
+namespace openvideo {
+class OPENVIDEO_API  VideoWrapperSrcFactory
+	: public openvideo::NodeFactory
 {
 public:
 	/**
-	*	Constructor
+	*	constructor
 	*/
-	TimerHandler();
+    VideoWrapperSrcFactory();
 
 	/**
-	*	Destructor
+	*	destructor
 	*/
-	~TimerHandler();
-	
-	/**
-	*	The callback function. This functions is called by 'handle_timeout'
-	*/  
-	void (*timerCB)(void*);
+	~VideoWrapperSrcFactory();
 
 	/**
-	*	The callback data.
+	*	creates videowrappersrc nodes
 	*/
-	void* data;
+	virtual openvideo::VideoWrapperSrc* createNode();
 
 	/**
-	*	The function which is called by the Timer.
+	*	returns VideoWrapperSrc as the type of known objects
 	*/
-	int handle_timeout (const ACE_Time_Value &current_time,
-                        const void *);
-
-
+	virtual const char* getNodeTypeId();
 };
 
-} //namespace
+}//namespace openvideo {
+#endif // ENABLE_VIDEOWRAPPERSRC
 
-#endif
+#endif // _VIDEOWRAPPERSRCFACTORY_H

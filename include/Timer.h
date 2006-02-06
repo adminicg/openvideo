@@ -22,24 +22,68 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The node configuration file.
+/** The header file for the Timer class.
   *
   * @author Denis Kalkofen
   *
-  * $Id$
+  * $Id: Timer.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
-//enable/disable nodes
 
-#define  ENABLE_VIDEOWRAPPERSRC
-#define  ENABLE_GLUTSINK
-#define  ENABLE_GL_TEXTURE_2D_SINK
-#define  ENABLE_TESTSRC
+#ifndef _TIMER_H
+#define _TIMER_H
+
+#include "openVideo.h"
+
+/**
+*@ingroup core
+*	Implemtents a Timer, based on the timer implementations the ACE_Reactor provides. 
+*	It uses an instance of TimerHandler to schedule the timer. 
+*/
 
 
-//
-// if using TinyXML_MOD, uncomment one of the next two
-// definitions to choose between DLL and static linking
-//
-//#define TINYXML_MOD_DLL
-//#define TINYXML_MOD_STATIC
+namespace openvideo {
+class TimerHandler;
+
+class OPENVIDEO_API Timer 
+{
+public:
+	/**
+	*	Constructor
+	*/	
+	Timer();
+
+	/**
+	*	Destructor
+	*/	
+	~Timer();
+  
+	/**
+	*	Schedule the timer.\n 
+	*	parameter: \n
+	*		a) timerCB - the callback function
+	*		b) data - callback data
+	*		c) interval - the timers interval
+	*/	  
+	void schedule(void (*timerCB)(void*),void* data,double interval);
+
+	/**
+	*	Start event loop. (calls ACE_Reactor::run_event_loop())
+	*/	
+	static void runEventLoop();
+
+	/**
+	* Boolean to prevent multiple calls to ACE_Reactor::run_event_loop();
+	*/
+	static bool isEventLoopRunning;
+
+private:
+	/**
+	*	The timer handler .
+	*/
+	openvideo::TimerHandler *htimer;
+
+};
+
+}//openvideo {
+#endif

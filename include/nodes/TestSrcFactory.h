@@ -22,71 +22,47 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the TestSrc class.
+/** The header file for the TestSrcFactory class.
   *
   * @author Denis Kalkofen
   *
-  * $Id$
+  * $Id: TestSrcFactory.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
-#ifndef _TESTSRC_H
-#define _TESTSRC_H
+#ifndef _TESTSRCFACTORY_H
+#define _TESTSRCFACTORY_H
 #include "openVideo.h"
 #ifdef ENABLE_TESTSRC
-#include "core/Node.h"
+#include "TestSrc.h"
+#include "NodeFactory.h"
 
 /**
 *@ingroup nodes
-*	TestSrc implements an 320x240 image with a white background where a red,blue and green square moves 
-*	on. This node is used to test OpenVideo's environment with any input stream comming from a camera. 
+*	A factory to create TestSrc nodes.
 */
 
 namespace openvideo {
 
-class OPENVIDEO_API TestSrc :
-	public openvideo::Node
+class OPENVIDEO_API  TestSrcFactory :
+	public openvideo::NodeFactory
 {
 public:
 	/**
-	*	constructor.
-	*	creates a new context and allocates memory for the image.
+	*	constructor
 	*/
-	TestSrc();
+	TestSrcFactory(){};
 
 	/**
-	*
+	*	creates TestSrc nodes
 	*/
-	virtual ~TestSrc();
-
-	/**
-	*	clears the image and sets the widht and height onto its context.
-	*/
-	virtual void init();
-
-	/**
-	*	updates the image by moving the three squares by one pixel.
-	*/
-	virtual void process( );
+	virtual const char* getNodeTypeId();
 	
-	virtual void initPixelFormats();
-
- protected:
- 	/**
-	*	image 
-	*/
-	unsigned char *img;
-
 	/**
-	*	image widht and height
+	*	returns TestSrc as the type of known objects
 	*/
-	int width,height;
-
-	/**
-	*	current square position. 
-	*/
-	int posX,posY;
+	virtual openvideo::TestSrc* createNode();
 };
-
 } //namespace openvideo {
+
 #endif //#ifdef ENABLE_TESTSRC
 #endif

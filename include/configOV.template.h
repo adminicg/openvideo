@@ -22,55 +22,24 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the GL_TEXTURE_2D_SinkFactory class.
+/** The node configuration file.
   *
   * @author Denis Kalkofen
   *
-  * $Id$
+  * $Id: configOV.template.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
+//enable/disable nodes
 
-#ifndef _GL_TEXTURE_2D_SinkFACTORY_H
-#define _GL_TEXTURE_2D_SinkFACTORY_H
-#include "openVideo.h"
-#ifdef  ENABLE_GL_TEXTURE_2D_SINK
-
-#include "core/NodeFactory.h"
-#include "nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_Sink.h"
-
-/**
-*@ingroup nodes
-*	A factory to create GL_TEXTURE_2D_Sink nodes.
-*/
-
-namespace openvideo {
+#define  ENABLE_VIDEOWRAPPERSRC
+#define  ENABLE_GLUTSINK
+#define  ENABLE_GL_TEXTURE_2D_SINK
+#define  ENABLE_TESTSRC
 
 
-class OPENVIDEO_API  GL_TEXTURE_2D_SinkFactory
-	: public openvideo::NodeFactory
-{
-public:
-	/**
-	*	constructor
-	*/
-    GL_TEXTURE_2D_SinkFactory();
-
-	/**
-	*	destructor
-	*/
-	~GL_TEXTURE_2D_SinkFactory();
-	
-	/**
-	*	creates GL_TEXTURE_2D_Sink nodes
-	*/
-	virtual const char* getNodeTypeId();
-
-	/**
-	*	returns GL_TEXTURE_2D_Sink as the type of known objects
-	*/
-	virtual GL_TEXTURE_2D_Sink* createNode();
-};
-}
-
-#endif //#include "openVideo.h"
-#endif
+//
+// if using TinyXML_MOD, uncomment one of the next two
+// definitions to choose between DLL and static linking
+//
+//#define TINYXML_MOD_DLL
+//#define TINYXML_MOD_STATIC

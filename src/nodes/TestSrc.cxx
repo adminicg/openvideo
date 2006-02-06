@@ -26,14 +26,14 @@
   *
   * @author Denis Kalkofen
   * 
-  * $Id$
+  * $Id: TestSrc.cxx 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   
  /* ======================================================================= */
-#include "TestSrc.h"
+#include "nodes/TestSrc.h"
 #include "openVideo.h"
 #ifdef ENABLE_TESTSRC
-#include "core/Manager.h"
-#include "core/State.h"
+#include "Manager.h"
+#include "State.h"
 
 using namespace openvideo;
 

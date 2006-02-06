@@ -31,7 +31,7 @@
  /* ======================================================================= */
 
 #include "Node.h"
-#include "core/State.h"
+#include "State.h"
 
 using namespace openvideo;
 

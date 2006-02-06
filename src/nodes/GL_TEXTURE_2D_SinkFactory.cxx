@@ -22,27 +22,40 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The source file for the TestSrcFactory class.
+/** The source file for the GL_TEXTURE_2D_SinkFactory class.
   *
   * @author Denis Kalkofen
   * 
-  * $Id$
+  * $Id: GL_TEXTURE_2D_SinkFactory.cxx 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   
  /* ======================================================================= */
-#include "TestSrcFactory.h"
+
+#include "nodes/GL_TEXTURE_2D_SinkFactory.h"
 #include "openVideo.h"
-#ifdef ENABLE_TESTSRC
+#ifdef ENABLE_GL_TEXTURE_2D_SINK
+
 using namespace openvideo;
 
-TestSrc* 
-TestSrcFactory::createNode()
+
+GL_TEXTURE_2D_SinkFactory::GL_TEXTURE_2D_SinkFactory()
 {
-	return (new TestSrc());
+}
+
+
+GL_TEXTURE_2D_SinkFactory::~GL_TEXTURE_2D_SinkFactory()
+{
+}
+
+GL_TEXTURE_2D_Sink*
+GL_TEXTURE_2D_SinkFactory::createNode()
+{
+	return new GL_TEXTURE_2D_Sink();
 }
 
 const char* 
-TestSrcFactory::getNodeTypeId()
+GL_TEXTURE_2D_SinkFactory::getNodeTypeId()
 {
-	return "TestSrc";
+	return "GL_TEXTURE_2D_Sink";
 }
-#endif //#ifdef ENABLE_TESTSRC
+
+#endif // ENABLE_GL_TEXTURE_2D_SINK

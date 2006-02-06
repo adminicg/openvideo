@@ -34,31 +34,31 @@
 #include "configOV.h"
 #include "tinyxml.h"
 
-#include "core/Timer.h"
-#include "core/NodeFactory.h"
-#include "core/Node.h"
+#include "Timer.h"
+#include "NodeFactory.h"
+#include "Node.h"
 	
 using namespace openvideo;
 
 /////known nodes
 #ifdef ENABLE_GLUTSINK
-#include "nodes/GLUTSink/GLUTSinkFactory.h"
+#include "nodes/GLUTSinkFactory.h"
 #endif
 
 #ifdef ENABLE_TESTSRC
-#include "nodes/TestSrc/TestSrcFactory.h"
+#include "nodes/TestSrcFactory.h"
 #endif
 
 #ifdef ENABLE_GL_TEXTURE_2D_SINK
-#include "nodes/GL_TEXTURE_2D_Sink/GL_TEXTURE_2D_SinkFactory.h"
+#include "nodes/GL_TEXTURE_2D_SinkFactory.h"
 #endif
 
 #ifdef ENABLE_VIDEOWRAPPERSRC
-#include "nodes/VideoWrapperSrc/VideoWrapperSrcFactory.h"
+#include "nodes/VideoWrapperSrcFactory.h"
 #endif
 
 #ifdef ENABLE_VIDEOSINK
-#include "nodes/VideoSink/VideoSinkFactory.h"
+#include "nodes/VideoSinkFactory.h"
 #endif
 
 #include <iostream>

@@ -22,68 +22,55 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the Timer class.
+/** The header file for the GL_TEXTURE_2D_SinkFactory class.
   *
   * @author Denis Kalkofen
   *
-  * $Id$
+  * $Id: GL_TEXTURE_2D_SinkFactory.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
 
-#ifndef _TIMER_H
-#define _TIMER_H
-
+#ifndef _GL_TEXTURE_2D_SinkFACTORY_H
+#define _GL_TEXTURE_2D_SinkFACTORY_H
 #include "openVideo.h"
+#ifdef  ENABLE_GL_TEXTURE_2D_SINK
+
+#include "NodeFactory.h"
+#include "nodes/GL_TEXTURE_2D_Sink.h"
 
 /**
-*@ingroup core
-*	Implemtents a Timer, based on the timer implementations the ACE_Reactor provides. 
-*	It uses an instance of TimerHandler to schedule the timer. 
+*@ingroup nodes
+*	A factory to create GL_TEXTURE_2D_Sink nodes.
 */
 
-
 namespace openvideo {
-class TimerHandler;
 
-class OPENVIDEO_API Timer 
+
+class OPENVIDEO_API  GL_TEXTURE_2D_SinkFactory
+	: public openvideo::NodeFactory
 {
 public:
 	/**
-	*	Constructor
-	*/	
-	Timer();
-
-	/**
-	*	Destructor
-	*/	
-	~Timer();
-  
-	/**
-	*	Schedule the timer.\n 
-	*	parameter: \n
-	*		a) timerCB - the callback function
-	*		b) data - callback data
-	*		c) interval - the timers interval
-	*/	  
-	void schedule(void (*timerCB)(void*),void* data,double interval);
-
-	/**
-	*	Start event loop. (calls ACE_Reactor::run_event_loop())
-	*/	
-	static void runEventLoop();
-
-	/**
-	* Boolean to prevent multiple calls to ACE_Reactor::run_event_loop();
+	*	constructor
 	*/
-	static bool isEventLoopRunning;
+    GL_TEXTURE_2D_SinkFactory();
 
-private:
 	/**
-	*	The timer handler .
+	*	destructor
 	*/
-	openvideo::TimerHandler *htimer;
+	~GL_TEXTURE_2D_SinkFactory();
+	
+	/**
+	*	creates GL_TEXTURE_2D_Sink nodes
+	*/
+	virtual const char* getNodeTypeId();
 
+	/**
+	*	returns GL_TEXTURE_2D_Sink as the type of known objects
+	*/
+	virtual GL_TEXTURE_2D_Sink* createNode();
 };
+}
 
-}//openvideo {
+#endif //#include "openVideo.h"
 #endif

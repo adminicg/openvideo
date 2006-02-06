@@ -30,7 +30,7 @@
   * @file                                                                   
  /* ======================================================================= */
 
-#include "core/TimerHandler.h"
+#include "TimerHandler.h"
 
 using namespace openvideo;
 	

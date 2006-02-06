@@ -22,91 +22,40 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The source file for the VideoSink class.
+/** The source file for the VideoSinkFactory class.
   *
   * @author Denis Kalkofen
   * 
-  * $Id: VideoSink.cxx 31 2005-12-10 15:42:59Z denis $
+  * $Id: VideoSinkFactory.cxx 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   
  /* ======================================================================= */
-#include "VideoSink.h"
+
+#include "nodes/VideoSinkFactory.h"
 #include "openVideo.h"
-#include "nodes/VideoSink/VideoSinkSubscriber.h"
-#ifdef  ENABLE_VIDEOSINK
+#ifdef ENABLE_VIDEOSINK
 
 using namespace openvideo;
 
-#include "core/State.h"
-#include "core/Manager.h"
 
-
-VideoSink::VideoSink()
+VideoSinkFactory::VideoSinkFactory()
 {
-	isStarted=false;
-	internalFormat=0;
-	size_subscribers=0;
-}
-
-void 
-VideoSink::initPixelFormats()
-{
-	//format_r8g8b8	= 0,
-	//format_b8g8r8	= 1,
-	//format_r8g8b8x8	= 2,
-	//format_b8g8r8x8	= 3,
-	//format_l8		= 5,
-	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8));
-	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8));
-	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8X8));
-	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8X8));
-	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_L8));
-}
-
-VideoSink::~VideoSink()
-{
-	
 }
 
 
-void
-VideoSink::init()
+VideoSinkFactory::~VideoSinkFactory()
 {
-	//
-    //////////////////////////////////////////////
-    isStarted=true;
-	state=inputs[0]->getState();
 }
 
-void
-VideoSink::process()
+VideoSink*
+VideoSinkFactory::createNode()
 {
-	if(state->frame)
-	{
-		//update subsrcibers
-		for(int i=0;i<size_subscribers;i++)
-			subsrcibers[i]->update(state);
-	}
-	
+	return new VideoSink();
 }
 
-void
-VideoSink::postProcess()
+const char* 
+VideoSinkFactory::getNodeTypeId()
 {
-	for(int i=0;i<size_subscribers;i++)
-	{
-		if(subsrcibers[i]->isResourceInUse())
-		{
-			//wait till 
-		}
-	}
-
-
+	return "VideoSink";
 }
 
-void 
-VideoSink::subscribe(VideoSinkSubscriber* aSubscriber)
-{
-	subsrcibers.push_back(aSubscriber);
-}
-
-#endif  //ENABLE_VideoSink
+#endif // ENABLE_VideoSink

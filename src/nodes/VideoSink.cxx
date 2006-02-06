@@ -22,40 +22,91 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The source file for the GL_TEXTURE_2D_SinkFactory class.
+/** The source file for the VideoSink class.
   *
   * @author Denis Kalkofen
   * 
-  * $Id$
+  * $Id: VideoSink.cxx 31 2005-12-10 15:42:59Z denis $
   * @file                                                                   
  /* ======================================================================= */
-
-#include "GL_TEXTURE_2D_SinkFactory.h"
+#include "nodes/VideoSink.h"
 #include "openVideo.h"
-#ifdef ENABLE_GL_TEXTURE_2D_SINK
+#include "nodes/VideoSinkSubscriber.h"
+#ifdef  ENABLE_VIDEOSINK
 
 using namespace openvideo;
 
+#include "State.h"
+#include "Manager.h"
 
-GL_TEXTURE_2D_SinkFactory::GL_TEXTURE_2D_SinkFactory()
+
+VideoSink::VideoSink()
 {
+	isStarted=false;
+	internalFormat=0;
+	size_subscribers=0;
+}
+
+void 
+VideoSink::initPixelFormats()
+{
+	//format_r8g8b8	= 0,
+	//format_b8g8r8	= 1,
+	//format_r8g8b8x8	= 2,
+	//format_b8g8r8x8	= 3,
+	//format_l8		= 5,
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8));
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8));
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8X8));
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8X8));
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_L8));
+}
+
+VideoSink::~VideoSink()
+{
+	
 }
 
 
-GL_TEXTURE_2D_SinkFactory::~GL_TEXTURE_2D_SinkFactory()
+void
+VideoSink::init()
 {
+	//
+    //////////////////////////////////////////////
+    isStarted=true;
+	state=inputs[0]->getState();
 }
 
-GL_TEXTURE_2D_Sink*
-GL_TEXTURE_2D_SinkFactory::createNode()
+void
+VideoSink::process()
 {
-	return new GL_TEXTURE_2D_Sink();
+	if(state->frame)
+	{
+		//update subsrcibers
+		for(int i=0;i<size_subscribers;i++)
+			subsrcibers[i]->update(state);
+	}
+	
 }
 
-const char* 
-GL_TEXTURE_2D_SinkFactory::getNodeTypeId()
+void
+VideoSink::postProcess()
 {
-	return "GL_TEXTURE_2D_Sink";
+	for(int i=0;i<size_subscribers;i++)
+	{
+		if(subsrcibers[i]->isResourceInUse())
+		{
+			//wait till 
+		}
+	}
+
+
 }
 
-#endif // ENABLE_GL_TEXTURE_2D_SINK
+void 
+VideoSink::subscribe(VideoSinkSubscriber* aSubscriber)
+{
+	subsrcibers.push_back(aSubscriber);
+}
+
+#endif  //ENABLE_VideoSink

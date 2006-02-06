@@ -22,14 +22,43 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The source file for the NodeFactory class.
+/** The source file for the GLUTSinkFactory class.
   *
   * @author Denis Kalkofen
   * 
-  * $Id$
+  * $Id: GLUTSinkFactory.cxx 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   
  /* ======================================================================= */
-#include "core/NodeFactory.h"
-#include "core/Node.h"
+
+#include "nodes/GLUTSinkFactory.h"
+#include "openVideo.h"
+#ifdef ENABLE_GLUTSINK
+
+using namespace openvideo;
+
+GLUTSinkFactory::GLUTSinkFactory()
+{
+}
 
 
+GLUTSinkFactory::~GLUTSinkFactory()
+{
+
+}
+
+GLUTSink*
+GLUTSinkFactory::createNode()
+{
+	
+	return new GLUTSink();
+
+}
+
+const char* 
+GLUTSinkFactory::getNodeTypeId()
+{
+	return "GLUTSink";
+}
+
+
+#endif //ENABLE_GLUTSINK

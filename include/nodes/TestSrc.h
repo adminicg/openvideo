@@ -22,52 +22,71 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the VideoWrapperSrcFactory class.
+/** The header file for the TestSrc class.
   *
   * @author Denis Kalkofen
   *
-  * $Id$
+  * $Id: TestSrc.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
-
-#ifndef _VIDEOWRAPPERSRCFACTORY_H
-#define _VIDEOWRAPPERSRCFACTORY_H
+#ifndef _TESTSRC_H
+#define _TESTSRC_H
 #include "openVideo.h"
-#ifdef ENABLE_VIDEOWRAPPERSRC
+#ifdef ENABLE_TESTSRC
+#include "Node.h"
 
-#include "core/NodeFactory.h"
-#include "nodes/VideoWrapperSrc/VideoWrapperSrc.h"
 /**
 *@ingroup nodes
-*	A factory to create VideoWrapperSrc nodes.
+*	TestSrc implements an 320x240 image with a white background where a red,blue and green square moves 
+*	on. This node is used to test OpenVideo's environment with any input stream comming from a camera. 
 */
+
 namespace openvideo {
-class OPENVIDEO_API  VideoWrapperSrcFactory
-	: public openvideo::NodeFactory
+
+class OPENVIDEO_API TestSrc :
+	public openvideo::Node
 {
 public:
 	/**
-	*	constructor
+	*	constructor.
+	*	creates a new context and allocates memory for the image.
 	*/
-    VideoWrapperSrcFactory();
+	TestSrc();
 
 	/**
-	*	destructor
+	*
 	*/
-	~VideoWrapperSrcFactory();
+	virtual ~TestSrc();
 
 	/**
-	*	creates videowrappersrc nodes
+	*	clears the image and sets the widht and height onto its context.
 	*/
-	virtual openvideo::VideoWrapperSrc* createNode();
+	virtual void init();
 
 	/**
-	*	returns VideoWrapperSrc as the type of known objects
+	*	updates the image by moving the three squares by one pixel.
 	*/
-	virtual const char* getNodeTypeId();
+	virtual void process( );
+	
+	virtual void initPixelFormats();
+
+ protected:
+ 	/**
+	*	image 
+	*/
+	unsigned char *img;
+
+	/**
+	*	image widht and height
+	*/
+	int width,height;
+
+	/**
+	*	current square position. 
+	*/
+	int posX,posY;
 };
 
-}//namespace openvideo {
-#endif // ENABLE_VIDEOWRAPPERSRC
-
-#endif // _VIDEOWRAPPERSRCFACTORY_H
+} //namespace openvideo {
+#endif //#ifdef ENABLE_TESTSRC
+#endif

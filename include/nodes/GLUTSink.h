@@ -26,7 +26,7 @@
   *
   * @author Denis Kalkofen
   *
-  * $Id$
+  * $Id: GLUTSink.h 31 2005-12-10 15:42:59Z denis $
   * @file                                                                   */
  /* ======================================================================= */
 #ifndef _GLUTSINK_H
