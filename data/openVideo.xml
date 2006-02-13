@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-
+<openvideo>
 
 <VideoWrapperSrc name="TSrc_1"
 	libId="vc"
@@ -19,7 +18,7 @@
 
 
 
-
+</openvideo>
 
 
 
