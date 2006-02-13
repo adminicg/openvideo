@@ -35,7 +35,7 @@
 #ifdef ENABLE_GLUTSINK
 
 
-#include "core/Node.h"
+#include "Node.h"
 
 
 class  ACE_Thread_Mutex;

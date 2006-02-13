@@ -35,8 +35,8 @@
 #ifdef ENABLE_GLUTSINK
 
 
-#include "core/NodeFactory.h"
-#include "nodes/GLUTSink/GLUTSink.h"
+#include "NodeFactory.h"
+#include "nodes/GLUTSink.h"
 
 /**
 *@ingroup nodes
