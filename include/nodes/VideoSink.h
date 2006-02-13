@@ -36,7 +36,7 @@
 
 
 
-#include "core/Node.h"
+#include "Node.h"
 
 /**
 *@ingroup nodes
@@ -78,6 +78,7 @@ public:
 	*/   
 	virtual void process();
 
+	virtual void postProcess();
 	/**
 	*	indicated whether the sink is started or not.
 	*/
@@ -92,7 +93,7 @@ protected:
 	*/
 	int internalFormat;
 
-	vector<VideoSinkSubscriber*> subsrcibers;
+	std::vector<VideoSinkSubscriber*> subsrcibers;
 	int size_subscribers;
 };
 

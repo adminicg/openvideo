@@ -35,8 +35,8 @@
 #include "openVideo.h"
 #ifdef  ENABLE_VIDEOSINK
 
-#include "core/NodeFactory.h"
-#include "nodes/VideoSink/VideoSink.h"
+#include "NodeFactory.h"
+#include "nodes/VideoSink.h"
 
 /**
 *@ingroup nodes

@@ -36,7 +36,7 @@
 
 #include <string>
 
-#include "core/Node.h"
+#include "Node.h"
 
 
 /**

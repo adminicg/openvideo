@@ -35,8 +35,8 @@
 #include "openVideo.h"
 #ifdef ENABLE_VIDEOWRAPPERSRC
 
-#include "core/NodeFactory.h"
-#include "nodes/VideoWrapperSrc/VideoWrapperSrc.h"
+#include "NodeFactory.h"
+#include "nodes/VideoWrapperSrc.h"
 /**
 *@ingroup nodes
 *	A factory to create VideoWrapperSrc nodes.

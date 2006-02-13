@@ -34,8 +34,8 @@
 #include "openVideo.h"
 #ifdef  ENABLE_VIDEOSINK
 
-#include "core/Node.h"
-#include "core/State.h"
+#include "Node.h"
+#include "State.h"
 
 namespace openvideo {
 
