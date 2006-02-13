@@ -4,7 +4,7 @@
  * and starts the main loop, if successful
  */
 #include <stdio.h>
-#include "core/Manager.h"
+#include "Manager.h"
 #include <string>
 
 using namespace openvideo;

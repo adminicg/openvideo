@@ -35,7 +35,7 @@
 #define  ENABLE_GLUTSINK
 #define  ENABLE_GL_TEXTURE_2D_SINK
 #define  ENABLE_TESTSRC
-
+#define  ENABLE_VIDEOSINK
 
 //
 // if using TinyXML_MOD, uncomment one of the next two

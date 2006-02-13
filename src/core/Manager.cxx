@@ -209,12 +209,12 @@ Manager::parseConfiguration(const std::string& filename)
 	TiXmlElement* root = document->RootElement();
 
 	TiXmlElement* element = root->FirstChildElement();
-	//while(element)
-	//{
-	//	Node* curNode=addNode(element);
-	//	buildSubGraph(element,curNode);
-	//	element = element->NextSiblingElement();
-	//}
+	while(element)
+	{
+		Node* curNode=addNode(element);
+		buildSubGraph(element,curNode);
+		element = element->NextSiblingElement();
+	}
 	//
 	/////	parsing is done
 	document->Clear();

@@ -227,7 +227,7 @@ GLUTSink::init()
     }
 	//get the first state 
 	
-	//state this sink lives in
+	//states this sink 'lives' in
    	if(inputs.size()<=0)
 		return;
     state=this->inputs[0]->getState();
@@ -254,6 +254,7 @@ GLUTSink::init()
 void
 GLUTSink::start()
 {
+	printf("GLUTSink::start()\n");
 	if(!GLUTSink::isGlutThread){
 		//start glut in a new thread
 		GLUTSink::isGlutThread=true;
@@ -272,6 +273,7 @@ GLUTSink::start()
 		}
 	}
 }
+
 
 void
 GLUTSink::process()
