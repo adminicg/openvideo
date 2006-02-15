@@ -31,12 +31,12 @@
  /* ======================================================================= */
 #ifndef _VIDEOWRAPPERSRC_H
 #define _VIDEOWRAPPERSRC_H
-#include "openVideo.h"
+#include <openvideo/openVideo.h>
 #ifdef ENABLE_VIDEOWRAPPERSRC
 
 #include <string>
 
-#include "Node.h"
+#include <openvideo/Node.h>
 
 
 /**

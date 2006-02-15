@@ -30,9 +30,9 @@
   * @file                                                                   
  /* ======================================================================= */
 
-#include "V4LSrc.h"
+#include <openvideo/nodes/V4LSrc.h>
 
-#include "core/State.h"
+#include <openvideo/State.h>
 #include <iostream>
 #include <cstdlib>
 

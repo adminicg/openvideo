@@ -20,7 +20,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 
-#include "v4l.h"
+#include <openvideo/nodes/v4l.h>
 
 //---------------------------------------------------------------------------------
 

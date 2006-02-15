@@ -30,12 +30,12 @@
   * @file                                                                   
  /* ======================================================================= */
 
-#include "nodes/GLUTSink.h"
-#include "openVideo.h"
+#include <openvideo/nodes/GLUTSink.h>
+#include <openvideo/openVideo.h>
 #ifdef ENABLE_GLUTSINK
 
-#include "State.h"
-#include "Manager.h"
+#include <openvideo/State.h>
+#include <openvideo/Manager.h>
 
 #include <GL/gl.h>
 #include <GL/glut.h>

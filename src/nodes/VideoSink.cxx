@@ -29,15 +29,15 @@
   * $Id: VideoSink.cxx 31 2005-12-10 15:42:59Z denis $
   * @file                                                                   
  /* ======================================================================= */
-#include "nodes/VideoSink.h"
-#include "openVideo.h"
-#include "nodes/VideoSinkSubscriber.h"
+#include <openvideo/nodes/VideoSink.h>
+#include <openvideo/openVideo.h>
+#include <openvideo/nodes/VideoSinkSubscriber.h>
 #ifdef  ENABLE_VIDEOSINK
 
 using namespace openvideo;
 
-#include "State.h"
-#include "Manager.h"
+#include <openvideo/State.h>
+#include <openvideo/Manager.h>
 
 
 VideoSink::VideoSink()

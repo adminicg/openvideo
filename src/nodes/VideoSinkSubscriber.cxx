@@ -29,8 +29,8 @@
   * $Id: VideoSinkSubscriber.cxx 31 2005-12-10 15:42:59Z denis $
   * @file                                                                   
  /* ======================================================================= */
-#include "nodes/VideoSinkSubscriber.h"
-#include "openVideo.h"
+#include <openvideo/nodes/VideoSinkSubscriber.h>
+#include <openvideo/openVideo.h>
 #ifdef  ENABLE_VIDEOSINK
 
 using namespace openvideo;

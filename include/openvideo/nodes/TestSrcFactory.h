@@ -22,54 +22,47 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the GLUTSinkFactory class.
+/** The header file for the TestSrcFactory class.
   *
   * @author Denis Kalkofen
   *
-  * $Id: GLUTSinkFactory.h 30 2005-12-10 12:10:50Z denis $
+  * $Id: TestSrcFactory.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
-#ifndef _GLUTSINKFACTORY_H
-#define _GLUTSINKFACTORY_H
-#include "openVideo.h"
-#ifdef ENABLE_GLUTSINK
-
-
-#include "NodeFactory.h"
-#include "nodes/GLUTSink.h"
+#ifndef _TESTSRCFACTORY_H
+#define _TESTSRCFACTORY_H
+#include <openvideo/openVideo.h>
+#ifdef ENABLE_TESTSRC
+#include <openvideo/nodes/TestSrc.h>
+#include <openvideo/NodeFactory.h>
 
 /**
 *@ingroup nodes
-*	A factory to create GLUTSink nodes.
+*	A factory to create TestSrc nodes.
 */
+
 namespace openvideo {
-class OPENVIDEO_API  GLUTSinkFactory
-	: public openvideo::NodeFactory
+
+class OPENVIDEO_API  TestSrcFactory :
+	public openvideo::NodeFactory
 {
- public:
-   	/**
+public:
+	/**
 	*	constructor
 	*/
-    GLUTSinkFactory();
-    
-   	/**
-	*	destructor
-	*/
-    ~GLUTSinkFactory();
-    
-	/**
-	*	creates GLUTSink nodes
-	*/
-    virtual const char* getNodeTypeId();
-    
-	/**
-	*	returns GLUTSink as the type of known objects
-	*/
-	virtual openvideo::GLUTSink* createNode();
-};
+	TestSrcFactory(){};
 
+	/**
+	*	creates TestSrc nodes
+	*/
+	virtual const char* getNodeTypeId();
+	
+	/**
+	*	returns TestSrc as the type of known objects
+	*/
+	virtual openvideo::TestSrc* createNode();
+};
 } //namespace openvideo {
 
-#endif // ENABLE_GLUTSINK
-
-#endif // _GLUTSINKFACTORY_H
+#endif //#ifdef ENABLE_TESTSRC
+#endif

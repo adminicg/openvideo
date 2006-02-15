@@ -30,8 +30,8 @@
   * @file                                                                   
  /* ======================================================================= */
 
-#include "nodes/GLUTSinkFactory.h"
-#include "openVideo.h"
+#include <openvideo/nodes/GLUTSinkFactory.h>
+#include <openvideo/openVideo.h>
 #ifdef ENABLE_GLUTSINK
 
 using namespace openvideo;

@@ -32,14 +32,14 @@
 #ifndef _V4LSRC_H
 #define _V4LSRC_H
 
-#include "openVideo.h"
-#include "core/Node.h"
-#include "core/PixelFormat.h"
+#include <openvideo/openVideo.h>
+#include <openvideo/Node.h>
+#include <openvideo/PixelFormat.h>
 #include <string>
 
 #ifdef ENABLE_V4LSRC
 
-#include "v4l.h"
+#include <openvideo/nodes/v4l.h>
 
 /**
  *   @ingroup nodes

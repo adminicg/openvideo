@@ -31,11 +31,11 @@
  /* ======================================================================= */
 #ifndef _VIDEO_SINK_SUBSCRIBER_H
 #define _VIDEO_SINK_SUBSCRIBER_H
-#include "openVideo.h"
+#include <openvideo/openVideo.h>
 #ifdef  ENABLE_VIDEOSINK
 
-#include "Node.h"
-#include "State.h"
+#include <openvideo/Node.h>
+#include <openvideo/State.h>
 
 namespace openvideo {
 
@@ -48,7 +48,7 @@ public:
 	*/
 	~VideoSinkSubscriber();
 
-	virtual update(openvideo::State* curState)=0;
+	virtual void update(openvideo::State* curState)=0;
 
 	bool isResourceInUse();
 protected:

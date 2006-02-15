@@ -22,71 +22,83 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the TestSrc class.
+/** The header file for the VideoSink class.
   *
   * @author Denis Kalkofen
   *
-  * $Id: TestSrc.h 30 2005-12-10 12:10:50Z denis $
+  * $Id: VideoSink.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
-#ifndef _TESTSRC_H
-#define _TESTSRC_H
-#include "openVideo.h"
-#ifdef ENABLE_TESTSRC
-#include "Node.h"
+#ifndef _VIDEO_SINK_H
+#define _VIDEO_SINK_H
+#include <openvideo/openVideo.h>
+#ifdef  ENABLE_VIDEOSINK
+
+
+
+#include <openvideo/Node.h>
 
 /**
 *@ingroup nodes
-*	TestSrc implements an 320x240 image with a white background where a red,blue and green square moves 
-*	on. This node is used to test OpenVideo's environment with any input stream comming from a camera. 
+*	This node implements an publish-subsribers pattern to pass the video to any number of registered consumers.
+*	The node can be used to integrate an OpenVideo sink into another programm. 
+*
+*   Supported Pixel Formats:
+*	@li: R8G8B8
+*	@li: B8G8R8
+*	@li: R8G8B8X8
+*	@li: B8G8R8X8
+*	@li: L8
 */
 
 namespace openvideo {
+class VideoSinkSubscriber;
 
-class OPENVIDEO_API TestSrc :
+class OPENVIDEO_API VideoSink : 
 	public openvideo::Node
 {
 public:
 	/**
-	*	constructor.
-	*	creates a new context and allocates memory for the image.
+	*	constructor
 	*/
-	TestSrc();
+	VideoSink();
 
 	/**
-	*
+	*	destructor
 	*/
-	virtual ~TestSrc();
+	~VideoSink();
 
 	/**
-	*	clears the image and sets the widht and height onto its context.
+	*	
 	*/
 	virtual void init();
 
 	/**
-	*	updates the image by moving the three squares by one pixel.
+	*	
+	*/   
+	virtual void process();
+
+	virtual void postProcess();
+	/**
+	*	indicated whether the sink is started or not.
 	*/
-	virtual void process( );
-	
+	bool isStarted;
+
 	virtual void initPixelFormats();
-
- protected:
- 	/**
-	*	image 
-	*/
-	unsigned char *img;
-
+	
+	void subscribe(VideoSinkSubscriber* aSubscriber);
+protected:
 	/**
-	*	image widht and height
+	*	Internal texture format. defines the number of color components in the texture. valid values = 1,2,3, or 4.
 	*/
-	int width,height;
+	int internalFormat;
 
-	/**
-	*	current square position. 
-	*/
-	int posX,posY;
+	std::vector<VideoSinkSubscriber*> subsrcibers;
+	int size_subscribers;
 };
 
 } //namespace openvideo {
-#endif //#ifdef ENABLE_TESTSRC
+
+#endif // 
+
 #endif

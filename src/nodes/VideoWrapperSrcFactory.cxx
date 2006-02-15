@@ -30,8 +30,8 @@
   * @file                                                                   
  /* ======================================================================= */
 
-#include "nodes/VideoWrapperSrcFactory.h"
-#include "openVideo.h"
+#include <openvideo/nodes/VideoWrapperSrcFactory.h>
+#include <openvideo/openVideo.h>
 #ifdef ENABLE_VIDEOWRAPPERSRC
 
 using namespace openvideo;

@@ -29,8 +29,8 @@
   * $Id: GL_TEXTURE_2D_Sink.cxx 35 2005-12-23 17:42:35Z denis $
   * @file                                                                   
  /* ======================================================================= */
-#include "nodes/GL_TEXTURE_2D_Sink.h"
-#include "openVideo.h"
+#include <openvideo/nodes/GL_TEXTURE_2D_Sink.h>
+#include <openvideo/openVideo.h>
 #ifdef  ENABLE_GL_TEXTURE_2D_SINK
 #ifdef WIN32
 #pragma comment(lib,"opengl32.lib")
@@ -43,8 +43,8 @@
 
 using namespace openvideo;
 
-#include "State.h"
-#include "Manager.h"
+#include <openvideo/State.h>
+#include <openvideo/Manager.h>
 
 unsigned int 
 GL_TEXTURE_2D_Sink::get_video_texture_id()

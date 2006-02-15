@@ -29,6 +29,6 @@
   * $Id: State.cxx 15 2005-11-10 19:23:15Z daniel $
   * @file                                                                   
  /* ======================================================================= */
-#include "State.h"
+#include <openvideo/State.h>
 
 //everything is inlined

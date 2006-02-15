@@ -30,7 +30,7 @@
   * @file                                                                   
  /* ======================================================================= */
 
-#include "V4LSrcFactory.h"
+#include <openvideo/nodes/V4LSrcFactory.h>
 
 #ifdef ENABLE_V4LSRC
 

@@ -30,8 +30,9 @@
   * @file                                                                   
  /* ======================================================================= */
 
-#include "nodes/VideoSinkFactory.h"
-#include "openVideo.h"
+#include <openvideo/nodes/VideoSinkFactory.h>
+#include <openvideo/openVideo.h>
+
 #ifdef ENABLE_VIDEOSINK
 
 using namespace openvideo;

@@ -22,52 +22,55 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the V4LSrcFactory class.
+/** The header file for the GL_TEXTURE_2D_SinkFactory class.
   *
-  * @author Petter Risholm
+  * @author Denis Kalkofen
   *
-  * $Id: 
+  * $Id: GL_TEXTURE_2D_SinkFactory.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
 
-#ifndef _V4LSRCFACTORY_H
-#define _V4LSRCFACTORY_H
+#ifndef _GL_TEXTURE_2D_SinkFACTORY_H
+#define _GL_TEXTURE_2D_SinkFACTORY_H
+#include <openvideo/openVideo.h>
+#ifdef  ENABLE_GL_TEXTURE_2D_SINK
 
-#include "openVideo.h"
-
-#ifdef ENABLE_V4LSRC
-
-#include "core/NodeFactory.h"
-#include "V4LSrc.h"
+#include <openvideo/NodeFactory.h>
+#include <openvideo/nodes/GL_TEXTURE_2D_Sink.h>
 
 /**
 *@ingroup nodes
-*	A factory to create V4LSrc nodes.
+*	A factory to create GL_TEXTURE_2D_Sink nodes.
 */
-class OPENVIDEO_API  V4LSrcFactory
-	: public NodeFactory
+
+namespace openvideo {
+
+
+class OPENVIDEO_API  GL_TEXTURE_2D_SinkFactory
+	: public openvideo::NodeFactory
 {
 public:
 	/**
 	*	constructor
 	*/
-    V4LSrcFactory();
+    GL_TEXTURE_2D_SinkFactory();
 
 	/**
 	*	destructor
 	*/
-	~V4LSrcFactory();
-
+	~GL_TEXTURE_2D_SinkFactory();
+	
 	/**
-	*	creates videowrappersrc nodes
-	*/
-	virtual V4LSrc* createNode();
-
-	/**
-	*	returns V4LSrc as the type of known objects
+	*	creates GL_TEXTURE_2D_Sink nodes
 	*/
 	virtual const char* getNodeTypeId();
-};
 
-#endif // ENABLE_V4LSRC
-#endif // __V4LSRCFACTORY_H
+	/**
+	*	returns GL_TEXTURE_2D_Sink as the type of known objects
+	*/
+	virtual GL_TEXTURE_2D_Sink* createNode();
+};
+}
+
+#endif //#include "openVideo.h"
+#endif

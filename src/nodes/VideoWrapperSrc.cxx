@@ -30,10 +30,10 @@
   * @file                                                                   
  /* ======================================================================= */
 
-#include "nodes/VideoWrapperSrc.h"
-#include "openVideo.h"
+#include <openvideo/nodes/VideoWrapperSrc.h>
+#include <openvideo/openVideo.h>
+
 #ifdef ENABLE_VIDEOWRAPPERSRC
-#include <VideoWrapper.h>
 
 #ifdef WIN32
 	#ifdef _DEBUG
@@ -45,7 +45,7 @@
 
 #endif
 
-#include "core/State.h"
+#include <openvideo/State.h>
 
 using namespace openvideo;
 

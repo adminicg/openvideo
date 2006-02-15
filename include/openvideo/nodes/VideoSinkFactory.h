@@ -22,47 +22,55 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the TestSrcFactory class.
+/** The header file for the VideoSinkFactory class.
   *
   * @author Denis Kalkofen
   *
-  * $Id: TestSrcFactory.h 30 2005-12-10 12:10:50Z denis $
+  * $Id: VideoSinkFactory.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
-#ifndef _TESTSRCFACTORY_H
-#define _TESTSRCFACTORY_H
-#include "openVideo.h"
-#ifdef ENABLE_TESTSRC
-#include "TestSrc.h"
-#include "NodeFactory.h"
+
+#ifndef _VIDEO_SinkFACTORY_H
+#define _VIDEO_SinkFACTORY_H
+#include <openvideo/openVideo.h>
+#ifdef  ENABLE_VIDEOSINK
+
+#include <openvideo/NodeFactory.h>
+#include <openvideo/nodes/VideoSink.h>
 
 /**
 *@ingroup nodes
-*	A factory to create TestSrc nodes.
+*	A factory to create VideoSink nodes.
 */
 
 namespace openvideo {
 
-class OPENVIDEO_API  TestSrcFactory :
-	public openvideo::NodeFactory
+
+class OPENVIDEO_API  VideoSinkFactory
+	: public openvideo::NodeFactory
 {
 public:
 	/**
 	*	constructor
 	*/
-	TestSrcFactory(){};
+    VideoSinkFactory();
 
 	/**
-	*	creates TestSrc nodes
+	*	destructor
 	*/
-	virtual const char* getNodeTypeId();
+	~VideoSinkFactory();
 	
 	/**
-	*	returns TestSrc as the type of known objects
+	*	creates VideoSink nodes
 	*/
-	virtual openvideo::TestSrc* createNode();
-};
-} //namespace openvideo {
+	virtual const char* getNodeTypeId();
 
-#endif //#ifdef ENABLE_TESTSRC
+	/**
+	*	returns VideoSink as the type of known objects
+	*/
+	virtual VideoSink* createNode();
+};
+}
+
+#endif //#include "openVideo.h"
 #endif

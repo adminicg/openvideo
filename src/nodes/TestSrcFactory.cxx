@@ -29,8 +29,8 @@
   * $Id: TestSrcFactory.cxx 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   
  /* ======================================================================= */
-#include "nodes/TestSrcFactory.h"
-#include "openVideo.h"
+#include <openvideo/nodes/TestSrcFactory.h>
+#include <openvideo/openVideo.h>
 #ifdef ENABLE_TESTSRC
 using namespace openvideo;
 

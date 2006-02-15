@@ -22,83 +22,52 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the VideoSink class.
+/** The header file for the V4LSrcFactory class.
   *
-  * @author Denis Kalkofen
+  * @author Petter Risholm
   *
-  * $Id: VideoSink.h 30 2005-12-10 12:10:50Z denis $
+  * $Id: 
   * @file                                                                   */
  /* ======================================================================= */
-#ifndef _VIDEO_SINK_H
-#define _VIDEO_SINK_H
-#include "openVideo.h"
-#ifdef  ENABLE_VIDEOSINK
 
+#ifndef _V4LSRCFACTORY_H
+#define _V4LSRCFACTORY_H
 
+#include <openvideo/openVideo.h>
 
-#include "Node.h"
+#ifdef ENABLE_V4LSRC
+
+#include <openvideo/core/NodeFactory.h>
+#include <openvideo/nodes/V4LSrc.h>
 
 /**
 *@ingroup nodes
-*	This node implements an publish-subsribers pattern to pass the video to any number of registered consumers.
-*	The node can be used to integrate an OpenVideo sink into another programm. 
-*
-*   Supported Pixel Formats:
-*	@li: R8G8B8
-*	@li: B8G8R8
-*	@li: R8G8B8X8
-*	@li: B8G8R8X8
-*	@li: L8
+*	A factory to create V4LSrc nodes.
 */
-
-namespace openvideo {
-class VideoSinkSubscriber;
-
-class OPENVIDEO_API VideoSink : 
-	public openvideo::Node
+class OPENVIDEO_API  V4LSrcFactory
+	: public NodeFactory
 {
 public:
 	/**
 	*	constructor
 	*/
-	VideoSink();
+    V4LSrcFactory();
 
 	/**
 	*	destructor
 	*/
-	~VideoSink();
+	~V4LSrcFactory();
 
 	/**
-	*	
+	*	creates videowrappersrc nodes
 	*/
-	virtual void init();
+	virtual V4LSrc* createNode();
 
 	/**
-	*	
-	*/   
-	virtual void process();
-
-	virtual void postProcess();
-	/**
-	*	indicated whether the sink is started or not.
+	*	returns V4LSrc as the type of known objects
 	*/
-	bool isStarted;
-
-	virtual void initPixelFormats();
-	
-	void subscribe(VideoSinkSubscriber* aSubscriber);
-protected:
-	/**
-	*	Internal texture format. defines the number of color components in the texture. valid values = 1,2,3, or 4.
-	*/
-	int internalFormat;
-
-	std::vector<VideoSinkSubscriber*> subsrcibers;
-	int size_subscribers;
+	virtual const char* getNodeTypeId();
 };
 
-} //namespace openvideo {
-
-#endif // 
-
-#endif
+#endif // ENABLE_V4LSRC
+#endif // __V4LSRCFACTORY_H

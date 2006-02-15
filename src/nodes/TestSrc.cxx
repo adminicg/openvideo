@@ -29,11 +29,11 @@
   * $Id: TestSrc.cxx 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   
  /* ======================================================================= */
-#include "nodes/TestSrc.h"
-#include "openVideo.h"
+#include <openvideo/nodes/TestSrc.h>
+#include <openvideo/openVideo.h>
 #ifdef ENABLE_TESTSRC
-#include "Manager.h"
-#include "State.h"
+#include <openvideo/Manager.h>
+#include <openvideo/State.h>
 
 using namespace openvideo;
 

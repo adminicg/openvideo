@@ -22,55 +22,54 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the VideoSinkFactory class.
+/** The header file for the GLUTSinkFactory class.
   *
   * @author Denis Kalkofen
   *
-  * $Id: VideoSinkFactory.h 30 2005-12-10 12:10:50Z denis $
+  * $Id: GLUTSinkFactory.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
+#ifndef _GLUTSINKFACTORY_H
+#define _GLUTSINKFACTORY_H
+#include <openvideo/openVideo.h>
+#ifdef ENABLE_GLUTSINK
 
-#ifndef _VIDEO_SinkFACTORY_H
-#define _VIDEO_SinkFACTORY_H
-#include "openVideo.h"
-#ifdef  ENABLE_VIDEOSINK
 
-#include "NodeFactory.h"
-#include "nodes/VideoSink.h"
+#include <openvideo/NodeFactory.h>
+#include <openvideo/nodes/GLUTSink.h>
 
 /**
 *@ingroup nodes
-*	A factory to create VideoSink nodes.
+*	A factory to create GLUTSink nodes.
 */
-
 namespace openvideo {
-
-
-class OPENVIDEO_API  VideoSinkFactory
+class OPENVIDEO_API  GLUTSinkFactory
 	: public openvideo::NodeFactory
 {
-public:
-	/**
+ public:
+   	/**
 	*	constructor
 	*/
-    VideoSinkFactory();
-
-	/**
+    GLUTSinkFactory();
+    
+   	/**
 	*	destructor
 	*/
-	~VideoSinkFactory();
-	
+    ~GLUTSinkFactory();
+    
 	/**
-	*	creates VideoSink nodes
+	*	creates GLUTSink nodes
 	*/
-	virtual const char* getNodeTypeId();
-
+    virtual const char* getNodeTypeId();
+    
 	/**
-	*	returns VideoSink as the type of known objects
+	*	returns GLUTSink as the type of known objects
 	*/
-	virtual VideoSink* createNode();
+	virtual openvideo::GLUTSink* createNode();
 };
-}
 
-#endif //#include "openVideo.h"
-#endif
+} //namespace openvideo {
+
+#endif // ENABLE_GLUTSINK
+
+#endif // _GLUTSINKFACTORY_H

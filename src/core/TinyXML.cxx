@@ -31,9 +31,14 @@
  /* ======================================================================= */
 
 
-#include "configOV.h"
 
-#  include <tinyxml.h>
+// The configOV.h file is only used on windows. On linux command line
+// arguments are used instead.
+#ifdef HAVE_CONFIGOV_H
+#include <openvideo/configOV.h>
+#endif
+
+#  include <tinyxml/tinyxml.h>
 
 #  if defined(TINYXML_MOD)
 

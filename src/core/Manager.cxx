@@ -29,36 +29,41 @@
   * $Id$
   * @file                                                                   
  /* ======================================================================= */
-#include "Manager.h"
+#include <openvideo/Manager.h>
 
-#include "configOV.h"
-#include "tinyxml.h"
+// The configOV.h file is only used on windows. On linux command line
+// arguments are used instead.
+#ifdef HAVE_CONFIGOV_H
+#include <openvideo/configOV.h>
+#endif
 
-#include "Timer.h"
-#include "NodeFactory.h"
-#include "Node.h"
+#include <tinyxml/tinyxml.h>
+
+#include <openvideo/Timer.h>
+#include <openvideo/NodeFactory.h>
+#include <openvideo/Node.h>
 	
 using namespace openvideo;
 
 /////known nodes
 #ifdef ENABLE_GLUTSINK
-#include "nodes/GLUTSinkFactory.h"
+#include <openvideo/nodes/GLUTSinkFactory.h>
 #endif
 
 #ifdef ENABLE_TESTSRC
-#include "nodes/TestSrcFactory.h"
+#include <openvideo/nodes/TestSrcFactory.h>
 #endif
 
 #ifdef ENABLE_GL_TEXTURE_2D_SINK
-#include "nodes/GL_TEXTURE_2D_SinkFactory.h"
+#include <openvideo/nodes/GL_TEXTURE_2D_SinkFactory.h>
 #endif
 
 #ifdef ENABLE_VIDEOWRAPPERSRC
-#include "nodes/VideoWrapperSrcFactory.h"
+#include <openvideo/nodes/VideoWrapperSrcFactory.h>
 #endif
 
 #ifdef ENABLE_VIDEOSINK
-#include "nodes/VideoSinkFactory.h"
+#include <openvideo/nodes/VideoSinkFactory.h>
 #endif
 
 #include <iostream>

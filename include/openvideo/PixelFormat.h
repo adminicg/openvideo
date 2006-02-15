@@ -33,7 +33,7 @@
 #ifndef _PIXELFORMAT_H
 #define _PIXELFORMAT_H
 
-#include <openVideo.h>
+#include <openvideo/openVideo.h>
 #include <string>
 
 

@@ -22,55 +22,52 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the GL_TEXTURE_2D_SinkFactory class.
+/** The header file for the VideoWrapperSrcFactory class.
   *
   * @author Denis Kalkofen
   *
-  * $Id: GL_TEXTURE_2D_SinkFactory.h 30 2005-12-10 12:10:50Z denis $
+  * $Id: VideoWrapperSrcFactory.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
 
-#ifndef _GL_TEXTURE_2D_SinkFACTORY_H
-#define _GL_TEXTURE_2D_SinkFACTORY_H
-#include "openVideo.h"
-#ifdef  ENABLE_GL_TEXTURE_2D_SINK
+#ifndef _VIDEOWRAPPERSRCFACTORY_H
+#define _VIDEOWRAPPERSRCFACTORY_H
+#include <openvideo/openVideo.h>
+#ifdef ENABLE_VIDEOWRAPPERSRC
 
-#include "NodeFactory.h"
-#include "nodes/GL_TEXTURE_2D_Sink.h"
-
+#include <openvideo/NodeFactory.h>
+#include <openvideo/nodes/VideoWrapperSrc.h>
 /**
 *@ingroup nodes
-*	A factory to create GL_TEXTURE_2D_Sink nodes.
+*	A factory to create VideoWrapperSrc nodes.
 */
-
 namespace openvideo {
-
-
-class OPENVIDEO_API  GL_TEXTURE_2D_SinkFactory
+class OPENVIDEO_API  VideoWrapperSrcFactory
 	: public openvideo::NodeFactory
 {
 public:
 	/**
 	*	constructor
 	*/
-    GL_TEXTURE_2D_SinkFactory();
+    VideoWrapperSrcFactory();
 
 	/**
 	*	destructor
 	*/
-	~GL_TEXTURE_2D_SinkFactory();
-	
+	~VideoWrapperSrcFactory();
+
 	/**
-	*	creates GL_TEXTURE_2D_Sink nodes
+	*	creates videowrappersrc nodes
+	*/
+	virtual openvideo::VideoWrapperSrc* createNode();
+
+	/**
+	*	returns VideoWrapperSrc as the type of known objects
 	*/
 	virtual const char* getNodeTypeId();
-
-	/**
-	*	returns GL_TEXTURE_2D_Sink as the type of known objects
-	*/
-	virtual GL_TEXTURE_2D_Sink* createNode();
 };
-}
 
-#endif //#include "openVideo.h"
-#endif
+}//namespace openvideo {
+#endif // ENABLE_VIDEOWRAPPERSRC
+
+#endif // _VIDEOWRAPPERSRCFACTORY_H

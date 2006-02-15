@@ -30,8 +30,8 @@
   * @file                                                                   
  /* ======================================================================= */
 
-#include "nodes/GL_TEXTURE_2D_SinkFactory.h"
-#include "openVideo.h"
+#include <openvideo/nodes/GL_TEXTURE_2D_SinkFactory.h>
+#include <openvideo/openVideo.h>
 #ifdef ENABLE_GL_TEXTURE_2D_SINK
 
 using namespace openvideo;

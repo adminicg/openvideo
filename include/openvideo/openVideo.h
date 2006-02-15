@@ -34,8 +34,11 @@
 #ifndef _OPENVIDEO_H_
 #define _OPENVIDEO_H_
 
-#include "configOV.h"
-
+// The configOV.h file is only used on windows. On linux command line
+// arguments are used instead.
+#ifdef HAVE_CONFIGOV_H
+#include <openvideo/configOV.h>
+#endif
 
 #ifdef WIN32
 #pragma warning(disable:4251)

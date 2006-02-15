@@ -31,10 +31,10 @@
  /* ======================================================================= */
 #ifndef _GL_TEXTURE_2D_SINK_H
 #define _GL_TEXTURE_2D_SINK_H
-#include "openVideo.h"
+#include <openvideo/openVideo.h>
 #ifdef  ENABLE_GL_TEXTURE_2D_SINK
 
-#include "Node.h"
+#include <openvideo/Node.h>
 class ACE_Mutex;
 /**
 *@ingroup nodes

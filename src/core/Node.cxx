@@ -30,8 +30,8 @@
   * @file                                                                   
  /* ======================================================================= */
 
-#include "Node.h"
-#include "State.h"
+#include <openvideo/Node.h>
+#include <openvideo/State.h>
 
 using namespace openvideo;
 

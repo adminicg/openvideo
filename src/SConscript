@@ -1,0 +1,31 @@
+import os
+import buildutils
+
+# Import environment from SConstruct file
+Import('env')
+
+# Set up filters for source and include files
+sourcefilter  = '\.cxx$|\.cpp$|\.moc$|\.cc$|\.c$'
+includefilter = '\.h$'
+ignorefilter  = '/ignore/|/ignore$|\.scon|\.svn|\.#'
+
+# Search for source files
+sourcedir   = Dir('#').abspath + os.sep + 'src'
+sourcefiles = buildutils.listtrav(sourcedir , sourcedir)
+sourcefiles = buildutils.regexpfilter(sourcefiles, sourcefilter, True)
+sourcefiles = buildutils.regexpfilter(sourcefiles, ignorefilter, False)
+
+# Search for include files
+includedir   = Dir('#').abspath + os.sep + 'include'
+includefiles = buildutils.listtrav(includedir, includedir)
+includefiles = buildutils.regexpfilter(includefiles, includefilter, True)
+includefiles = buildutils.regexpfilter(includefiles, ignorefilter, False)
+
+# Bulid shared library 
+openvideolib = env.SharedLibrary('openvideo', sourcefiles)
+env.Alias(target = ['install'], source = env.Install(dir = '${INSTALLDIR}/lib', source = openvideolib))
+
+# Install header files
+for include in includefiles:
+    dirname = include[0:include.rindex(os.sep)]
+    env.Alias(target = ['install'], source = env.Install(dir = '${INSTALLDIR}/include' + os.sep + dirname, source = includedir + os.sep + include))

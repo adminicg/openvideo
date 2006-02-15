@@ -31,11 +31,11 @@
  /* ======================================================================= */
 #ifndef _GLUTSINK_H
 #define _GLUTSINK_H
-#include "openVideo.h"
+#include <openvideo/openVideo.h>
 #ifdef ENABLE_GLUTSINK
 
 
-#include "Node.h"
+#include <openvideo/Node.h>
 
 
 class  ACE_Thread_Mutex;

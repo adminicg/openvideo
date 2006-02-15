@@ -31,7 +31,7 @@
 /* ======================================================================= */
 
 
-#include "PixelFormat.h"
+#include <openvideo/PixelFormat.h>
 #include <map>
 
 
