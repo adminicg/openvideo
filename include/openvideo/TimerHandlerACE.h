@@ -22,31 +22,59 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the Timer class.
+/** The header file for the TimerHandlerACE class.
   *
   * @author Denis Kalkofen
   *
-  * $Id: Timer.h 30 2005-12-10 12:10:50Z denis $
+  * $Id: TimerHandlerACE.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
 
-#ifndef _TIMER_H
-#define _TIMER_H
+#ifndef _TIMERHANDLERACE_H
+#define _TIMERHANDLERACE_H
+
+#include <ace/Event_Handler.h>
+
+/**
+*@ingroup core
+*	Class to handle time out events. 
+*	The function handle_timout will call the previsouly registered callback function 
+*	timerCB.
+*/
+
+namespace openvideo{
+class TimerHandlerACE : public ACE_Event_Handler
+{
+public:
+	/**
+	*	Constructor
+	*/
+	TimerHandlerACE();
+
+	/**
+	*	Destructor
+	*/
+	~TimerHandlerACE();
+	
+	/**
+	*	The callback function. This functions is called by 'handle_timeout'
+	*/  
+	void (*timerCB)(void*);
+
+	/**
+	*	The callback data.
+	*/
+	void* data;
+
+	/**
+	*	The function which is called by the Timer.
+	*/
+	int handle_timeout (const ACE_Time_Value &current_time,
+                        const void *);
 
 
-#ifdef WIN32
-    #include "TimerACE.h"
-    namespace openvideo{
-        typedef openvideo::TimerACE Timer;
-    }
-#endif
+};
 
-#ifdef LINUX
-    #include "TimerACE.h"
-        namespace openvideo{
-            typedef openvideo::TimerACE Timer;
-        }
-#endif
-
+} //namespace
 
 #endif

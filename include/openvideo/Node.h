@@ -30,8 +30,8 @@
   * @file                                                                   */
  /* ======================================================================= */
 
-#ifndef _NODE_H
-#define _NODE_H
+#ifndef _NODEOV_H
+#define _NODEOV_H
 
 #include "openVideo.h"
 

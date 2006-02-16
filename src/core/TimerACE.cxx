@@ -22,60 +22,53 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the TimerHandler class.
+/** The source file for the TimerACE class.
   *
   * @author Denis Kalkofen
-  *
-  * $Id: TimerHandler.h 30 2005-12-10 12:10:50Z denis $
-  * @file                                                                   */
+  * 
+  * $Id$
+  * @file                                                                   
  /* ======================================================================= */
 
-#ifndef _TIMERHANDLER_H
-#define _TIMERHANDLER_H
-#include "openVideo.h"
-#include <ace/Event_Handler.h>
+#include <openvideo/TimerACE.h>
+#include <ace/Reactor.h>
+#include <openvideo/TimerHandlerACE.h>
 
-/**
-*@ingroup core
-*	Class to handle time out events. 
-*	The function handle_timout will call the previsouly registered callback function 
-*	timerCB.
-*/
+using namespace openvideo;
 
-namespace openvideo{
-class OPENVIDEO_API TimerHandler : 
-	public ACE_Event_Handler
+// constructor
+TimerACE::TimerACE()
 {
-public:
-	/**
-	*	Constructor
-	*/
-	TimerHandler();
+	htimer=NULL;
+}
 
-	/**
-	*	Destructor
-	*/
-	~TimerHandler();
-	
-	/**
-	*	The callback function. This functions is called by 'handle_timeout'
-	*/  
-	void (*timerCB)(void*);
+// destructor
 
-	/**
-	*	The callback data.
-	*/
-	void* data;
-
-	/**
-	*	The function which is called by the Timer.
-	*/
-	int handle_timeout (const ACE_Time_Value &current_time,
-                        const void *);
+TimerACE::~TimerACE()
+{
+	if(htimer)
+		delete htimer;
+}
 
 
-};
+void 
+TimerACE::schedule(void (*timerCB)(void*),void* data,double interval)
+{
+	htimer=new openvideo::TimerHandlerACE();
+	htimer->timerCB=timerCB;
+	htimer->data=data;
+	ACE_Time_Value initialDelay (0);
+	ACE_Time_Value tickVal;
+	tickVal.set(interval);
+	ACE_Reactor::instance()->schedule_timer (htimer,
+											0,
+											initialDelay,
+											tickVal);
 
-} //namespace
+}
 
-#endif
+void 
+TimerACE::runEventLoop()
+{
+	ACE_Reactor::run_event_loop();
+}

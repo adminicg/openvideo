@@ -85,6 +85,7 @@ Manager* Manager::instance=NULL;
 
 Manager::Manager()
 {
+    logger=  new  Logger();
 	initNodeFactories();
 	
 	setInitTravFunction(&Manager::initTopologicalSortedTraversal,&(nodes));
@@ -103,6 +104,7 @@ Manager::~Manager()
       delete nodes.at(i);
     }
 	nodes.clear();
+    delete logger;
 }
 
 bool
@@ -182,7 +184,7 @@ Manager::addNode(void *elem)
 			}
 		}
 		if(!nodeFactory){
-			printf("OpenVideo: can't find a factory for %s\n",element->Value());
+			logger->logEx("OpenVideo: can't find a factory for %s\n",element->Value());
 			exit(-1);
 		}
 		//create Node 
@@ -215,7 +217,7 @@ Manager::parseConfiguration(const std::string& filename)
 
 	if(!document->LoadFile(filename.c_str()))
 	{
-		printf("OpenVideo:An error occured during parsing\n   Message: %s\n", document->ErrorDesc());
+		logger->logEx("OpenVideo:An error occured during parsing\n   Message: %s\n", document->ErrorDesc());
         return false;
 	}
 	//
@@ -261,7 +263,7 @@ Manager::run()
 
 		if(!nodes[i]->validateCurrentPixelFormat())
 		{
-			printf("OV: %s uses an unknown pixel format\n",nodes[i]->getName());
+			logger->logEx("OV: %s uses an unknown pixel format\n",nodes[i]->getName());
 			exit(-1);
 		}
 	}
@@ -270,8 +272,7 @@ Manager::run()
 	isOVStarted=true;
 	Timer timer;
 	timer.schedule(Manager::traversalFunc,Manager::traversalData,double(1.0/(double)updateRate));
-	printf("\nOpenVideo: start main loop !\n");
-	fflush(stdout);
+	logger->log("\nOpenVideo: start main loop !\n");
 	timer.runEventLoop();
 }
 

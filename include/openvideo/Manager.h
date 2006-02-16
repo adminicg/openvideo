@@ -82,6 +82,8 @@
  *
  * @author Denis Kalkofen
  */
+#include <openvideo/Logger.h>
+
 namespace openvideo {
 class Node;
 class NodeFactory;
@@ -151,7 +153,7 @@ class OPENVIDEO_API Manager
 
     bool isStarted();
 
-
+    Logger* getLogger(){return logger;}
  protected:
 	 /** 
 	 *	constructor 
@@ -229,6 +231,8 @@ class OPENVIDEO_API Manager
 	*	A Mutex to block the invocation of a new traversal before the current traversal finishes 
 	*/
 	static bool travBlock;
+
+    Logger* logger;
 };
 }//namespace openvideo 
 

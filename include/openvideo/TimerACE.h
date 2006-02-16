@@ -22,53 +22,67 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The source file for the Timer class.
+/** The header file for the TimerACE class.
   *
   * @author Denis Kalkofen
-  * 
-  * $Id$
-  * @file                                                                   
+  *
+  * $Id: TimerACE.h 30 2005-12-10 12:10:50Z denis $
+  * @file                                                                   */
  /* ======================================================================= */
 
-#include <openvideo/Timer.h>
-#include <ace/Reactor.h>
-#include <openvideo/TimerHandler.h>
+#ifndef _TIMERACE_H
+#define _TIMERACE_H
 
-using namespace openvideo;
 
-// constructor
-Timer::Timer()
+/**
+*@ingroup core
+*	Implemtents a Timer, based on the timer implementations the ACE_Reactor provides. 
+*	It uses an instance of TimerHandler to schedule the timer. 
+*/
+
+
+namespace openvideo {
+class TimerHandlerACE;
+
+class TimerACE 
 {
-	htimer=NULL;
-}
+public:
+	/**
+	*	Constructor
+	*/	
+	TimerACE();
 
-// destructor
+	/**
+	*	Destructor
+	*/	
+	~TimerACE();
+  
+	/**
+	*	Schedule the timer.\n 
+	*	parameter: \n
+	*		a) timerCB - the callback function
+	*		b) data - callback data
+	*		c) interval - the timers interval
+	*/	  
+	virtual void schedule(void (*timerCB)(void*),void* data,double interval);
 
-Timer::~Timer()
-{
-	if(htimer)
-		delete htimer;
-}
+	/**
+	*	Start event loop. (calls ACE_Reactor::run_event_loop())
+	*/	
+	virtual void runEventLoop();
 
+	/**
+	* Boolean to prevent multiple calls to ACE_Reactor::run_event_loop();
+	*/
+	static bool isEventLoopRunning;
 
-void 
-Timer::schedule(void (*timerCB)(void*),void* data,double interval)
-{
-	htimer=new openvideo::TimerHandler();
-	htimer->timerCB=timerCB;
-	htimer->data=data;
-	ACE_Time_Value initialDelay (0);
-	ACE_Time_Value tickVal;
-	tickVal.set(interval);
-	ACE_Reactor::instance()->schedule_timer (htimer,
-											0,
-											initialDelay,
-											tickVal);
+private:
+	/**
+	*	The timer handler .
+	*/
+	TimerHandlerACE *htimer;
 
-}
+};
 
-void 
-Timer::runEventLoop()
-{
-	ACE_Reactor::run_event_loop();
-}
+}//openvideo {
+#endif

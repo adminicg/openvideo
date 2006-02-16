@@ -22,7 +22,7 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The source file for the TimerHandler class.
+/** The source file for the TimerHandlerACE class.
   *
   * @author Denis Kalkofen
   * 
@@ -30,18 +30,18 @@
   * @file                                                                   
  /* ======================================================================= */
 
-#include <openvideo/TimerHandler.h>
+#include <openvideo/TimerHandlerACE.h>
 
 using namespace openvideo;
 	
-TimerHandler::TimerHandler()
+TimerHandlerACE::TimerHandlerACE()
 {}
 
-TimerHandler::~TimerHandler()
+TimerHandlerACE::~TimerHandlerACE()
 {}
 
 int 
-TimerHandler::handle_timeout (const ACE_Time_Value &current_time,
+TimerHandlerACE::handle_timeout (const ACE_Time_Value &current_time,
                         const void *)
 {
 

@@ -155,7 +155,7 @@ GLUTSink::mainLoop(void *)
 void 
 GLUTSink::init()
 {
-   printf("OpenVideo: init GLUTSink '%s' \n",name.c_str());
+   Manager::getInstance()->getLogger()->logEx("OpenVideo: init GLUTSink '%s' \n",name.c_str());
 	//glteximage2d supported formats
 	//glteximage2d supported formats
 	///original gl spec. 
@@ -220,7 +220,7 @@ GLUTSink::init()
 			break;
 
 		default:
-			printf("GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
+			Manager::getInstance()->getLogger()->logEx("GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
 				(PixelFormat::FormatToString(curPixelFormat)).c_str());
 			exit(-1);
 
@@ -254,7 +254,7 @@ GLUTSink::init()
 void
 GLUTSink::start()
 {
-	printf("GLUTSink::start()\n");
+	Manager::getInstance()->getLogger()->log("GLUTSink::start()\n");
 	if(!GLUTSink::isGlutThread){
 		//start glut in a new thread
 		GLUTSink::isGlutThread=true;
@@ -269,7 +269,7 @@ GLUTSink::start()
 				0
 		)==-1)
 		{ 
-			printf("Error in spawning thread\n"); 
+			Manager::getInstance()->getLogger()->log("Error in spawning thread\n"); 
 		}
 	}
 }

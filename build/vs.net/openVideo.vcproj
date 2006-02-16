@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/VideoWrapper/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLROOT)/include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/VideoWrapper/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)/..&quot;;&quot;$(TINYXMLROOT)/include&quot;"
 				PreprocessorDefinitions="HAVE_CONFIGOV_H; WIN32;_DEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="3"
@@ -173,6 +173,12 @@
 				Name="core"
 				Filter="">
 				<File
+					RelativePath="..\..\src\core\LoggerBase.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\core\LoggerPC.cxx">
+				</File>
+				<File
 					RelativePath="..\..\src\core\Manager.cxx">
 				</File>
 				<File
@@ -185,10 +191,10 @@
 					RelativePath="..\..\src\core\State.cxx">
 				</File>
 				<File
-					RelativePath="..\..\src\core\Timer.cxx">
+					RelativePath="..\..\src\core\TimerACE.cxx">
 				</File>
 				<File
-					RelativePath="..\..\src\core\TimerHandler.cxx">
+					RelativePath="..\..\src\core\TimerHandlerACE.cxx">
 				</File>
 				<File
 					RelativePath="..\..\src\core\TinyXML.cxx">
@@ -202,66 +208,48 @@
 			<Filter
 				Name="Nodes"
 				Filter="">
-				<File
-					RelativePath="..\..\include\nodes\GL_TEXTURE_2D_Sink.h">
-				</File>
-				<File
-					RelativePath="..\..\include\nodes\GL_TEXTURE_2D_SinkFactory.h">
-				</File>
-				<File
-					RelativePath="..\..\include\nodes\GLUTSink.h">
-				</File>
-				<File
-					RelativePath="..\..\include\nodes\GLUTSinkFactory.h">
-				</File>
-				<File
-					RelativePath="..\..\include\nodes\TestSrc.h">
-				</File>
-				<File
-					RelativePath="..\..\include\nodes\TestSrcFactory.h">
-				</File>
-				<File
-					RelativePath="..\..\include\nodes\VideoSink.h">
-				</File>
-				<File
-					RelativePath="..\..\include\nodes\VideoSinkFactory.h">
-				</File>
-				<File
-					RelativePath="..\..\include\nodes\VideoSinkSubscriber.h">
-				</File>
-				<File
-					RelativePath="..\..\include\nodes\VideoWrapperSrc.h">
-				</File>
-				<File
-					RelativePath="..\..\include\nodes\VideoWrapperSrcFactory.h">
-				</File>
 			</Filter>
 			<Filter
 				Name="core"
 				Filter="">
 				<File
-					RelativePath="..\..\include\Manager.h">
+					RelativePath="..\..\include\openvideo\Logger.h">
 				</File>
 				<File
-					RelativePath="..\..\include\Node.h">
+					RelativePath="..\..\include\openvideo\LoggerBase.h">
 				</File>
 				<File
-					RelativePath="..\..\include\NodeFactory.h">
+					RelativePath="..\..\include\openvideo\LoggerPC.h">
 				</File>
 				<File
-					RelativePath="..\..\include\openVideo.h">
+					RelativePath="..\..\include\openvideo\Manager.h">
 				</File>
 				<File
-					RelativePath="..\..\include\PixelFormat.h">
+					RelativePath="..\..\include\openvideo\Node.h">
 				</File>
 				<File
-					RelativePath="..\..\include\State.h">
+					RelativePath="..\..\include\openvideo\NodeFactory.h">
 				</File>
 				<File
-					RelativePath="..\..\include\Timer.h">
+					RelativePath="..\..\include\openvideo\openVideo.h">
 				</File>
 				<File
-					RelativePath="..\..\include\TimerHandler.h">
+					RelativePath="..\..\include\openvideo\PixelFormat.h">
+				</File>
+				<File
+					RelativePath="..\..\include\openvideo\State.h">
+				</File>
+				<File
+					RelativePath="..\..\include\openvideo\Timer.h">
+				</File>
+				<File
+					RelativePath="..\..\include\openvideo\TimerACE.h">
+				</File>
+				<File
+					RelativePath="..\..\include\openvideo\TimerBase.h">
+				</File>
+				<File
+					RelativePath="..\..\include\openvideo\TimerHandlerACE.h">
 				</File>
 			</Filter>
 		</Filter>

@@ -22,31 +22,47 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the Timer class.
+/** The header file for the TimerBase class.
   *
   * @author Denis Kalkofen
   *
-  * $Id: Timer.h 30 2005-12-10 12:10:50Z denis $
+  * $Id: TimerBase.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
 
-#ifndef _TIMER_H
-#define _TIMER_H
+#ifndef _TIMERBASE_H
+#define _TIMERBASE_H
 
+namespace openvideo {
 
-#ifdef WIN32
-    #include "TimerACE.h"
-    namespace openvideo{
-        typedef openvideo::TimerACE Timer;
-    }
-#endif
+class TimerBase 
+{
+public:
+	/**
+	*	Destructor
+	*/	
+    ~TimerBase(){}
+  
+	/**
+	*	Schedule the timer.\n 
+	*	parameter: \n
+	*		a) timerCB - the callback function
+	*		b) data - callback data
+	*		c) interval - the timers interval
+	*/	  
+	virtual void schedule(void (*timerCB)(void*),void* data,double interval)=0;
 
-#ifdef LINUX
-    #include "TimerACE.h"
-        namespace openvideo{
-            typedef openvideo::TimerACE Timer;
-        }
-#endif
+	/**
+	*	Start event loop. (calls ACE_Reactor::run_event_loop())
+	*/	
+	virtual void runEventLoop()=0;
 
+private:
+    /**
+    *	Constructor
+    */	
+    TimerBase(){}
+};
 
+}//openvideo {
 #endif

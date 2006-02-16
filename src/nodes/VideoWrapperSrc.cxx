@@ -73,15 +73,15 @@ VideoWrapperSrc::initPixelFormats()
 void
 VideoWrapperSrc::init()
 {
-	printf("OpenVideo: start VideoWrapperSrc\n");
+	Manager::getInstance()->getLogger()->log("OpenVideo: start VideoWrapperSrc\n");
 
 	char camInitString[256];//="vc: 0 320x240 15 UYVY 0";
 	sprintf(camInitString,"%s: %i %ix%i %i %s %f\n",libId,cameraNum,width,height,frameRate,formatId,scale);;
-	printf("camInitString= %s",camInitString);
+	Manager::getInstance()->getLogger()->logEx("camInitString= %s",camInitString);
 
 	if(VIDEO_openVideo(camInitString, &g_hVideo)!= VW_SUCCESS)
 	{
-		printf("failed to open video\n");
+		Manager::getInstance()->getLogger()->log("failed to open video\n");
 	}
 
 //	VIDEO_setPropertyLong(g_hVideo,CAMERAPROP_BRIGHT,1);
@@ -90,7 +90,7 @@ VideoWrapperSrc::init()
 	// start video
 	if(VIDEO_startVideo(g_hVideo)!= VW_SUCCESS)
 	{
-		printf("failed to start video\n");
+		Manager::getInstance()->getLogger()->log("failed to start video\n");
 	}
 
 	// get video size
