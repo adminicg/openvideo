@@ -31,17 +31,19 @@
  /* ======================================================================= */
 
 #include <openvideo/nodes/OpenCVSrcFactory.h>
+#include <openvideo/nodes/OpenCVSrc.h>
 #include <openvideo/openVideo.h>
 
-// If libdc1394 is available
-#ifdef USE_OPENCV
+// If OpenCV is available
+#ifdef ENABLE_OPENCV
 
 using namespace openvideo;
 
 OpenCVSrc* 
 OpenCVSrcFactory::createNode()
 {
-  return (new OpenCVSrc());
+  //return (new OpenCVSrc());
+  return NULL;
 }
 
 const char* 
@@ -50,4 +52,4 @@ OpenCVSrcFactory::getNodeTypeId()
   return "OpenCVSrc";
 }
 
-#endif // USE_OPENCV
+#endif // ENABLE_OPENCV

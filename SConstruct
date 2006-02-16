@@ -7,12 +7,13 @@ import buildutils
 #****************************************************************************
 opts = Options(['build.opts'], ARGUMENTS)
 opts.Add('INSTALLDIR'                           , 'Sets the project installation directory', '/usr/local')
-opts.Add(BoolOption('ENABLE_VIDEOWRAPPERSRC'    , 'Enables the videowrapper source', 1))
+opts.Add(BoolOption('ENABLE_VIDEOWRAPPERSRC'    , 'Enables the videowrapper source', 0))
 opts.Add(BoolOption('ENABLE_GLUTSINK'           , 'Enables the GLUT sink', 1))
 opts.Add(BoolOption('ENABLE_GL_TEXTURE_2D_SINK' , 'Enables the GL texture sink', 1))
 opts.Add(BoolOption('ENABLE_TESTSRC'            , 'Enables the test source', 1))
 opts.Add(BoolOption('ENABLE_VIDEOSINK'          , 'Enables the video sink', 1))
 opts.Add(BoolOption('ENABLE_OPENCV'             , 'Enables the video sink', 1))
+opts.Add(BoolOption('OPENVIDEO_DEBUG'           , 'Enables the video sink', 0))
 
 #****************************************************************************
 # Set up environment and save options to disk
@@ -43,27 +44,44 @@ else:
     print "****************************************************************************"
     sys.exit(-1)
 
-conf.Finish()
-
 #****************************************************************************
 # Add defines if using a set of nodes
 #****************************************************************************
 if env['ENABLE_VIDEOWRAPPERSRC']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_VIDEOWRAPPERSRC'])
+    
 if env['ENABLE_GLUTSINK']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_GLUTSINK'])
+    env.AppendUnique(LIBS = ['GL', 'GLU', 'glut'])
+    
 if env['ENABLE_GL_TEXTURE_2D_SINK']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_GL_TEXTURE_2D_SINK'])
+    env.AppendUnique(LIBS = ['GL', 'GLU'])
+    
 if env['ENABLE_TESTSRC']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_TESTSRC'])
+    
 if env['ENABLE_VIDEOSINK']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_VIDEOSINK'])
+    
 if env['ENABLE_OPENCV']:
-    env.AppendUnique(CPPDEFINES = ['ENABLE_OPENCV'])
+    if conf.TryAction('pkg-config --exists opencvv')[0]:
+        env.ParseConfig('pkg-config --cflags --libs opencvv')
+        env.AppendUnique(CPPDEFINES = ['ENABLE_OPENCV'])
+    else:
+        print "****************************************************************************"
+        print "WARNING: You need to have OpenCV installed and opencv.pc in"
+        print "your PKG_CONFIG_PATH in order for OpenCV stuff to work."
+        print "****************************************************************************"
+        
+if env['OPENVIDEO_DEBUG']:
+    env.AppendUnique(CPPDEFINES = ['OPENVIDEO_DEBUG=1'])
+
+conf.Finish()
 
 # Need to specify where to look for local include files
 env.AppendUnique(CPPPATH = [Dir('#').abspath + os.sep + 'include'])
-env.AppendUnique(CPPDEFINES = ['PLATFORM_' + sys.platform.upper()])
+env.AppendUnique(CPPDEFINES = [sys.platform.upper()])
 
 #****************************************************************************
 # Set project details used in the package-config (.pc) file
@@ -73,9 +91,9 @@ env['OPENVIDEO_PROJECT_NAME']        = "OpenVideo"
 env['OPENVIDEO_PROJECT_DESCRIPTION'] = "OpenVideo is a library which abstract video streams in a similar way as OpenTracker abstracts tracking data"
 env['OPENVIDEO_PROJECT_VERSION']     = "1.0.0"
 env['OPENVIDEO_PROJECT_LIBNAME']     = "openvideo"
+
 buildutils.appendbuilders(env)
-outname = env.Substitute('OpenVideo.pc', 'OpenVideo.pc.in')
-env.AlwaysBuild(outname)
+outname = env.AlwaysBuild(env.Substitute('OpenVideo.pc', 'OpenVideo.pc.in'))
 env.Alias(target = ["install"], source = env.AlwaysBuild(env.Install(dir = '${INSTALLDIR}/lib/pkgconfig', source = outname)))
 
 #****************************************************************************

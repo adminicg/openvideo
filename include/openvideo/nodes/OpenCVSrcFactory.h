@@ -35,10 +35,10 @@
 #include <openvideo/openVideo.h>
 
 // If OpenCV is available
-#if USE_OPENCV
+#if ENABLE_OPENCV
 
-#include <openvideo/nodes/OpenCVSrc/OpenCVSrc.h>
-#include <openvideo/core/NodeFactory.h>
+#include <openvideo/nodes/OpenCVSrc.h>
+#include <openvideo/NodeFactory.h>
 
 /**
  *@ingroup nodes
@@ -68,5 +68,5 @@ namespace openvideo {
   };
 } //namespace openvideo {
 
-#endif // USE_OPENCV
+#endif // ENABLE_OPENCV
 #endif // _OPENCVSRCFACTORY_H

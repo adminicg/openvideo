@@ -122,7 +122,7 @@ private:
 // constructor
 OpenCVSrc::OpenCVSrc()
 {
-#if OPENVIDEO_DEBUG && 1
+#if OPENVIDEO_DEBUG && 0
   cout << "OpenCVSrc::OpenCVSrc()" << endl;
 #endif
 
@@ -133,7 +133,7 @@ OpenCVSrc::OpenCVSrc()
 // destructor
 OpenCVSrc::~OpenCVSrc()
 {
-#if OPENVIDEO_DEBUG && 1
+#if OPENVIDEO_DEBUG && 0
   cout << "OpenCVSrc::~OpenCVSrc()" << endl;
 #endif
 }
@@ -144,7 +144,7 @@ OpenCVSrc::~OpenCVSrc()
 void 
 OpenCVSrc::initPixelFormats()
 {
-#if OPENVIDEO_DEBUG && 1
+#if OPENVIDEO_DEBUG && 0
   cout << "OpenCVSrc::initPixelFormats()" << endl;
 #endif
 
@@ -157,7 +157,7 @@ OpenCVSrc::initPixelFormats()
 bool 
 OpenCVSrc::setParameter(string key, string value)
 {
-#if OPENVIDEO_DEBUG && 1
+#if OPENVIDEO_DEBUG && 0
   cout << "OpenCVSrc::setParameter(): " << key << " " << value << endl;
 #endif
 
@@ -217,7 +217,7 @@ OpenCVSrc::setParameter(string key, string value)
 void 
 OpenCVSrc::init()
 {
-#if OPENVIDEO_DEBUG && 1
+#if OPENVIDEO_DEBUG && 0
   cout << "OpenCVSrc::init()" << endl;
 #endif
 
@@ -238,7 +238,7 @@ OpenCVSrc::init()
 void 
 OpenCVSrc::start() 
 {
-#if OPENVIDEO_DEBUG && 1
+#if OPENVIDEO_DEBUG && 0
   cout << "OpenCVSrc::start()" << endl;
 #endif 
 
@@ -283,7 +283,7 @@ OpenCVSrc::start()
 void
 OpenCVSrc::stop() 
 {
-#if OPENVIDEO_DEBUG && 1
+#if OPENVIDEO_DEBUG && 0
   cout << "OpenCVSrc::stop()" << endl;
 #endif 
 

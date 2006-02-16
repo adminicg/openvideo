@@ -37,7 +37,7 @@
 #include <openvideo/openVideo.h>
 
 // If OpenCV is available
-#if USE_OPENCV
+#if ENABLE_OPENCV
 
 #include <string>
 #include <openvideo/Node.h>
@@ -119,5 +119,5 @@ namespace openvideo {
 
 } // namespace openvideo {
 
-#endif // USE_OPENCV
+#endif // ENABLE_OPENCV
 #endif // _OPENCVSRC_H

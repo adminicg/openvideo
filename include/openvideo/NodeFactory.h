@@ -33,7 +33,7 @@
 #ifndef _ABSTRACTNODEFACTORY_H
 #define _ABSTRACTNODEFACTORY_H
 
-#include "openVideo.h"
+#include <openvideo/openVideo.h>
 
 /**
 *@ingroup core
