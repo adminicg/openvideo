@@ -35,6 +35,8 @@
 
 #ifdef ENABLE_VIDEOWRAPPERSRC
 
+#include <VideoWrapper.h>
+
 #ifdef WIN32
 	#ifdef _DEBUG
 		#pragma comment(lib,"VideoWrapperd.lib")
