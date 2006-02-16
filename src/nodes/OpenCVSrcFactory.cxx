@@ -42,8 +42,7 @@ using namespace openvideo;
 OpenCVSrc* 
 OpenCVSrcFactory::createNode()
 {
-  //return (new OpenCVSrc());
-  return NULL;
+  return (new OpenCVSrc);
 }
 
 const char* 

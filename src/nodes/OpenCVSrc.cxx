@@ -35,7 +35,7 @@
 #include <openvideo/openVideo.h>
 
 // If OpenCV is available
-#ifdef USE_OPENCV
+#ifdef ENABLE_OPENCV
 
 // Standard includes
 #include <string>
@@ -50,8 +50,8 @@
 
 // OpenVideo includes
 #include <openvideo/nodes/OpenCVSrc.h>
-#include <openvideo/core/Manager.h>
-#include <openvideo/core/State.h>
+#include <openvideo/Manager.h>
+#include <openvideo/State.h>
 
 // We are using namespaces
 using namespace std;
@@ -223,7 +223,6 @@ OpenCVSrc::init()
 
   // Make sure the stream-tree is correctly defined
   assert(inherited::getInDegree() == 0);
-  assert(inherited::getOutDegree() == 1);
 
   // Initialize state variable
   inherited::state = new State();
@@ -327,4 +326,4 @@ OpenCVSrc::postProcess()
   this->state->frame = NULL;
 }
 
-#endif // USE_OPENCV
+#endif // ENABLE_OPENCV

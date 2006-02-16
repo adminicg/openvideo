@@ -70,6 +70,10 @@ using namespace openvideo;
 #include <openvideo/nodes/SpectecSrcFactory.h>
 #endif
 
+#ifdef ENABLE_OPENCV
+#include <openvideo/nodes/OpenCVSrcFactory.h>
+#endif
+
 #include <iostream>
 
 void (*Manager::traversalFunc)	  (void*)=NULL;
@@ -389,6 +393,10 @@ Manager::initNodeFactories()
 
 #ifdef ENABLE_SPECTECSRC
 	factories.push_back(new SpectecSrcFactory());
+#endif
+
+#ifdef ENABLE_OPENCV
+	factories.push_back(new OpenCVSrcFactory());
 #endif
 
 }

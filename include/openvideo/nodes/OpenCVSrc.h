@@ -43,9 +43,9 @@
 #include <openvideo/Node.h>
 
 /**
- * This class is a wrapper for Firewire cameras. Each class supports
- * reading input from one camera and this is transferred to the
- * listening nodes.
+ * This class is a wrapper for USB and Firewire cameras. Each class
+ * supports reading input from one camera and this is transferred to
+ * the listening nodes. The functionality is taken from OpenCV.
  * 
  * @ingroup nodes
  * @author Jorn Skaarud Karlsen

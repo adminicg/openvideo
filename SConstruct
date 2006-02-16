@@ -103,13 +103,12 @@ env.Alias(target = ["install"], source = env.AlwaysBuild(env.Install(dir = '${IN
 #****************************************************************************
 # Generate string of defines
 #****************************************************************************
+defines = ''
 if env.has_key('CPPDEFINES'):
-    defines = ''
     for define in env['CPPDEFINES']:
-        defines += '-D' + define + " "
-        
-    env['OPENVIDEO_PROJECT_DEFINES'] = defines
+        defines += '-D' + define + ' '
 
+env['OPENVIDEO_PROJECT_DEFINES'] = defines
 #****************************************************************************
 # Generate help message
 #****************************************************************************

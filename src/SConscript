@@ -22,7 +22,7 @@ includefiles = buildutils.regexpfilter(includefiles, includefilter, True)
 includefiles = buildutils.regexpfilter(includefiles, ignorefilter, False)
 
 # Bulid shared library 
-openvideolib = env.SharedLibrary('openvideo', sourcefiles)
+openvideolib = env.SharedLibrary(env['OPENVIDEO_PROJECT_LIBNAME'], sourcefiles)
 env.Alias(target = ['install'], source = env.Install(dir = '${INSTALLDIR}/lib', source = openvideolib))
 
 # Install header files
