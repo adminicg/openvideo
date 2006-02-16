@@ -65,8 +65,8 @@ if env['ENABLE_VIDEOSINK']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_VIDEOSINK'])
     
 if env['ENABLE_OPENCV']:
-    if conf.TryAction('pkg-config --exists opencvv')[0]:
-        env.ParseConfig('pkg-config --cflags --libs opencvv')
+    if conf.TryAction('pkg-config --exists opencv')[0]:
+        env.ParseConfig('pkg-config --cflags --libs opencv')
         env.AppendUnique(CPPDEFINES = ['ENABLE_OPENCV'])
     else:
         print "****************************************************************************"
