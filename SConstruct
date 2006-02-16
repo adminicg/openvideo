@@ -8,6 +8,7 @@ import buildutils
 opts = Options(['build.opts'], ARGUMENTS)
 opts.Add('INSTALLDIR'                           , 'Sets the project installation directory', '/usr/local')
 opts.Add(BoolOption('ENABLE_VIDEOWRAPPERSRC'    , 'Enables the videowrapper source', 0))
+opts.Add(BoolOption('ENABLE_SPECTECSRC'         , 'Enables the spectec source', 0))
 opts.Add(BoolOption('ENABLE_GLUTSINK'           , 'Enables the GLUT sink', 1))
 opts.Add(BoolOption('ENABLE_GL_TEXTURE_2D_SINK' , 'Enables the GL texture sink', 1))
 opts.Add(BoolOption('ENABLE_TESTSRC'            , 'Enables the test source', 1))
@@ -49,6 +50,9 @@ else:
 #****************************************************************************
 if env['ENABLE_VIDEOWRAPPERSRC']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_VIDEOWRAPPERSRC'])
+
+if env['ENABLE_SPECTECSRC']:
+    env.AppendUnique(CPPDEFINES = ['ENABLE_SPECTECSRC'])
     
 if env['ENABLE_GLUTSINK']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_GLUTSINK'])
