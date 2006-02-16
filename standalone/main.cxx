@@ -3,32 +3,35 @@
  * filename as argument, tries to parse the configuration file
  * and starts the main loop, if successful
  */
-#include <stdio.h>
-#include <openvideo/Manager.h>
+
+// Standard includes
+#include <iostream>
 #include <string>
 
+// OpenVideo includes
+#include <openvideo/Manager.h>
+
+// Using namespaces
+using namespace std;
 using namespace openvideo;
 
-int main(int argc, char **argv)
+int main(int argc, char ** argv)
 {
-   if( argc != 2 )
-    {
-        printf("Usage : %s  configfile",argv[0]);
-        return 1;
-    }
+  if (argc != 2) {
+    cout << "Usage : " << argv[0] <<  " configfile" << endl;
+    return 1;
+  }
 
-    printf("**************************************\n");
-    printf("**** OpenVideo -standalone- v1.0 *****\n");
-    printf("**************************************\n");
+  cout << "**************************************" << endl;
+  cout << "**** OpenVideo -standalone- v1.0 *****" << endl;
+  cout << "**************************************" << endl;
+  
+  Manager * manager = Manager::getInstance();
+  string ovConfig = argv[1];
+  manager->parseConfiguration(ovConfig);
+  cout << "Parsing complete." << endl;
     
-	
+  manager->run();
 
-	Manager* manager=Manager::getInstance();
-    std::string ovConfig=argv[1];
-    manager->parseConfiguration(ovConfig);
-    printf("Parsing complete.\n");
-    
-    manager->run();
-
-    return 0;
+  return 0;
 }
