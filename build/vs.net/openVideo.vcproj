@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/VideoWrapper/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLROOT)/include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS"
+				PreprocessorDefinitions="HAVE_CONFIGOV_H; WIN32;_DEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -78,7 +78,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(OPENVIDEOROOT)/src&quot;;&quot;$(VIDEOWRAPPERROOT)/VideoWrapper/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS"
+				PreprocessorDefinitions="HAVE_CONFIGOV_H; WIN32;NDEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
@@ -271,7 +271,7 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 		</Filter>
 		<File
-			RelativePath="..\..\include\configOV.h">
+			RelativePath="..\..\include\openvideo\configOV.h">
 		</File>
 	</Files>
 	<Globals>
