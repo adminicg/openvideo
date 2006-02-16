@@ -89,7 +89,7 @@ env.AppendUnique(CPPDEFINES = [sys.platform.upper()])
 
 #****************************************************************************
 # Set project details used in the package-config (.pc) file
-# See tinyxml.pc.in
+# See OpenVideo.pc.in
 #****************************************************************************
 env['OPENVIDEO_PROJECT_NAME']        = "OpenVideo"
 env['OPENVIDEO_PROJECT_DESCRIPTION'] = "OpenVideo is a library which abstract video streams in a similar way as OpenTracker abstracts tracking data"
