@@ -62,7 +62,7 @@ public:
 	virtual ~Node();
 
 	/**
-	* return value = the number of supported input formats. the formats are stored in 'formatList'.
+	* return value = the number of supported input formats. the formats are stored in 'pixelFormats'.
 	*/
 	virtual void initPixelFormats()=0;
 

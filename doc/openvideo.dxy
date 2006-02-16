@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 PROJECT_NAME           = OpenVideo
 PROJECT_NUMBER         = 1.0
-OUTPUT_DIRECTORY       = D:/Work/svn/openvideo/doc
+OUTPUT_DIRECTORY       = .
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = YES
@@ -81,10 +81,10 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = D:/Work/svn/openvideo/src \
-                         D:/Work/svn/openvideo/doc/main_page.txt \
-                         D:/Work/svn/openvideo/doc/contributions.txt \
-                         D:/Work/svn/openvideo/doc/changes.txt
+INPUT                  = ../src \
+                         main_page.txt \
+                         contributions.txt \
+                         changes.txt
 FILE_PATTERNS          = *.h \
                          *.cxx
 RECURSIVE              = YES
@@ -94,7 +94,7 @@ EXCLUDE_PATTERNS       =
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = 
 EXAMPLE_RECURSIVE      = NO
-IMAGE_PATH             = D:/Work/svn/openvideo/doc/images
+IMAGE_PATH             = images
 INPUT_FILTER           = 
 FILTER_PATTERNS        = 
 FILTER_SOURCE_FILES    = NO
@@ -119,9 +119,9 @@ IGNORE_PREFIX          =
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
-HTML_HEADER            = D:/Work/svn/openvideo/doc/header.html
-HTML_FOOTER            = D:/Work/svn/openvideo/doc/footer.html
-HTML_STYLESHEET        = D:/Work/svn/openvideo/doc/stb.css
+HTML_HEADER            = header.html
+HTML_FOOTER            = footer.html
+HTML_STYLESHEET        = stb.css
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO
 CHM_FILE               = 

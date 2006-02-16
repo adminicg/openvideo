@@ -31,9 +31,11 @@
  /* ======================================================================= */
 //enable/disable nodes
 
-#define  ENABLE_VIDEOWRAPPERSRC
-#define  ENABLE_GLUTSINK
-#define  ENABLE_GL_TEXTURE_2D_SINK
+#ifndef _WIN32_WCE
+#  define  ENABLE_VIDEOWRAPPERSRC
+#  define  ENABLE_GLUTSINK
+#  define  ENABLE_GL_TEXTURE_2D_SINK
+#endif
 #define  ENABLE_TESTSRC
 #define  ENABLE_VIDEOSINK
 

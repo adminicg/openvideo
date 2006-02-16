@@ -66,6 +66,10 @@ using namespace openvideo;
 #include <openvideo/nodes/VideoSinkFactory.h>
 #endif
 
+#ifdef ENABLE_SPECTECSRC
+#include <openvideo/nodes/SpectecSrcFactory.h>
+#endif
+
 #include <iostream>
 
 void (*Manager::traversalFunc)	  (void*)=NULL;
@@ -366,17 +370,25 @@ Manager::initNodeFactories()
 #ifdef ENABLE_VIDEOWRAPPERSRC
     factories.push_back(new VideoWrapperSrcFactory());
 #endif
+
 #ifdef ENABLE_GLUTSINK
     factories.push_back(new GLUTSinkFactory());
 #endif
+
 #ifdef ENABLE_GL_TEXTURE_2D_SINK
     factories.push_back(new GL_TEXTURE_2D_SinkFactory());
 #endif
+
 #ifdef ENABLE_TESTSRC
     factories.push_back(new TestSrcFactory());
 #endif
+
 #ifdef ENABLE_VIDEOSINK
 	factories.push_back(new VideoSinkFactory());
+#endif
+
+#ifdef ENABLE_SPECTECSRC
+	factories.push_back(new SpectecSrcFactory());
 #endif
 
 }

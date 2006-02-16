@@ -40,11 +40,11 @@
 #include <openvideo/configOV.h>
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32_WCE)
 #pragma warning(disable:4251)
 #endif
 
-#ifdef WIN32  
+#if defined(WIN32) || defined(_WIN32_WCE)
     #ifdef OPENVIDEO_EXPORTS
         #define OPENVIDEO_API __declspec(dllexport)
     #else
