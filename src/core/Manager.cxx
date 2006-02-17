@@ -86,12 +86,12 @@ Manager* Manager::instance=NULL;
 Manager::Manager()
 {
     logger=  new  Logger();
+    scheduler=new Scheduler();
 	initNodeFactories();
 	
 	setInitTravFunction(&Manager::initTopologicalSortedTraversal,&(nodes));
 	setTravFunction(&Manager::topologicalSortedTraversal,&(nodes));
 	isOVStarted=false;
-	updateRate=30;
 }
 
 // Destructor method.
@@ -105,6 +105,14 @@ Manager::~Manager()
     }
 	nodes.clear();
     delete logger;
+    delete scheduler;
+}
+
+void 
+Manager::update(void*)
+{
+    (*Manager::traversalFunc)(Manager::traversalData);
+   
 }
 
 bool
@@ -125,9 +133,9 @@ Manager::getInstance()
 }
 
 void
-Manager::buildSubGraph(void * parentElement, Node* parentNode)
+Manager::buildSubGraph(TiXmlElement * parentElement, Node* parentNode)
 {
-	TiXmlElement * element = ((TiXmlElement*)parentElement)->FirstChildElement();
+	TiXmlElement * element = parentElement->FirstChildElement();
 	while(element)
 	{
 		Node* curNode=addNode(element);
@@ -141,10 +149,10 @@ Manager::buildSubGraph(void * parentElement, Node* parentNode)
 }
 
 Node* 
-Manager::addNode(void *elem)
+Manager::addNode(TiXmlElement *element)
 {
 	//search for attribute "use"
-	TiXmlElement* element=((TiXmlElement*)elem);
+
 	TiXmlAttribute* attribute = element->FirstAttribute();
 	bool isUse=false;
 	std::string useName="";
@@ -207,8 +215,11 @@ Manager::addNode(void *elem)
 
 	return curNode;
 }
-
-
+void
+Manager::parseConfiguration(TiXmlElement* element)
+{
+    scheduler->parseConfiguration(element);
+}
 // parse the xml file and build the graph.
 bool
 Manager::parseConfiguration(const std::string& filename)
@@ -222,7 +233,7 @@ Manager::parseConfiguration(const std::string& filename)
 	}
 	//
 	TiXmlElement* root = document->RootElement();
-
+    parseConfiguration(root);
 	TiXmlElement* element = root->FirstChildElement();
 	while(element)
 	{
@@ -255,31 +266,31 @@ Manager::setInitTravFunction(void (*initTravFunction)(void*),void* data)
 void 
 Manager::run()
 {
-	//validate pixel format
-
-	for(int i=0;i<(int)nodes.size();i++)
-	{
-		nodes[i]->initPixelFormats();
-
-		if(!nodes[i]->validateCurrentPixelFormat())
-		{
-			logger->logEx("OV: %s uses an unknown pixel format\n",nodes[i]->getName());
-			exit(-1);
-		}
-	}
-
-	(*Manager::initTraversalFunc)(initTraversalData);
 	isOVStarted=true;
-	Timer timer;
-	timer.schedule(Manager::traversalFunc,Manager::traversalData,double(1.0/(double)updateRate));
-	logger->log("\nOpenVideo: start main loop !\n");
-	timer.runEventLoop();
+    scheduler->init();
+    scheduler->run();
 }
 
 void 
 Manager::stop()
 {
-	//
+    scheduler->stop();
+}
+
+void 
+Manager::initTraverasal()
+{
+    //validate pixel format
+    for(int i=0;i<(int)nodes.size();i++)
+    {
+        nodes[i]->initPixelFormats();
+        if(!nodes[i]->validateCurrentPixelFormat())
+        {
+            logger->logEx("OV: %s uses an unknown pixel format\n",nodes[i]->getName());
+            exit(-1);
+        }
+    }
+    (*Manager::initTraversalFunc)(initTraversalData);
 }
 
 void 

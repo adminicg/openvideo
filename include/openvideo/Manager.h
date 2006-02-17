@@ -83,11 +83,13 @@
  * @author Denis Kalkofen
  */
 #include <openvideo/Logger.h>
+#include <openvideo/Scheduler.h>
+
+class TiXmlElement;
 
 namespace openvideo {
 class Node;
 class NodeFactory;
-
 class OPENVIDEO_API Manager 
 {
  public:
@@ -97,11 +99,18 @@ class OPENVIDEO_API Manager
 	*/
     ~Manager();
 
+    /**
+    *                                                                     
+    */
+    static void update(void*);
+
     /** 
 	*	adds a NodeFactory to the list of known factories'
 	*/
 	void addNodeFactory(openvideo::NodeFactory *aFactory);
     
+    void parseConfiguration(TiXmlElement* element);
+
     /** 
 	*	This method parses an xml configuartion of OpenVideo. 
 	*	While parsing the file the OpenVideo graph will be created.
@@ -112,8 +121,9 @@ class OPENVIDEO_API Manager
 	*	Constructs the sub graph for a given (tinyxml)Element. 
 	*	It adds all child nodes to 'parentNode'
 	*/
-    void buildSubGraph(void * parentElement, openvideo::Node* parentNode);
+    void buildSubGraph(TiXmlElement * parentElement, openvideo::Node* parentNode);
     
+    void initTraverasal();
 	/**
     *	Starts the manger's mainLoop. 
 	*	Before it actually activates the timer -who is resposible for calling the update function- the traversal data 
@@ -126,7 +136,7 @@ class OPENVIDEO_API Manager
 	*	to the managers list of nodes. 
 	*	Notice: The connections between all nodes are set in 'buildSubGraph(void * parentElement, Node* parentNode)'.
 	*/
-    openvideo::Node* addNode(void *elem);
+    openvideo::Node* addNode(TiXmlElement *element);
     
 	/**
 	*	Returns the node with the given 'nodeName'. NULL is returned if non of those currently exist. 
@@ -154,6 +164,9 @@ class OPENVIDEO_API Manager
     bool isStarted();
 
     Logger* getLogger(){return logger;}
+
+
+
  protected:
 	 /** 
 	 *	constructor 
@@ -161,6 +174,8 @@ class OPENVIDEO_API Manager
 	 Manager();
 
 	static Manager* instance;
+
+    Scheduler* scheduler;
 	/** 
 	*	Initializes all factories. 
 	*	Adds all known (hard coded) factories to the manager's list of node factories' 
@@ -168,12 +183,6 @@ class OPENVIDEO_API Manager
     void initNodeFactories();
 
     bool     isOVStarted;
-	/**
-	*	Defines the graph’s number of updates per second.
-	*	Notice: This variable describes the maximal number of updates per second. 
-	*	If the Manager tries to invoke a new traversal before the current traversal finishes the new update is dropped.
-	*/
-    unsigned int updateRate;
     
     /**
 	*	THE GRAPH. 
@@ -193,22 +202,24 @@ class OPENVIDEO_API Manager
     *   This vector will be searched when a new node is going to be created.
     */
     std::vector<openvideo::NodeFactory*> factories;
-    
+
+    /**
+    *	A pointer to the function which initializes the traversal data. 
+    */
+    static void (*initTraversalFunc)(void* data);
+
     /**
     *   A pointer to the traversal function which is called by the run function. 
     */
     static void (*traversalFunc)    (void* data);
 
-	/**
-	*	A pointer to the function which initializes the traversal data. 
-	*/
-    static void (*initTraversalFunc)(void* data);
 
-	/**
-	*	The traversal data. This void pointer is passed to the traversal function every time it is going to be invoked.
-	*	Per default, this points to the managers list of nodes. It's value is overriden by 	setTravFunction(...);
-	*/
+    /**
+    *	The traversal data. This void pointer is passed to the traversal function every time it is going to be invoked.
+    *	Per default, this points to the managers list of nodes. It's value is overriden by 	setTravFunction(...);
+    */
     static void* traversalData;
+
 
 	/**
 	*	A pointer to the traversal data 

@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(OPENVIDEOROOT)/include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -32,10 +32,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="openVideod.lib"
+				AdditionalDependencies="openVideod.lib aced.lib"
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/ovStandaloned.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(OPENVIDEOROOT)/lib/win32"
+				AdditionalLibraryDirectories="&quot;$(ACEROOT)/lib&quot;;&quot;$(OPENVIDEOROOT)/lib/win32&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/test.pdb"
 				SubSystem="1"
