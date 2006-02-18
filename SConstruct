@@ -13,8 +13,8 @@ opts.Add(BoolOption('ENABLE_GLUTSINK'           , 'Enables the GLUT sink', 1))
 opts.Add(BoolOption('ENABLE_GL_TEXTURE_2D_SINK' , 'Enables the GL texture sink', 1))
 opts.Add(BoolOption('ENABLE_TESTSRC'            , 'Enables the test source', 1))
 opts.Add(BoolOption('ENABLE_VIDEOSINK'          , 'Enables the video sink', 1))
-opts.Add(BoolOption('ENABLE_OPENCV'             , 'Enables the video sink', 1))
-opts.Add(BoolOption('OPENVIDEO_DEBUG'           , 'Enables the video sink', 0))
+opts.Add(BoolOption('ENABLE_OPENCV'             , 'Enables the use of OpenCV capture source', 1))
+opts.Add(BoolOption('OPENVIDEO_DEBUG'           , 'Enables debugging', 0))
 
 #****************************************************************************
 # Set up environment and save options to disk
@@ -85,7 +85,13 @@ conf.Finish()
 
 # Need to specify where to look for local include files
 env.AppendUnique(CPPPATH = [Dir('#').abspath + os.sep + 'include'])
-env.AppendUnique(CPPDEFINES = [sys.platform.upper()])
+env.AppendUnique(CPPPATH = [Dir('#').abspath + os.sep + 'src'])
+
+# Add the platform to the defines. Treat all linux platforms in common.
+if sys.platform.upper().startswith('LINUX'):
+    env.AppendUnique(CPPDEFINES = ['LINUX'])
+else:
+    env.AppendUnique(CPPDEFINES = [sys.platform.upper()])
 
 #****************************************************************************
 # Set project details used in the package-config (.pc) file
