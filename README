@@ -7,10 +7,6 @@ Copy contents of build/tinyxml into TinyXml source directory.
 Change directory to TinyXml source directory
 Run: scons sharedlibrary=1 program=0 install
 Change directory to OpenVideo source directory
-Unzip hal.zip.
- - Copy hal/include/hal to include/
- - Make directory src/hal
- - Copy hal/src/hal/* to src/hal
 Make sure ACE.pc and tinyxml.pc are in your PKG_CONFIG_PATH
 Run scons
 Run scons install
