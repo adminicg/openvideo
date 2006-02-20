@@ -39,7 +39,6 @@
 
 #include <tinyxml/tinyxml.h>
 
-#include <openvideo/Timer.h>
 #include <openvideo/NodeFactory.h>
 #include <openvideo/Node.h>
 	

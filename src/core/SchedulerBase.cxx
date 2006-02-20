@@ -32,7 +32,6 @@
 
 #include <openvideo/SchedulerBase.h>
 #include <tinyxml/tinyxml.h>
-#include <hal/string.h>
 
 using namespace openvideo;
 
@@ -56,13 +55,12 @@ SchedulerBase::parseConfiguration(TiXmlElement* element)
 
     if(_mode)
     {
-        if(!hal::stricasecmp(_mode,("idle")))
+        if(strcmp(_mode,("idle")))
             mode=IDLE;		
-        else if(!hal ::stricasecmp(_mode,"timer"))
+        else if(strcmp(_mode,"timer"))
             mode=TIMER;		
-        else if(!hal::stricasecmp(_mode,"timer"))
-            mode=POLL;	
-
+        else if(strcmp(_mode,"timer"))
+            mode=POLL;
     }
     if(_updateRate)
     {

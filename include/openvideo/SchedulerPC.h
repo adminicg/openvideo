@@ -32,7 +32,7 @@
 
 #ifndef _SCHEDULERPC_H_
 #define _SCHEDULERPC_H_
-#include "SchedulerBase.h"
+#include <openvideo/SchedulerBase.h>
 class  ACE_Condition_Thread_Mutex;
 class ACE_Thread_Mutex;
 
