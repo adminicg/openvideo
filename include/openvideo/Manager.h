@@ -175,7 +175,7 @@ class OPENVIDEO_API Manager
 
 	static Manager* instance;
 
-    Scheduler* scheduler;
+    openvideo::Scheduler* scheduler;
 	/** 
 	*	Initializes all factories. 
 	*	Adds all known (hard coded) factories to the manager's list of node factories' 

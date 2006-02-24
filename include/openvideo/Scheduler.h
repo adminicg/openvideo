@@ -30,8 +30,8 @@
 * @file                                                                   */  
 /* ======================================================================= */  
 
-#ifndef _SCHEDULER_H_
-#define _SCHEDULER_H_
+#ifndef _SCHEDULEROV_H_
+#define _SCHEDULEROV_H_
 
 #ifdef WIN32
     #include "SchedulerPC.h"

@@ -63,6 +63,7 @@ TestSrc::initPixelFormats()
 void 
 TestSrc::init()
 {
+    printf("OV: TestSrc -> start\n");
     Manager::getInstance()->getLogger()->log("OV: TestSrc -> start\n");
     state->clear();
 
@@ -81,22 +82,23 @@ TestSrc::init()
 void 
 TestSrc::process()
 {
+    printf("--OpenVideo--- start Process \n");
     unsigned char R,G,B;
     int dist=10;
     for(int y=posY;y<posY+dist;y++)
     {
-	int ix=0;
-	for(int x=posX;x<posX+(dist*3);x++)
-	{
-	    
-	    R=255;
-	    G=255;
-	    B=255;
-	    
-	    img[(3*width*y)+(3*x)  ]=R;
-	    img[(3*width*y)+(3*x)+1]=G;
-	    img[(3*width*y)+(3*x)+2]=B;
-	}
+	    int ix=0;
+	    for(int x=posX;x<posX+(dist*3);x++)
+	    {
+    	    
+	        R=255;
+	        G=255;
+	        B=255;
+    	    
+	        img[(3*width*y)+(3*x)  ]=R;
+	        img[(3*width*y)+(3*x)+1]=G;
+	        img[(3*width*y)+(3*x)+2]=B;
+	    }
     }
     posX++;;
     if(posX>=width-(dist*3)){

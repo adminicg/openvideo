@@ -81,10 +81,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../src \
-                         main_page.txt \
-                         contributions.txt \
-                         changes.txt
+INPUT                  = ../src
 FILE_PATTERNS          = *.h \
                          *.cxx
 RECURSIVE              = YES
@@ -220,7 +217,7 @@ CALL_GRAPH             = NO
 GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 DOT_IMAGE_FORMAT       = png
-DOT_PATH               = 
+DOT_PATH               = C:/Programme/Grafik/GraphVis/Graphviz/bin
 DOTFILE_DIRS           = 
 MAX_DOT_GRAPH_WIDTH    = 1024
 MAX_DOT_GRAPH_HEIGHT   = 1024
