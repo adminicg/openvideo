@@ -117,9 +117,13 @@ Node::process()
 {
 }
 
-
 void 
 Node::postProcess( )
+{
+}
+
+void 
+Node::preProcess( )
 {
 }
 

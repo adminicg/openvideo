@@ -107,6 +107,12 @@ public:
 	*/
 	virtual void postProcess();
 
+    /**
+    *	This function is called after OpenVideo's graph is entirely traversed and before a new traversal is invoked.
+    *	Here, a specific node implementation can reset some data before a new traversal will take place.
+    */
+    virtual void preProcess();
+
 	/**
 	*	setParameter is called by OpenVideo's parser. The function gets the xml (key)string and the corresponding value right out of the xml text file.
 	*	A specific node implementation should override 'setParameter' to set all its parameters comming from the xml configuration. \n

@@ -85,8 +85,7 @@ VideoSink::process()
 		//update subsrcibers
 		for(int i=0;i<size_subscribers;i++)
 			subsrcibers[i]->update(state);
-	}
-	
+	}	
 }
 
 void
@@ -99,8 +98,6 @@ VideoSink::postProcess()
 			//wait till 
 		}
 	}
-
-
 }
 
 void 

@@ -105,7 +105,7 @@ public:
 	*	releases the videoframe (which was previously locked by the process fucntion.
 	*/
 	virtual void postProcess();
-
+	virtual void preProcess();
 	virtual void initPixelFormats();
 
 protected:

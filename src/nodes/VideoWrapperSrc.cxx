@@ -108,25 +108,29 @@ VideoWrapperSrc::init()
 	state->clear();
 	state->width=width;
 	state->height=height;
-	state->format=format;	
+	state->format=format;
+
+}
+
+void
+VideoWrapperSrc::preProcess()
+{
+    if(state->frame)
+        VIDEO_releaseFrame(g_hVideo);
+    state->frame=NULL;
 }
 
 void
 VideoWrapperSrc::process()
 {
 	timeval timestamp;
-
-	state->frame=NULL;
 	VIDEO_getFrame(g_hVideo, &(state->frame), &timestamp);
-
 }
 
 void
 VideoWrapperSrc::postProcess()
 {
-	VIDEO_releaseFrame(g_hVideo);
 
-	state->frame=NULL;
 }
 
 

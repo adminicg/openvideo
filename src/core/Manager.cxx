@@ -341,6 +341,12 @@ Manager::topologicalSortedTraversal(void* nodeList)
   if(!travBlock){
     travBlock=true;
     std::vector<Node *>* nodes=(std::vector<Node *>*)nodeList;
+
+    // preprocess graph
+    for(int i=0;i<(int)nodes->size();i++){
+        //visit node i
+        nodes->at(i)->preProcess();
+    }
     // process graph
     for(int i=0;i<(int)nodes->size();i++){
       //visit node i

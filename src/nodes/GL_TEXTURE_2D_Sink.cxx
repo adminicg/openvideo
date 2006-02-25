@@ -176,7 +176,7 @@ GL_TEXTURE_2D_Sink::init()
 		default:
 			Manager::getInstance()->getLogger()->logEx("OpenVideo: GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
 				(PixelFormat::FormatToString(curPixelFormat)).c_str());
-			exit(-1);
+			return;
 
     }
 	//
