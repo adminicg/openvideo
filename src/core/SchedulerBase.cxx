@@ -55,11 +55,12 @@ SchedulerBase::parseConfiguration(TiXmlElement* element)
 
     if(_mode)
     {
-        if(strcmp(_mode,("idle")))
+        if(!strcmp(_mode,("idle"))){
             mode=IDLE;		
-        else if(strcmp(_mode,"timer"))
+        }
+        else if(!strcmp(_mode,"timer"))
             mode=TIMER;		
-        else if(strcmp(_mode,"timer"))
+        else if(!strcmp(_mode,"poll"))
             mode=POLL;
     }
     if(_updateRate)

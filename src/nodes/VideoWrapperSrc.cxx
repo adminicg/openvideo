@@ -36,6 +36,7 @@
 #ifdef ENABLE_VIDEOWRAPPERSRC
 
 #include <VideoWrapper.h>
+#include <openvideo/Manager.h>
 
 #ifdef WIN32
 	#ifdef _DEBUG
@@ -124,6 +125,7 @@ void
 VideoWrapperSrc::postProcess()
 {
 	VIDEO_releaseFrame(g_hVideo);
+
 	state->frame=NULL;
 }
 
