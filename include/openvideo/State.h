@@ -113,7 +113,6 @@ private:
 
 	std::map<std::string,void*> elements;
 };
-}//namespace openvideo {
 
 // ----> inlines <-----
 // constructor method.
@@ -158,5 +157,7 @@ State::removeElement(std::string key)
 {
 	elements.erase(key);
 }
+
+}//namespace openvideo {
 
 #endif
