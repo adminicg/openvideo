@@ -30,8 +30,8 @@
   * @file                                                                   */
  /* ======================================================================= */
 
-#ifndef _STATE_H
-#define _STATE_H
+#ifndef _STATEOV_H
+#define _STATEOV_H
 #include "openVideo.h"
 
 #include <map>
