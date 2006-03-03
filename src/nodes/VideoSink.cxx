@@ -104,6 +104,7 @@ void
 VideoSink::subscribe(VideoSinkSubscriber* aSubscriber)
 {
 	subsrcibers.push_back(aSubscriber);
+	size_subscribers++;
 }
 
 #endif  //ENABLE_VideoSink
