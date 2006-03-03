@@ -129,7 +129,7 @@ class OPENVIDEO_API Manager
 	*/
     void buildSubGraph(TiXmlElement * parentElement, openvideo::Node* parentNode);
     
-    void initTraverasal();
+    void initTraversal();
 	/**
     *	Starts the manger's mainLoop. 
 	*	Before it actually activates the timer -who is resposible for calling the update function- the traversal data 
@@ -258,7 +258,9 @@ class OPENVIDEO_API Manager
 
     Logger* logger;
 
-    bool isRunning;
+	bool isRunning;
+
+	bool hasParsed;
 
     bool updating;
 

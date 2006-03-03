@@ -94,6 +94,7 @@ Manager::Manager()
   setTravFunction(&Manager::topologicalSortedTraversal,&(nodes));
   isRunning=true;
   updating=false;
+  hasParsed=false;
   updateLock=new ACE_Thread_Mutex();
   updateLockCondition=new ACE_Condition_Thread_Mutex(*updateLock);
   idleSetGLContext=false;
@@ -314,6 +315,8 @@ Manager::parseConfiguration(TiXmlElement* element)
 bool
 Manager::parseConfiguration(const std::string& filename)
 {   
+	if (hasParsed)
+		return false;
   TiXmlDocument* document = new TiXmlDocument();
 
   if(!document->LoadFile(filename.c_str()))
@@ -336,6 +339,7 @@ Manager::parseConfiguration(const std::string& filename)
   document->Clear();
   delete document;
 
+  hasParsed=true;
   return true;
 }
 
@@ -368,7 +372,7 @@ Manager::stop()
 
 
 void 
-Manager::initTraverasal()
+Manager::initTraversal()
 {
   //validate pixel format
   for(int i=0;i<(int)nodes.size();i++)
