@@ -31,6 +31,8 @@
  /* ======================================================================= */
 #include <openvideo/Manager.h>
 
+#include <ace/Condition_Thread_Mutex.h>
+#include <ace/Thread_Mutex.h>
 // The configOV.h file is only used on windows. On linux command line
 // arguments are used instead.
 #ifdef HAVE_CONFIGOV_H
@@ -90,7 +92,16 @@ Manager::Manager()
 	
   setInitTravFunction(&Manager::initTopologicalSortedTraversal,&(nodes));
   setTravFunction(&Manager::topologicalSortedTraversal,&(nodes));
-  isOVStarted=false;
+  isRunning=true;
+  updating=false;
+  updateLock=new ACE_Thread_Mutex();
+  updateLockCondition=new ACE_Condition_Thread_Mutex(*updateLock);
+  idleSetGLContext=false;
+  dc=NULL;
+  glContext=NULL;
+#ifdef LINUX
+  dsp=NULL;
+#endif
 }
 
 // Destructor method.
@@ -110,14 +121,92 @@ Manager::~Manager()
 void 
 Manager::update(void*)
 {
-  (*Manager::traversalFunc)(Manager::traversalData);
-   
+   Manager* self=Manager::getInstance();
+   self->updateLock->acquire();
+   if(self->isRunning)
+   {
+       self->updating=true;
+       (*Manager::traversalFunc)(Manager::traversalData);
+       self->updating=false;
+   }
+   else
+   {
+       self->doIdleTasks();
+   }
+   self->updateLockCondition->broadcast();
+   self->updateLock->release();
+}
+
+void 
+Manager::doIdleTasks()
+{
+    if(idleSetGLContext){
+        idleSetGLContext=false;
+		if(dc && glContext)
+		{
+            bool succ=false;
+#ifdef WIN32
+           succ=wglMakeCurrent(dc,glContext);
+#endif
+#ifdef LINUX
+           succ=glXMakeCurrent(dsp,drawable,ovGLContext);
+#endif
+            if(!succ)
+                logger->logEx("OpenVideo: couldn't set glContext\n");
+            else
+                logger->logEx("OpenVideo: successfully set glContext\n") ;
+		}
+    }
+    resume();
+}
+
+
+void 
+Manager::pause()
+{
+    updateLock->acquire();
+    if(isRunning)
+    {
+        isRunning =false;
+        updateLockCondition->wait();      
+    }
+    
+    updateLock->release();
+}
+#ifdef WIN32
+    void 
+    Manager::setGLContext(HGLRC _glContext,HDC _dc)
+    {
+        glContext=_glContext;
+        dc=_dc;
+        idleSetGLContext=true;
+        pause();
+    }
+#endif
+
+#ifdef LINUX
+    void 
+    Manager::setGLContext(GLXDrawable _drawable, GLXContext _ovGLContext, Display* _dsp)
+    {
+        dc=_drawable;
+        glContext=_ovGLContext
+        dsp=_dsp;
+    }
+
+#endif
+
+void 
+Manager::resume()
+{
+    updateLock->acquire();
+    isRunning=true;
+    updateLock->release();
 }
 
 bool
 Manager::isStarted()
 {
-  return isOVStarted;
+  return isRunning;
 }
 
 Manager* 
@@ -214,11 +303,13 @@ Manager::addNode(TiXmlElement *element)
 
   return curNode;
 }
+
 void
 Manager::parseConfiguration(TiXmlElement* element)
 {
   scheduler->parseConfiguration(element);
 }
+
 // parse the xml file and build the graph.
 bool
 Manager::parseConfiguration(const std::string& filename)
@@ -265,7 +356,6 @@ Manager::setInitTravFunction(void (*initTravFunction)(void*),void* data)
 void 
 Manager::run()
 {
-  isOVStarted=true;
   scheduler->init();
   scheduler->run();
 }
@@ -275,6 +365,7 @@ Manager::stop()
 {
   scheduler->stop();
 }
+
 
 void 
 Manager::initTraverasal()

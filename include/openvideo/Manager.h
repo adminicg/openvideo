@@ -43,6 +43,10 @@
 	#include "windows.h"
 #endif
 
+#ifdef LINUX
+#include <GL/glx.h>
+#endif
+
 /**@ingroup core
  *	The ‘Manager’ class represents OpenVideo's main object which constructs, holds and updates OpenVideo’s runtime data structure. OpenVideo defines its data structure as a directed acyclic graph which is defined in an xml based configuration file. To construct such an OpenVideo graph the ‘Manager’ provides the necessary functionality to parse a given OpenVideo configuration as well as to construct the graph out of the information gained in the parsing step. To construct a single node the ‘Manager’ uses the related factory this specific node implements. Therefore, a list of factories of all known OpenVideo nodes is stored in an instance of a ‘Manager’. \n 
  *	The basic lifecycle of a Manager object looks like this:
@@ -86,6 +90,8 @@
 #include <openvideo/Scheduler.h>
 
 class TiXmlElement;
+class  ACE_Thread_Mutex;
+class  ACE_Condition_Thread_Mutex;
 
 namespace openvideo {
 class Node;
@@ -142,7 +148,14 @@ class OPENVIDEO_API Manager
 	*	Returns the node with the given 'nodeName'. NULL is returned if non of those currently exist. 
 	*/
     openvideo::Node* getNode(std::string nodeName);
-   
+
+#ifdef WIN32
+    void setGLContext(HGLRC _glContext,HDC _dc);
+#endif
+
+#ifdef LINUX
+     void setGLContext(GLXDrawable _drawable, GLXContext _glContext, Display* _dsp);
+#endif
 	/**
     *   Stops the manger's mainLoop. 
     */
@@ -244,6 +257,42 @@ class OPENVIDEO_API Manager
 	static bool travBlock;
 
     Logger* logger;
+
+    bool isRunning;
+
+    bool updating;
+
+    /**
+    *	Mutex used in updateLockCond .
+    */
+    ACE_Thread_Mutex* updateLock;
+
+    /** 
+    *       A condition variable which waits for an update to updateLock.
+    */
+    ACE_Condition_Thread_Mutex* updateLockCondition;
+
+    /**
+    *   Pauses the manger's mainLoop. 
+    */
+    void pause();
+    void doIdleTasks();
+    void resume();
+
+    bool idleSetGLContext;
+
+#ifdef LINUX
+    GLXDrawable dc;
+    Display* dsp;
+    GLXContext glContext;
+#endif
+
+#ifdef WIN32
+    HGLRC glContext;
+    HDC dc;
+#endif
+
+
 };
 }//namespace openvideo 
 

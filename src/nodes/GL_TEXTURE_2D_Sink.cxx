@@ -106,6 +106,15 @@ GL_TEXTURE_2D_Sink::release()
 void
 GL_TEXTURE_2D_Sink::init()
 {
+    //check if a device context is present
+#ifdef WIN32
+    HGLRC curContext=NULL;
+    curContext= wglGetCurrentContext();
+    if(!curContext)
+    {
+        return;
+    }
+#endif
     Manager::getInstance()->getLogger()->logEx("OpenVideo: init GL_TEXTURE_2D_Sink '%s' \n",name.c_str());
 	mutex->acquire();
 
@@ -177,10 +186,9 @@ GL_TEXTURE_2D_Sink::init()
 			Manager::getInstance()->getLogger()->logEx("OpenVideo: GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
 				(PixelFormat::FormatToString(curPixelFormat)).c_str());
 			return;
-
     }
 	//
-
+    
     state=this->inputs[0]->getState();
     if(state)
     {
@@ -216,9 +224,9 @@ GL_TEXTURE_2D_Sink::init()
     GLenum e;
     if ((e = glGetError ()) != GL_NO_ERROR)
     {	
-	Manager::getInstance()->getLogger()->logEx("GL error: %s\n", gluErrorString(e));
-	Manager::getInstance()->getLogger()->logEx("OpenVideo: unable to init GL_TEXTURE_2D_Sink -> check if an opengl context is set");
-	return ;
+	    Manager::getInstance()->getLogger()->logEx("GL error: %s\n", gluErrorString(e));
+	    Manager::getInstance()->getLogger()->logEx("OpenVideo: unable to init GL_TEXTURE_2D_Sink -> check if an opengl context is set");
+	    return ;
     }
     //////////////////////////////////////////////
     isStarted=true;
@@ -231,8 +239,10 @@ void
 GL_TEXTURE_2D_Sink::process()
 {
 	if(!isStarted)
+    {
+        init();
 		return;
-	
+    }
 	if(state->frame)
 	{
 		mutex->acquire();
@@ -245,8 +255,15 @@ GL_TEXTURE_2D_Sink::process()
 						(void*)state->frame);
 
 		glDisable(GL_TEXTURE_2D);
+        GLenum e;
+        while ((e = glGetError ()) != GL_NO_ERROR)
+        {
+            printf("checkGLErrors(): GL error: %s\n", gluErrorString(e));
+
+        }
 		mutex->release();
 	}
+
 }
 
 #endif  //ENABLE_GL_TEXTURE_2D_SINK

@@ -33,12 +33,12 @@
 #ifndef _NODEOV_H
 #define _NODEOV_H
 
-#include "openVideo.h"
+#include <openVideo/openVideo.h>
 
 #include <vector>
 #include <string>
 
-#include "PixelFormat.h"
+#include <openvideo/PixelFormat.h>
 
 /**
 *@ingroup core
