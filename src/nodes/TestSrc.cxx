@@ -82,7 +82,6 @@ TestSrc::init()
 void 
 TestSrc::process()
 {
-    printf("--OpenVideo--- start Process \n");
     unsigned char R,G,B;
     int dist=10;
     for(int y=posY;y<posY+dist;y++)
