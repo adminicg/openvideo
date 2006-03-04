@@ -120,7 +120,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(OPENVIDEOROOT)/src&quot;"
+				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -139,10 +139,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="openVideo.lib"
+				AdditionalDependencies="openVideo.lib  ace.lib"
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/ovStandalone.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(OPENVIDEOROOT)/lib/win32"
+				AdditionalLibraryDirectories="&quot;$(ACEROOT)/lib&quot;;&quot;$(OPENVIDEOROOT)/lib/win32&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
