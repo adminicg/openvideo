@@ -161,13 +161,13 @@ Manager::doIdleTasks()
                 logger->logEx("OpenVideo: successfully set glContext\n") ;
 		}
     }
-//    else if(idleDeleteGLContext)
-//    {
-//        idleDeleteGLContext=false;
-//#ifdef WIN32
-//        hasGLContext=(!wglDeleteContext(glContext));
-//#endif
-//    }
+    else if(idleDeleteGLContext)
+    {
+        idleDeleteGLContext=false;
+#ifdef WIN32
+        hasGLContext=(!wglDeleteContext(glContext));
+#endif
+    }
 
 
     resume();
