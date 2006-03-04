@@ -106,6 +106,7 @@ GL_TEXTURE_2D_Sink::release()
 void
 GL_TEXTURE_2D_Sink::init()
 {
+     isStarted=false;
     //check if a device context is present
 #ifdef WIN32
     HGLRC curContext=NULL;
@@ -238,7 +239,7 @@ GL_TEXTURE_2D_Sink::init()
 void
 GL_TEXTURE_2D_Sink::process()
 {
-	if(!isStarted)
+    if(!isStarted || !Manager::hasGLContext)
     {
         init();
 		return;

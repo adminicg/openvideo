@@ -63,7 +63,6 @@ TestSrc::initPixelFormats()
 void 
 TestSrc::init()
 {
-    printf("OV: TestSrc -> start\n");
     Manager::getInstance()->getLogger()->log("OV: TestSrc -> start\n");
     state->clear();
 

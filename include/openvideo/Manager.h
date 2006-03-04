@@ -156,6 +156,10 @@ class OPENVIDEO_API Manager
 #ifdef LINUX
      void setGLContext(GLXDrawable _drawable, GLXContext _glContext, Display* _dsp);
 #endif
+
+    void deleteGLContext();
+
+    static bool hasGLContext;
 	/**
     *   Stops the manger's mainLoop. 
     */
@@ -282,7 +286,8 @@ class OPENVIDEO_API Manager
     void resume();
 
     bool idleSetGLContext;
-
+    bool idleDeleteGLContext;
+    
 #ifdef LINUX
     GLXDrawable dc;
     Display* dsp;

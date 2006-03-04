@@ -82,6 +82,7 @@ void (*Manager::initTraversalFunc)(void*)=NULL;
 void* Manager::traversalData=NULL;
 void* Manager::initTraversalData=NULL;
 bool  Manager::travBlock=false;
+bool  Manager::hasGLContext=false;
 Manager* Manager::instance=NULL;
 
 Manager::Manager()
@@ -98,6 +99,7 @@ Manager::Manager()
   updateLock=new ACE_Thread_Mutex();
   updateLockCondition=new ACE_Condition_Thread_Mutex(*updateLock);
   idleSetGLContext=false;
+  idleDeleteGLContext=false;
   dc=NULL;
   glContext=NULL;
 #ifdef LINUX
@@ -141,23 +143,33 @@ Manager::update(void*)
 void 
 Manager::doIdleTasks()
 {
-    if(idleSetGLContext){
+    if(idleSetGLContext)
+    {
         idleSetGLContext=false;
 		if(dc && glContext)
 		{
-            bool succ=false;
+            
 #ifdef WIN32
-           succ=wglMakeCurrent(dc,glContext);
+          hasGLContext=wglMakeCurrent(dc,glContext);
 #endif
 #ifdef LINUX
-           succ=glXMakeCurrent(dsp,drawable,ovGLContext);
+           hasGLContext=glXMakeCurrent(dsp,drawable,ovGLContext);
 #endif
-            if(!succ)
+            if(!hasGLContext)
                 logger->logEx("OpenVideo: couldn't set glContext\n");
             else
                 logger->logEx("OpenVideo: successfully set glContext\n") ;
 		}
     }
+//    else if(idleDeleteGLContext)
+//    {
+//        idleDeleteGLContext=false;
+//#ifdef WIN32
+//        hasGLContext=(!wglDeleteContext(glContext));
+//#endif
+//    }
+
+
     resume();
 }
 
@@ -174,10 +186,12 @@ Manager::pause()
     
     updateLock->release();
 }
+
 #ifdef WIN32
     void 
     Manager::setGLContext(HGLRC _glContext,HDC _dc)
     {
+        printf("    Manager::setGLContext(HGLRC _glContext,HDC _dc) \n");
         glContext=_glContext;
         dc=_dc;
         idleSetGLContext=true;
@@ -192,10 +206,17 @@ Manager::pause()
         dc=_drawable;
         glContext=_ovGLContext
         dsp=_dsp;
+        pause();
     }
 
 #endif
 
+void
+Manager::deleteGLContext()
+{
+    idleDeleteGLContext=true;
+    pause();
+}
 void 
 Manager::resume()
 {
