@@ -165,7 +165,10 @@ Manager::doIdleTasks()
     {
         idleDeleteGLContext=false;
 #ifdef WIN32
+        
         hasGLContext=(!wglDeleteContext(glContext));
+        printf("delete context \n");
+
 #endif
     }
 
