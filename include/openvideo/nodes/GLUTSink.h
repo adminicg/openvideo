@@ -33,7 +33,10 @@
 #define _GLUTSINK_H
 #include <openvideo/openVideo.h>
 #ifdef ENABLE_GLUTSINK
-
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#endif
 
 #include <openvideo/Node.h>
 
@@ -91,6 +94,17 @@ public:
 
 	virtual void initPixelFormats();
 
+    /**
+    *	static list off all glut sinks currently running. 
+    */
+    static std::vector<openvideo::GLUTSink*> glutSinks;
+
+#ifdef WIN32
+    HGLRC getGLContext();
+    HDC   getDeviceHandle();
+#endif
+#ifdef LINUX
+#endif
 
 protected:
 	/**
@@ -143,11 +157,6 @@ protected:
 	*	it is set in the 'process()' function and used by the main window function to find the sink which invokes the redraw.
 	*/
     bool updateVideo;
-
-	/**
-	*	static list off all glut sinks currently running. 
-	*/
-	static std::vector<openvideo::GLUTSink*> glutSinks;
 	
 	/**
 	*	function which updated the texture with the new video frame.
@@ -194,6 +203,17 @@ protected:
 	*	maximal texture size
 	*/
     enum {TEXTURE_WIDTH = 1024, TEXTURE_HEIGHT = 1024};
+
+#ifdef LINUX
+    GLXDrawable dc;
+    Display* dsp;
+    GLXContext glContext;
+#endif
+
+#ifdef WIN32
+    HGLRC glContext;
+    HDC dc;
+#endif
 
 };
 

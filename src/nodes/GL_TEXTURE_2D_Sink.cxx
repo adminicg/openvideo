@@ -239,8 +239,7 @@ GL_TEXTURE_2D_Sink::init()
 void
 GL_TEXTURE_2D_Sink::process()
 {
-    //if(!isStarted || !Manager::hasGLContext)
-    if(!wglGetCurrentContext())
+    if(!Manager::hasGLContext)
         return;
     if(!isStarted)
     {

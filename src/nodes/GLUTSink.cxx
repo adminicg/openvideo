@@ -75,8 +75,27 @@ GLUTSink::GLUTSink()
 	    GLUTSink::redrawLock=new ACE_Mutex();
 	}
 	internalFormat=0;
+    glContext=NULL;
+    dc=NULL;
+#ifdef LINUX
+    dsp=NULL;    
+#endif
 
 }
+#ifdef WIN32
+
+HGLRC 
+GLUTSink::getGLContext()
+{
+    return glContext;
+}
+
+HDC   
+GLUTSink::getDeviceHandle()
+{
+    return dc;
+}
+#endif 
 
 void 
 GLUTSink::initPixelFormats()
@@ -108,7 +127,9 @@ GLUTSink::~GLUTSink()
 void*
 GLUTSink::mainLoop(void *)
 {
+
     glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE );
+
 
 	//wait 'till all glutsinks are loaded ='till the process() call happens
 
@@ -129,6 +150,17 @@ GLUTSink::mainLoop(void *)
 		glutSink->winHandle=glutCreateWindow(glutSink->getName());
 		glutDisplayFunc(GLUTSink::mainDisplayFunc);
 		glutIdleFunc(GLUTSink::idleFunc);
+        ////////////
+#ifdef WIN32
+        glutSink->glContext=wglGetCurrentContext();
+        glutSink->dc=wglGetCurrentDC();
+#endif
+#ifdef LINUX
+        glutSink->dc=glXGetCurrentDrawable();o
+        glutSink->dsp=glXGetCurrentDisplay();
+        glutSink->glContext=glXGetCurrentContext();
+#endif
+
 		//////////////////////////////////////////////
 		//create texture
 		glEnable(GL_TEXTURE_2D);
@@ -146,7 +178,10 @@ GLUTSink::mainLoop(void *)
 		glDisable(GL_TEXTURE_2D);
 		free(data);
 		//////////////////////////////////////////////
-    }		
+    }
+    //save context
+    if((int)(GLUTSink::glutSinks.size())>0)
+        Manager::getInstance()->setGLContext(GLUTSink::glutSinks[0]->getGLContext(),GLUTSink::glutSinks[0]->getDeviceHandle());
     glutMainLoop();
     
     return 0;
@@ -278,6 +313,7 @@ GLUTSink::start()
 void
 GLUTSink::process()
 {
+
   if(state && state->frame)
   {
     updateLock->acquire();
@@ -299,7 +335,6 @@ GLUTSink::process()
 void 
 GLUTSink::updateTexture()
 {	
-
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, video_texture_id);
@@ -368,23 +403,26 @@ GLUTSink::idleFunc ()
 void 
 GLUTSink::mainDisplayFunc ()
 {
+    if(!Manager::hasGLContext)
+        return;
+
     int size=(int)GLUTSink::glutSinks.size();
     for (int i=0;i<size;i++)
     {	
-		glutSinks[i]->updateLock->acquire();
-		if(glutSinks[i]->updateVideo)
-		{	
-			glutSinks[i]->updateVideo=false;
-			glutSetWindow(glutSinks[i]->winHandle);
-			glutSinks[i]->updateTexture();
-			glutSinks[i]->redraw();
-		}
-		glutSinks[i]->updateLockCond->broadcast();
-		glutSinks[i]->updateLock->release();
+        glutSinks[i]->updateLock->acquire();
+        if(glutSinks[i]->updateVideo)
+        {	
+            glutSinks[i]->updateVideo=false;
+            glutSetWindow(glutSinks[i]->winHandle);
+            glutSinks[i]->updateTexture();
+            glutSinks[i]->redraw();
+        }
+        glutSinks[i]->updateLockCond->broadcast();
+        glutSinks[i]->updateLock->release();
     }
-	
+
     glutSwapBuffers();
-	
+
 }
 
 #endif //ENABLE_GLUTSINK

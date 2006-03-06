@@ -163,11 +163,18 @@ Manager::doIdleTasks()
     }
     else if(idleDeleteGLContext)
     {
+        //delete context
         idleDeleteGLContext=false;
-#ifdef WIN32
-        
+#ifdef WIN32     
         hasGLContext=(!wglDeleteContext(glContext));
-
+#endif
+        //try to set a new glcontext
+        if((int)(GLUTSink::glutSinks.size())>0)
+#ifdef WIN32
+            hasGLContext=wglMakeCurrent(GLUTSink::glutSinks[0]->getDeviceHandle(),GLUTSink::glutSinks[0]->getGLContext());
+#endif
+#ifdef LINUX
+        //hasGLContext=glXMakeCurrent(dsp,drawable,ovGLContext);
 #endif
     }
 
