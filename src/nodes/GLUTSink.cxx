@@ -334,16 +334,14 @@ GLUTSink::process()
 
 void 
 GLUTSink::updateTexture()
-{	
+{	    
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, video_texture_id);
-	
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
 					width,height, this->format, GL_UNSIGNED_BYTE,
 					(void*)state->frame);
-    glDisable(GL_TEXTURE_2D);
-	
+    glDisable(GL_TEXTURE_2D);	
 }
 
 void 
@@ -403,22 +401,24 @@ GLUTSink::idleFunc ()
 void 
 GLUTSink::mainDisplayFunc ()
 {
-    if(!wglGetCurrentContext())
-    {
-        printf("GLUTSINK::try to set new gl context \n");
-        if((int)(GLUTSink::glutSinks.size())>0)
-        {
-            bool hasGLContext=wglMakeCurrent(GLUTSink::glutSinks[0]->getDeviceHandle(),GLUTSink::glutSinks[0]->getGLContext());
 
-            if(hasGLContext)
-                Manager::getInstance()->getLogger()->logEx("OpenVideo: successfully set new glContext in GLUTSink thread\n") ;
-            else{
-                 Manager::getInstance()->getLogger()->logEx("OpenVideo: couldn't set new glContext\n");
-                    return;
-             }
-        }
-    }
+	if(Manager::getInstance()->glContextChanged)
+		//if(!wglGetCurrentContext())
+	{
+		printf("GLUTSINK::try to set new gl context \n");
+		if((int)(GLUTSink::glutSinks.size())>0)
+		{
+			bool hasGLContext=wglMakeCurrent(GLUTSink::glutSinks[0]->getDeviceHandle(),GLUTSink::glutSinks[0]->getGLContext());
 
+			if(hasGLContext)
+				Manager::getInstance()->getLogger()->logEx("OpenVideo: successfully set new glContext in GLUTSink thread\n") ;
+			else{
+				Manager::getInstance()->getLogger()->logEx("OpenVideo: couldn't set new glContext\n");
+				return;
+			}
+		}
+		Manager::getInstance()->glContextChanged=false;
+	}
     int size=(int)GLUTSink::glutSinks.size();
     for (int i=0;i<size;i++)
     {	

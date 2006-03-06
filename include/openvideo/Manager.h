@@ -182,7 +182,7 @@ class OPENVIDEO_API Manager
 
     Logger* getLogger(){return logger;}
 
-
+	bool glContextChanged;
 
  protected:
 	 /** 

@@ -102,6 +102,7 @@ Manager::Manager()
   idleDeleteGLContext=false;
   dc=NULL;
   glContext=NULL;
+  glContextChanged=false;
 #ifdef LINUX
   dsp=NULL;
 #endif
@@ -171,8 +172,11 @@ Manager::doIdleTasks()
         if(hasGLContext)
             logger->logEx("OpenVideo: couldn't delete glContext\n");
         else
+		{
             logger->logEx("OpenVideo: successfully deleted glContext\n") ;
             //try to set a new glcontext
+			glContextChanged=true;
+		}
            
         
     }
