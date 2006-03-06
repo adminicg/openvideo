@@ -41,7 +41,7 @@ int main(int argc, char ** argv)
   string ovConfig = argv[1];
   manager->parseConfiguration(ovConfig);
   cout << "Parsing complete." << endl;
-  manager->initTraverasal();
+  manager->initTraversal();
   //ACE_hthread_t* threadHandle = new ACE_hthread_t();
   //if(ACE_Thread::spawn((ACE_THR_FUNC)::pollLoop,
   //    0, 	
