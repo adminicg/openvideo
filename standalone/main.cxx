@@ -4,6 +4,8 @@
  * and starts the main loop, if successful
  */
 
+#include <ace/Thread.h>
+
 // Standard includes
 #include <iostream>
 #include <string>
@@ -14,8 +16,6 @@
 // Using namespaces
 using namespace std;
 using namespace openvideo;
-
-#include <ace/Thread.h>
 
 void pollLoop(void*)
 {
