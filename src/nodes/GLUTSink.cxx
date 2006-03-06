@@ -180,8 +180,8 @@ GLUTSink::mainLoop(void *)
 		//////////////////////////////////////////////
     }
     //save context
-    if((int)(GLUTSink::glutSinks.size())>0)
-        Manager::getInstance()->setGLContext(GLUTSink::glutSinks[0]->getGLContext(),GLUTSink::glutSinks[0]->getDeviceHandle());
+    //if((int)(GLUTSink::glutSinks.size())>0)
+    //    Manager::getInstance()->setGLContext(GLUTSink::glutSinks[0]->getGLContext(),GLUTSink::glutSinks[0]->getDeviceHandle());
     glutMainLoop();
     
     return 0;
@@ -403,8 +403,8 @@ GLUTSink::idleFunc ()
 void 
 GLUTSink::mainDisplayFunc ()
 {
-    if(!Manager::hasGLContext)
-        return;
+    //if(!Manager::hasGLContext)
+    //    return;
 
     int size=(int)GLUTSink::glutSinks.size();
     for (int i=0;i<size;i++)
