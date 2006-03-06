@@ -143,6 +143,7 @@ Manager::update(void*)
 void 
 Manager::doIdleTasks()
 {
+    /////////////////////////////////// set glcontext ///////////////////////////////
     if(idleSetGLContext)
     {
         idleSetGLContext=false;
@@ -153,7 +154,7 @@ Manager::doIdleTasks()
           hasGLContext=wglMakeCurrent(dc,glContext);
 #endif
 #ifdef LINUX
-           hasGLContext=glXMakeCurrent(dsp,drawable,ovGLContext);
+          hasGLContext=glXMakeCurrent(dsp,drawable,ovGLContext);
 #endif
             if(!hasGLContext)
                 logger->logEx("OpenVideo: couldn't set glContext\n");
@@ -161,21 +162,19 @@ Manager::doIdleTasks()
                 logger->logEx("OpenVideo: successfully set glContext\n") ;
 		}
     }
+    /////////////////////////////////// delete glcontext ///////////////////////////////
     else if(idleDeleteGLContext)
     {
-        //delete context
-        idleDeleteGLContext=false;
-#ifdef WIN32     
+      
+        idleDeleteGLContext=false;   
         hasGLContext=(!wglDeleteContext(glContext));
-#endif
-        //try to set a new glcontext
-        if((int)(GLUTSink::glutSinks.size())>0)
-#ifdef WIN32
-            hasGLContext=wglMakeCurrent(GLUTSink::glutSinks[0]->getDeviceHandle(),GLUTSink::glutSinks[0]->getGLContext());
-#endif
-#ifdef LINUX
-        //hasGLContext=glXMakeCurrent(dsp,drawable,ovGLContext);
-#endif
+        if(hasGLContext)
+            logger->logEx("OpenVideo: couldn't delete glContext\n");
+        else
+            logger->logEx("OpenVideo: successfully deleted glContext\n") ;
+            //try to set a new glcontext
+           
+        
     }
 
 

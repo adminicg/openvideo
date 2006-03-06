@@ -403,8 +403,21 @@ GLUTSink::idleFunc ()
 void 
 GLUTSink::mainDisplayFunc ()
 {
-    //if(!Manager::hasGLContext)
-    //    return;
+    if(!wglGetCurrentContext())
+    {
+        printf("GLUTSINK::try to set new gl context \n");
+        if((int)(GLUTSink::glutSinks.size())>0)
+        {
+            bool hasGLContext=wglMakeCurrent(GLUTSink::glutSinks[0]->getDeviceHandle(),GLUTSink::glutSinks[0]->getGLContext());
+
+            if(hasGLContext)
+                Manager::getInstance()->getLogger()->logEx("OpenVideo: successfully set new glContext in GLUTSink thread\n") ;
+            else{
+                 Manager::getInstance()->getLogger()->logEx("OpenVideo: couldn't set new glContext\n");
+                    return;
+             }
+        }
+    }
 
     int size=(int)GLUTSink::glutSinks.size();
     for (int i=0;i<size;i++)
