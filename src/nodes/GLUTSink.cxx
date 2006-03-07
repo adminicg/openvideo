@@ -82,8 +82,8 @@ GLUTSink::GLUTSink()
 #endif
 
 }
-#ifdef WIN32
 
+#ifdef WIN32
 HGLRC 
 GLUTSink::getGLContext()
 {
@@ -94,6 +94,25 @@ HDC
 GLUTSink::getDeviceHandle()
 {
     return dc;
+}
+#endif 
+
+#ifdef LINUX
+GLXContext
+GLUTSink::getGLContext()
+{
+    return glContext;
+}
+
+GLXDrawable
+GLUTSink::getDeviceHandle()
+{
+    return dc;
+}
+
+Display*
+GLUTSink::getDisplay() {
+    return dsp;
 }
 #endif 
 
@@ -156,7 +175,7 @@ GLUTSink::mainLoop(void *)
         glutSink->dc=wglGetCurrentDC();
 #endif
 #ifdef LINUX
-        glutSink->dc=glXGetCurrentDrawable();o
+        glutSink->dc=glXGetCurrentDrawable();
         glutSink->dsp=glXGetCurrentDisplay();
         glutSink->glContext=glXGetCurrentContext();
 #endif
@@ -408,7 +427,14 @@ GLUTSink::mainDisplayFunc ()
 		printf("GLUTSINK::try to set new gl context \n");
 		if((int)(GLUTSink::glutSinks.size())>0)
 		{
+#ifdef WIN32
 			bool hasGLContext=wglMakeCurrent(GLUTSink::glutSinks[0]->getDeviceHandle(),GLUTSink::glutSinks[0]->getGLContext());
+#endif
+#ifdef LINUX
+			bool hasGLContext=glXMakeCurrent(GLUTSink::glutSinks[0]->getDisplay(),
+							 GLUTSink::glutSinks[0]->getDeviceHandle(),
+							 GLUTSink::glutSinks[0]->getGLContext());
+#endif
 
 			if(hasGLContext)
 				Manager::getInstance()->getLogger()->logEx("OpenVideo: successfully set new glContext in GLUTSink thread\n") ;

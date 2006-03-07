@@ -33,7 +33,7 @@
 #ifndef _NODEOV_H
 #define _NODEOV_H
 
-#include <openVideo/openVideo.h>
+#include <openvideo/openVideo.h>
 
 #include <vector>
 #include <string>

@@ -100,7 +100,7 @@ Manager::Manager()
   updateLockCondition=new ACE_Condition_Thread_Mutex(*updateLock);
   idleSetGLContext=false;
   idleDeleteGLContext=false;
-  dc=NULL;
+  //dc=NULL;
   glContext=NULL;
   glContextChanged=false;
 #ifdef LINUX
@@ -155,7 +155,7 @@ Manager::doIdleTasks()
           hasGLContext=wglMakeCurrent(dc,glContext);
 #endif
 #ifdef LINUX
-          hasGLContext=glXMakeCurrent(dsp,drawable,ovGLContext);
+          hasGLContext=glXMakeCurrent(dsp,dc,glContext);
 #endif
             if(!hasGLContext)
                 logger->logEx("OpenVideo: couldn't set glContext\n");
@@ -168,7 +168,13 @@ Manager::doIdleTasks()
     {
       
         idleDeleteGLContext=false;   
+
+#ifdef WIN32
         hasGLContext=(!wglDeleteContext(glContext));
+#endif
+#ifdef LINUX
+	glXDestroyContext(dsp, glContext);
+#endif
         if(hasGLContext)
             logger->logEx("OpenVideo: couldn't delete glContext\n");
         else
@@ -216,7 +222,7 @@ Manager::pause()
     Manager::setGLContext(GLXDrawable _drawable, GLXContext _ovGLContext, Display* _dsp)
     {
         dc=_drawable;
-        glContext=_ovGLContext
+        glContext=_ovGLContext;
         dsp=_dsp;
         pause();
     }

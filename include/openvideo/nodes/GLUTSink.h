@@ -38,6 +38,10 @@
 #include <Windows.h>
 #endif
 
+#ifdef LINUX
+#include <GL/glx.h>
+#endif
+
 #include <openvideo/Node.h>
 
 
@@ -104,6 +108,9 @@ public:
     HDC   getDeviceHandle();
 #endif
 #ifdef LINUX
+    Display* getDisplay();
+    GLXContext getGLContext();
+    GLXDrawable getDeviceHandle();
 #endif
 
 protected:
