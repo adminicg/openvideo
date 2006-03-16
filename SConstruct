@@ -22,6 +22,7 @@ opts.Add(BoolOption('OPENVIDEO_DEBUG'           , 'Enables debugging', 0))
 # Set up environment and save options to disk
 #****************************************************************************
 env = Environment(options = opts, ENV = os.environ)
+env.CacheDir(os.environ['HOME'] + '/.scache')
 opts.Save('build.opts', env)
 
 #****************************************************************************
