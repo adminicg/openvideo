@@ -1,6 +1,6 @@
-prefix=@@INSTALLDIR@@
+prefix=@@PREFIX@@
+libdir=@@LIBDIR@@
 exec_prefix=${prefix}
-libdir=${prefix}/lib
 includedir=${exec_prefix}/include/openvideo
 
 Name: @@OPENVIDEO_PROJECT_NAME@@
