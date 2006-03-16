@@ -12,7 +12,7 @@ Packager:	Institute for Computer Graphics and Vision, Graz University of Technol
 Prefix:		/usr
 BuildRoot: 	%{_tmppath}/buildroot-%{name}-%{version}
 Requires:	tinyxml
-BuildRequires:	tinyxml
+BuildRequires:	scons tinyxml
 
 %define _prefix %{prefix}
 
@@ -24,11 +24,11 @@ BuildRequires:	tinyxml
 %setup
 
 %build
-scons INSTALLDIR=%{_prefix}
+scons --cache-force PREFIX=%{_prefix} LIBDIR=%{_libdir}
 
 %install
-scons INSTALLROOT=$RPM_BUILD_ROOT INSTALLDIR=%{_prefix} install
-rm $RPM_BUILD_ROOT/%{_libdir}/.sconsign
+scons --cache-force INSTALLROOT=$RPM_BUILD_ROOT PREFIX=%{_prefix} LIBDIR=%{_libdir} install
+#rm $RPM_BUILD_ROOT/%{_libdir}/.sconsign
 
 %clean
 scons -c
@@ -38,6 +38,7 @@ scons -c
 %defattr(-,root,root)
 %{_libdir}/*
 %{_prefix}/include/*
+%exclude %{_libdir}/.sconsign
 %exclude %{_libdir}/pkgconfig/.sconsign
 %exclude %{_prefix}/include/openvideo/.sconsign
 %exclude %{_prefix}/include/openvideo/nodes/.sconsign

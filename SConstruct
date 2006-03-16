@@ -6,7 +6,8 @@ import buildutils
 # The options are saved to a file and reapplied automatically
 #****************************************************************************
 opts = Options(['build.opts'], ARGUMENTS)
-opts.Add('INSTALLDIR'                           , 'Sets the project installation directory', '/usr/local')
+opts.Add('PREFIX'                               , 'Sets the project installation directory', '/usr/local')
+opts.Add('LIBDIR'                               , 'Sets the project library directory', '${PREFIX}/lib')
 opts.Add('INSTALLROOT'                          , 'Sets the project installation root directory', '')
 opts.Add(BoolOption('ENABLE_VIDEOWRAPPERSRC'    , 'Enables the videowrapper source', 0))
 opts.Add(BoolOption('ENABLE_SPECTECSRC'         , 'Enables the spectec source', 0))
@@ -105,7 +106,7 @@ env['OPENVIDEO_PROJECT_LIBNAME']     = "openvideo"
 
 buildutils.appendbuilders(env)
 outname = env.AlwaysBuild(env.Substitute('OpenVideo.pc', 'OpenVideo.pc.in'))
-env.Alias(target = ["install"], source = env.AlwaysBuild(env.Install(dir = '${INSTALLROOT}/${INSTALLDIR}/lib/pkgconfig', source = outname)))
+env.Alias(target = ["install"], source = env.AlwaysBuild(env.Install(dir = '${INSTALLROOT}/${LIBDIR}/pkgconfig', source = outname)))
 
 #****************************************************************************
 # Generate string of defines
