@@ -7,7 +7,7 @@ import buildutils
 #****************************************************************************
 opts = Options(['build.opts'], ARGUMENTS)
 opts.Add('PREFIX'                               , 'Sets the project installation directory', '/usr/local')
-opts.Add('SUBPREFIX'                            , 'Sets the sub-installation directory', '')
+opts.Add('SUBPREFIX'                            , 'Sets the sub-installation directory. Relative to PREFIX', '')
 opts.Add('LIBDIR'                               , 'Sets the relative library installation directory. Overrides SUBPREFIX', 'lib')
 opts.Add('INCLUDEDIR'                           , 'Sets the relative include files installation directory. Overrides SUBPREFIX', 'include')
 opts.Add(BoolOption('ENABLE_VIDEOWRAPPERSRC'    , 'Enables the videowrapper source', 0))
