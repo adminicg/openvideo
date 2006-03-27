@@ -22,14 +22,14 @@ includefiles = buildutils.regexpfilter(includefiles, includefilter, True)
 includefiles = buildutils.regexpfilter(includefiles, ignorefilter, False)
 
 # Set the library install location
-libsubprefix = env['SUBPREFIX']
+libsubprefix = env['SUBPREFIX'] + os.sep + 'lib'
 if env['LIBDIR'] != '':
     libsubprefix = env['LIBDIR']
 if not libsubprefix.startswith(os.sep):
     libsubprefix = os.sep + libsubprefix
 
 # Set the include install location
-incsubprefix = env['SUBPREFIX']
+incsubprefix = env['SUBPREFIX'] + os.sep + 'include'
 if env['INCLUDEDIR'] != '':
     incsubprefix = env['INCLUDEDIR']
 if not incsubprefix.startswith(os.sep):
