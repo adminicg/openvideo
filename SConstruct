@@ -137,9 +137,16 @@ pkgenv['OPENVIDEO_PROJECT_CPPPATH'] = cpppaths
 pkgenv['OPENVIDEO_PROJECT_LIBPATH'] = libpaths
 pkgenv['OPENVIDEO_PROJECT_LIBS']    = libs
 
+# Set the library install location
+libsubprefix = env['SUBPREFIX'] + os.sep + 'lib'
+if env['LIBDIR'] != '':
+    libsubprefix = env['LIBDIR']
+if not libsubprefix.startswith(os.sep):
+    libsubprefix = os.sep + libsubprefix
+
 buildutils.appendbuilders(pkgenv)
 outname = pkgenv.AlwaysBuild(pkgenv.Substitute('OpenVideo.pc', 'OpenVideo.pc.in'))
-pkgenv.Alias(target = ["install"], source = pkgenv.AlwaysBuild(pkgenv.Install(dir = '${PREFIX}/${LIBDIR}/pkgconfig', source = outname)))
+env.Alias(target = ["install"], source = pkgenv.AlwaysBuild(pkgenv.Install(dir = '${PREFIX}' + libsubprefix + '/pkgconfig', source = outname)))
 
 #****************************************************************************
 # Need to specify where to look for local include files
