@@ -7,8 +7,8 @@ import buildutils
 #****************************************************************************
 opts = Options(['build.opts'], ARGUMENTS)
 opts.Add('PREFIX'                               , 'Sets the project installation directory', '/usr/local')
-opts.Add('LIBDIR'                               , 'Sets the project library directory', '${PREFIX}/lib')
-opts.Add('INSTALLROOT'                          , 'Sets the project installation root directory', '')
+opts.Add('LIBDIR'                               , 'Sets the relative library installation directory', 'lib')
+opts.Add('INCLUDEDIR'                           , 'Sets the relative include files installation directory', 'include')
 opts.Add(BoolOption('ENABLE_VIDEOWRAPPERSRC'    , 'Enables the videowrapper source', 0))
 opts.Add(BoolOption('ENABLE_SPECTECSRC'         , 'Enables the spectec source', 0))
 opts.Add(BoolOption('ENABLE_GLUTSINK'           , 'Enables the GLUT sink', 1))
@@ -86,10 +86,6 @@ if env['OPENVIDEO_DEBUG']:
 
 conf.Finish()
 
-# Need to specify where to look for local include files
-env.AppendUnique(CPPPATH = [Dir('#').abspath + os.sep + 'include'])
-env.AppendUnique(CPPPATH = [Dir('#').abspath + os.sep + 'src'])
-
 # Add the platform to the defines. Treat all linux platforms in common.
 if sys.platform.upper().startswith('LINUX'):
     env.AppendUnique(CPPDEFINES = ['LINUX'])
@@ -97,27 +93,59 @@ else:
     env.AppendUnique(CPPDEFINES = [sys.platform.upper()])
 
 #****************************************************************************
-# Set project details used in the package-config (.pc) file
-# See OpenVideo.pc.in
+# Set general information
 #****************************************************************************
 env['OPENVIDEO_PROJECT_NAME']        = "OpenVideo"
 env['OPENVIDEO_PROJECT_DESCRIPTION'] = "OpenVideo is a library which abstract video streams in a similar way as OpenTracker abstracts tracking data"
 env['OPENVIDEO_PROJECT_VERSION']     = "1.0.0"
 env['OPENVIDEO_PROJECT_LIBNAME']     = "openvideo"
 
-buildutils.appendbuilders(env)
-outname = env.AlwaysBuild(env.Substitute('OpenVideo.pc', 'OpenVideo.pc.in'))
-env.Alias(target = ["install"], source = env.AlwaysBuild(env.Install(dir = '${INSTALLROOT}/${LIBDIR}/pkgconfig', source = outname)))
+#****************************************************************************
+# Set project details used in the package-config (.pc) file
+# See OpenVideo.pc.in
+#****************************************************************************
+pkgenv = env.Copy()
+pkgenv.AppendUnique(LIBS = ['openvideo'])
+pkgenv.AppendUnique(CPPPATH = [pkgenv['PREFIX'] + os.sep + pkgenv['INCLUDEDIR']])
 
 #****************************************************************************
-# Generate string of defines
+# Generate strings usable from the pkg-config file
 #****************************************************************************
 defines = ''
-if env.has_key('CPPDEFINES'):
-    for define in env['CPPDEFINES']:
+if pkgenv.has_key('CPPDEFINES'):
+    for define in pkgenv['CPPDEFINES']:
         defines += '-D' + define + ' '
 
-env['OPENVIDEO_PROJECT_DEFINES'] = defines
+cpppaths = ''
+if pkgenv.has_key('CPPPATH'):
+    for path in pkgenv['CPPPATH']:
+        cpppaths += '-I' + path + ' '
+
+libpaths = ''
+if pkgenv.has_key('LIBPATH'):
+    for path in pkgenv['LIBPATH']:
+        libpaths += '-L' + path + ' '
+
+libs = ''
+if pkgenv.has_key('LIBS'):
+    for lib in pkgenv['LIBS']:
+        libs += '-l' + lib + ' '
+
+pkgenv['OPENVIDEO_PROJECT_DEFINES'] = defines
+pkgenv['OPENVIDEO_PROJECT_CPPPATH'] = cpppaths
+pkgenv['OPENVIDEO_PROJECT_LIBPATH'] = libpaths
+pkgenv['OPENVIDEO_PROJECT_LIBS']    = libs
+
+buildutils.appendbuilders(pkgenv)
+outname = pkgenv.AlwaysBuild(pkgenv.Substitute('OpenVideo.pc', 'OpenVideo.pc.in'))
+pkgenv.Alias(target = ["install"], source = pkgenv.AlwaysBuild(pkgenv.Install(dir = '${PREFIX}/${LIBDIR}/pkgconfig', source = outname)))
+
+#****************************************************************************
+# Need to specify where to look for local include files
+#****************************************************************************
+env.AppendUnique(CPPPATH = [Dir('#').abspath + os.sep + 'include'])
+env.AppendUnique(CPPPATH = [Dir('#').abspath + os.sep + 'src'])
+
 #****************************************************************************
 # Generate help message
 #****************************************************************************

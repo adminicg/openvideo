@@ -76,7 +76,6 @@ GLUTSink::GLUTSink()
 	}
 	internalFormat=0;
     glContext=NULL;
-    dc=NULL;
 #ifdef LINUX
     dsp=NULL;    
 #endif

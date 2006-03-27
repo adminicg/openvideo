@@ -6,7 +6,8 @@ import buildutils
 # The options are saved to a file and reapplied automatically
 #****************************************************************************
 opts = Options(['build.opts'], ARGUMENTS)
-opts.Add('INSTALLDIR', 'Sets the project installation directory', '/usr/local')
+opts.Add('PREFIX', 'Sets the project installation directory', '/usr/local')
+opts.Add('BINDIR', 'Sets the relative binary installation directory', 'bin')
 
 #****************************************************************************
 # Set up environment and save options to disk
@@ -52,8 +53,8 @@ sourcefiles = buildutils.regexpfilter(sourcefiles, sourcefilter, True)
 sourcefiles = buildutils.regexpfilter(sourcefiles, ignorefilter, False)
 
 # Bulid shared library 
-openvideolib = env.Program('openvideo', sourcefiles)
-env.Alias(target = ['install'], source = env.Install(dir = '${INSTALLDIR}/bin', source = openvideolib))
+openvideolib = env.Program('openvideo-bin', sourcefiles)
+env.Alias(target = ['install'], source = env.Install(dir = '${PREFIX}/${BINDIR}', source = openvideolib))
 
 ###########################################################################
 # Done:)
