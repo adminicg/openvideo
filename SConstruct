@@ -7,8 +7,9 @@ import buildutils
 #****************************************************************************
 opts = Options(['build.opts'], ARGUMENTS)
 opts.Add('PREFIX'                               , 'Sets the project installation directory', '/usr/local')
-opts.Add('LIBDIR'                               , 'Sets the relative library installation directory', 'lib')
-opts.Add('INCLUDEDIR'                           , 'Sets the relative include files installation directory', 'include')
+opts.Add('SUBPREFIX'                            , 'Sets the sub-installation directory', '')
+opts.Add('LIBDIR'                               , 'Sets the relative library installation directory. Overrides SUBPREFIX', 'lib')
+opts.Add('INCLUDEDIR'                           , 'Sets the relative include files installation directory. Overrides SUBPREFIX', 'include')
 opts.Add(BoolOption('ENABLE_VIDEOWRAPPERSRC'    , 'Enables the videowrapper source', 0))
 opts.Add(BoolOption('ENABLE_SPECTECSRC'         , 'Enables the spectec source', 0))
 opts.Add(BoolOption('ENABLE_GLUTSINK'           , 'Enables the GLUT sink', 1))

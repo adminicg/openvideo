@@ -2,7 +2,7 @@ Summary:	OpenVideo
 Name:		openvideo
 Version:	1.0.0
 Release:	1
-Copyright:	GPL
+License:	GPL
 Group:		Development/Libraries
 Source:		%{name}-%{version}.tar.bz2
 #Source1:	%{name}-scons.tar.gz
@@ -11,8 +11,8 @@ Source:		%{name}-%{version}.tar.bz2
 Packager:	Institute for Computer Graphics and Vision, Graz University of Technology, Austria
 Prefix:		/usr
 BuildRoot: 	%{_tmppath}/buildroot-%{name}-%{version}
-Requires:	tinyxml
-BuildRequires:	scons tinyxml
+#Requires:	tinyxml
+BuildRequires:	scons 
 
 %define _prefix %{prefix}
 
@@ -24,10 +24,10 @@ BuildRequires:	scons tinyxml
 %setup
 
 %build
-scons --cache-force PREFIX=%{_prefix} LIBDIR=%{_libdir}
+scons --cache-force PREFIX=$RPM_BUILD_ROOT SUBPREFIX=%{_prefix} LIBDIR=%{_libdir} INCLUDEDIR=%{_includedir}
 
 %install
-scons --cache-force INSTALLROOT=$RPM_BUILD_ROOT PREFIX=%{_prefix} LIBDIR=%{_libdir} install
+scons --cache-force PREFIX=$RPM_BUILD_ROOT SUBPREFIX=%{_prefix} LIBDIR=%{_libdir} INCLUDEDIR=%{_includedir} install
 #rm $RPM_BUILD_ROOT/%{_libdir}/.sconsign
 
 %clean
