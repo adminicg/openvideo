@@ -36,24 +36,21 @@ scons -c
 
 %files
 %defattr(-,root,root)
-%{_libdir}/*
-%{_prefix}/include/*
+%{_libdir}/*.so*
 %exclude %{_libdir}/.sconsign
 %exclude %{_libdir}/pkgconfig/.sconsign
+
+%package devel
+Summary:	OpenVideo headers
+Group:		Development/Libraries
+Requires:	%{name} = %{version}
+
+%description devel
+This package contains header files and include files that are needed for development using OpenVideo.
+
+%files devel
+%defattr(-,root,root)
+%{_libdir}/pkgconfig/*
+%{_prefix}/include/*
 %exclude %{_prefix}/include/openvideo/.sconsign
 %exclude %{_prefix}/include/openvideo/nodes/.sconsign
-
-#%package devel
-#Summary:	...
-#Group:		Development/Libraries
-#Requires:	%{name} = %{version}
-#
-#%description devel
-#This package contains header files and include files that are needed for development using ...
-#
-#%files devel
-#%defattr(-,root,root)
-#%{_bindir}/*
-#%{_prefix}/include/*
-#%{_prefix}/share/aclocal/*
-#%{_prefix}/share/Coin/conf/*
