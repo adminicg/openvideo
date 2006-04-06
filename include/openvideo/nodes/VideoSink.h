@@ -38,6 +38,11 @@
 
 #include <openvideo/Node.h>
 
+
+
+namespace openvideo {
+class VideoSinkSubscriber;
+
 /**
 *@ingroup nodes
 *	This node implements an publish-subsribers pattern to pass the video to any number of registered consumers.
@@ -50,10 +55,6 @@
 *	@li: B8G8R8X8
 *	@li: L8
 */
-
-namespace openvideo {
-class VideoSinkSubscriber;
-
 class OPENVIDEO_API VideoSink : 
 	public openvideo::Node
 {

@@ -33,10 +33,10 @@
 #ifndef _LOGGERBASE_H_
 #define _LOGGERBASE_H_
 
-
 namespace openvideo{
-/**
-*	
+
+/**@ingroup core
+*	The base class for the logger implementations
 */
 class LoggerBase
 {
@@ -44,19 +44,24 @@ public:
     /**
     *     The destructor.
     */
-    ~LoggerBase();
+    virtual ~LoggerBase(){};
 
+    /*
+    *  
+    */
     virtual void log(const char* nStr) = 0;
 
+    /*
+    *  
+    */
     virtual void logEx(const char* nStr, ...);
 
 protected:	
     /**
     *     The Constructor	
     */
-    LoggerBase();
+    LoggerBase(){};
 
-private:
 	
 };// class 
 }//namespace

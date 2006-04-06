@@ -76,7 +76,7 @@
 
 /**
  * @defgroup nodes Node Classes
- *	The ‘Nodes’ module collects all node implementations. All the nodes here are derived from the imterface the ‘Core’ module implements.
+ *	The ‘Nodes’ module collects all node implementations. All the nodes here are derived from the interface the ‘Core’ module implements.
  *	Since OpenVideo’s interface implements an ‘Abstract Factory Pattern[Ref]’ 
  *	there are two classes needed to provide OpenVideo with a new node implementation. These nodes are in particular 
  *	a ‘Factory’ (which is able to create a specific type of nodes) and the actual 'Node' implementation. For details on 

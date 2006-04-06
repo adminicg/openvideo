@@ -34,7 +34,10 @@
 #define _TIMERBASE_H
 
 namespace openvideo {
-
+/**
+*@ingroup core
+*	Base class for timer implementations.
+*/
 class TimerBase 
 {
 public:
@@ -57,7 +60,7 @@ public:
 	*/	
 	virtual void runEventLoop()=0;
 
-private:
+protected:
     /**
     *	Constructor
     */	

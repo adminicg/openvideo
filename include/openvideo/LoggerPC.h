@@ -32,25 +32,32 @@
 
 #ifndef _LOGGERPC_H_
 #define _LOGGERPC_H_
-#include "LoggerBase.h"
+#include <openvideo/LoggerBase.h>
 
 namespace openvideo{
-/**
-*	
+
+/**@ingroup core
+*	PC version of the Logger.
 */
 class LoggerPC : public LoggerBase
 {
 public:
+
     /**
     *     The Constructor	
     */
     LoggerPC();
+
     /**
     *     The destructor.
     */
-    ~LoggerPC();
+    virtual ~LoggerPC();
 
+    /**
+    * 
+    */
     virtual void log(const char* message);
+
 protected:	
 
 private:

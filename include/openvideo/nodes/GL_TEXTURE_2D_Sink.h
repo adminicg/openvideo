@@ -36,6 +36,8 @@
 
 #include <openvideo/Node.h>
 class ACE_Mutex;
+
+namespace openvideo {
 /**
 *@ingroup nodes
 *	This node implements a 2d texture which is updated every time the node is traversed.
@@ -49,10 +51,8 @@ class ACE_Mutex;
 *	@li: L8
 */
 
-namespace openvideo {
-
 class OPENVIDEO_API GL_TEXTURE_2D_Sink : 
-	public openvideo::Node
+    public openvideo::Node
 {
 public:
 	/**

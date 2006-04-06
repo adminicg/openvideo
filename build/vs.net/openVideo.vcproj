@@ -149,6 +149,18 @@
 					RelativePath="..\..\src\nodes\GLUTSinkFactory.cxx">
 				</File>
 				<File
+					RelativePath="..\..\src\nodes\OpenCVSrc.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\OpenCVSrcFactory.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\SpectecSrc.cxx">
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\SpectecSrcFactory.cxx">
+				</File>
+				<File
 					RelativePath="..\..\src\nodes\TestSrc.cxx">
 				</File>
 				<File
@@ -246,15 +258,6 @@
 					RelativePath="..\..\include\openvideo\nodes\TestSrcFactory.h">
 				</File>
 				<File
-					RelativePath="..\..\include\openvideo\nodes\v4l.h">
-				</File>
-				<File
-					RelativePath="..\..\include\openvideo\nodes\V4LSrc.h">
-				</File>
-				<File
-					RelativePath="..\..\include\openvideo\nodes\V4LSrcFactory.h">
-				</File>
-				<File
 					RelativePath="..\..\include\openvideo\nodes\VideoSink.h">
 				</File>
 				<File
@@ -327,9 +330,6 @@
 		</Filter>
 		<File
 			RelativePath="..\..\include\openvideo\configOV.h">
-		</File>
-		<File
-			RelativePath="..\..\bin\win32\testOpenVideo.xml">
 		</File>
 	</Files>
 	<Globals>

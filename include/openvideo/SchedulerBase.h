@@ -36,7 +36,9 @@
 
 class TiXmlElement;
 namespace openvideo{
+
 /**
+*@ingroup core
 *	
 */
 class SchedulerBase
@@ -45,7 +47,7 @@ public:
     /**
     *     The destructor.
     */
-    ~SchedulerBase();
+    virtual ~SchedulerBase();
 
     virtual void init();
 

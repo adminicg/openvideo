@@ -46,7 +46,9 @@
 
 
 namespace openvideo {
-
+/************************************************************************/
+/*                                                                      */
+/************************************************************************/
 class OPENVIDEO_API  SpectecSrcFactory : public openvideo::NodeFactory
 {
 public:

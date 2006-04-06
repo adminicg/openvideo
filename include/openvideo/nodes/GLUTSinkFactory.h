@@ -38,13 +38,15 @@
 #include <openvideo/NodeFactory.h>
 #include <openvideo/nodes/GLUTSink.h>
 
+
+namespace openvideo {
+
 /**
 *@ingroup nodes
 *	A factory to create GLUTSink nodes.
 */
-namespace openvideo {
 class OPENVIDEO_API  GLUTSinkFactory
-	: public openvideo::NodeFactory
+	: public NodeFactory
 {
  public:
    	/**

@@ -36,13 +36,13 @@
 #include <openvideo/nodes/TestSrc.h>
 #include <openvideo/NodeFactory.h>
 
+
+
+namespace openvideo {
 /**
 *@ingroup nodes
 *	A factory to create TestSrc nodes.
 */
-
-namespace openvideo {
-
 class OPENVIDEO_API  TestSrcFactory :
 	public openvideo::NodeFactory
 {

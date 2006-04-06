@@ -35,14 +35,14 @@
 #ifdef ENABLE_TESTSRC
 #include <openvideo/Node.h>
 
+
+
+namespace openvideo {
 /**
 *@ingroup nodes
 *	TestSrc implements an 320x240 image with a white background where a red,blue and green square moves 
 *	on. This node is used to test OpenVideo's environment with any input stream comming from a camera. 
 */
-
-namespace openvideo {
-
 class OPENVIDEO_API TestSrc :
 	public openvideo::Node
 {

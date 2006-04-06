@@ -49,6 +49,9 @@ class  ACE_Thread_Mutex;
 class  ACE_Condition_Thread_Mutex;
 class  ACE_Mutex;
 
+
+
+namespace openvideo {
 /**
 *@ingroup nodes
 *	GLUTSink implements an OpenVideo node to display a certain video stream. 
@@ -59,11 +62,8 @@ class  ACE_Mutex;
 *   Supported Pixel Formats: \n
 *	@li: R8G8B8
 */
-
-namespace openvideo {
-
 class GLUTSink : 
-	public openvideo::Node
+	public Node
 {
 public:
 	/**

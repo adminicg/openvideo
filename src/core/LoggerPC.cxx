@@ -32,24 +32,27 @@
 
 #include <openvideo/LoggerPC.h>
 #include <iostream>
-using namespace openvideo;
 
+namespace openvideo{
 
 LoggerPC::LoggerPC()
-{
-   //nil
+{  
 }
 
 LoggerPC::~LoggerPC()
 {
-   //nil
 }
 
+/************************************************************************/
+/*                                                                      */
+/************************************************************************/
 void 
 LoggerPC::log(const char* message) 
 {
     std::cout<<message;
 }
+
+}//namespace openvideo
 //========================================================================
 // End of LoggerPC.cxx
 //========================================================================

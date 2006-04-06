@@ -90,15 +90,10 @@ SpectecSrc::~SpectecSrc()
 }
 
 
-void 
-SpectecSrc::initPixelFormats()
-{
-  pixelFormats.push_back(FORMAT_R5G6B5);
-}
 
 
-void 
-SpectecSrc::init()
+
+void SpectecSrc::init()
 {
   return;
 
@@ -405,6 +400,13 @@ SpectecSrc::VC_GetControlValue(int CtrlID, void *Value, int ValueLen, int *RetLe
   }
 
   return( retVal );
+}
+
+
+void 
+SpectecSrc::initPixelFormats()
+{
+    pixelFormats.push_back(FORMAT_R5G6B5);
 }
 
 #endif  // ENABLE_SPECTECSRC

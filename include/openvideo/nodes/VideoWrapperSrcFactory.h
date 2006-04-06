@@ -37,11 +37,12 @@
 
 #include <openvideo/NodeFactory.h>
 #include <openvideo/nodes/VideoWrapperSrc.h>
-/**
-*@ingroup nodes
-*	A factory to create VideoWrapperSrc nodes.
-*/
+
 namespace openvideo {
+    /**
+    *@ingroup nodes
+    *	A factory to create VideoWrapperSrc nodes.
+    */
 class OPENVIDEO_API  VideoWrapperSrcFactory
 	: public openvideo::NodeFactory
 {

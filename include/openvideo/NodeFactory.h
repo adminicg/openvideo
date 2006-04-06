@@ -35,14 +35,16 @@
 
 #include <openvideo/openVideo.h>
 
+namespace openvideo {
+class Node;
+
 /**
 *@ingroup core
 *
 *	The NodeFactory class implements the 'AbstractFactory' part from the 'AbstractFactory' pattern [POSA96].
 *	
 */
-namespace openvideo {
-class Node;
+
 
 class OPENVIDEO_API  NodeFactory
 {
@@ -52,6 +54,7 @@ public:
 	*/
 	NodeFactory(){};
 
+    virtual ~NodeFactory(){};
 	/**
 	*	The function to construct a Node.
 	*/

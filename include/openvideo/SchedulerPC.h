@@ -38,8 +38,9 @@ class  ACE_Condition_Thread_Mutex;
 class ACE_Thread_Mutex;
 
 namespace openvideo{
-    class TimerACE;
+class TimerACE;
 /**
+*@ingroup core
 *	
 */
 class SchedulerPC : public SchedulerBase
@@ -53,7 +54,7 @@ public:
     /**
     *     The destructor.
     */
-    ~SchedulerPC();
+    virtual ~SchedulerPC();
 
 protected:	
     virtual void scheduleIdle();

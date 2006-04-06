@@ -38,14 +38,14 @@
 #include <openvideo/NodeFactory.h>
 #include <openvideo/nodes/VideoSink.h>
 
+
+
+namespace openvideo {
+
 /**
 *@ingroup nodes
 *	A factory to create VideoSink nodes.
 */
-
-namespace openvideo {
-
-
 class OPENVIDEO_API  VideoSinkFactory
 	: public openvideo::NodeFactory
 {

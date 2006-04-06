@@ -33,18 +33,17 @@
 #ifndef _TIMERACE_H
 #define _TIMERACE_H
 
+#include <openvideo/TimerBase.h>
+
+namespace openvideo {
+class TimerHandlerACE;
 
 /**
 *@ingroup core
 *	Implemtents a Timer, based on the timer implementations the ACE_Reactor provides. 
 *	It uses an instance of TimerHandler to schedule the timer. 
 */
-
-
-namespace openvideo {
-class TimerHandlerACE;
-
-class TimerACE 
+class TimerACE : public TimerBase
 {
 public:
 	/**
@@ -55,7 +54,7 @@ public:
 	/**
 	*	Destructor
 	*/	
-	~TimerACE();
+	virtual ~TimerACE();
   
 	/**
 	*	Schedule the timer.\n 

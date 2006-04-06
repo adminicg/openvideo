@@ -40,14 +40,14 @@
 
 #include <openvideo/PixelFormat.h>
 
+namespace openvideo {
+class State;
 /**
 *@ingroup core
 *	The Node class implements the 'AbstractProduct' part from the 'AbstractFactory' pattern [POSA96].
 *	None of the functions is pure virtual but a node implementation should 
 *	at least override the traversal function (process) to actually implement some action for a specific node.
 */
-namespace openvideo {
-class State;
 class OPENVIDEO_API Node
 {
 public:

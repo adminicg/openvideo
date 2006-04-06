@@ -9,7 +9,7 @@
  * extensible and easily configurable as possible. OpenVideo is currently implemented on windows and on linux systems. We  
  * distribute OpenVideo under the Gnu Public License (GPL). See the file COPYING for details about licensing.\n
  * \n
- * OpenVideo's functionality is split into two parts, the 'Core' and the 'Nodes' modules. The Core module is 
+ * OpenVideo's functionality is split into the 'Core' and the 'Nodes' modules. The Core module is 
  * responsible for setting up the runtime environment as well as for processing the various entities in OpenVideo's 
  * runtime data structure. This runtime structure is implemented as a directed acyclic graph which consists of nodes and edges 
  * which are implemented in the 'Nodes' module. For a detailed description on the functionality of OpenVideo's modules 
@@ -33,22 +33,32 @@
  *
  * \section download Downloads
  *
+ * \subsection src Src
  * @li SVN         - <a href="https://svn.icg.tu-graz.ac.at/svn/openvideo/trunk/">https://svn.icg.tu-graz.ac.at/svn/openvideo/trunk/</a>
- * A user account for anonymous and read-only access is available: guest/faust.
- * @li Zip Archive - <a href="http://www.studierstube.org/openvideo/download/openvideo.zip">openvideo.zip</a>
- * @li Tarball     - <a href="http://www.studierstube.org/openvideo/download/openvideo.tar.gz">openvideo.tar.gz</a>  
+ * For an svn account email to <a href="mailto:schmalstieg@icg.tu-graz.ac.at">schmalstieg[at]icg.tu-graz.ac.at</a> 
+ * @li <a href="http://www.studierstube.org/openvideo/download/openvideo.zip">openvideo_v0.8.zip</a>
+ * @li <a href="http://www.studierstube.org/openvideo/download/openvideo.tar.gz">openvideo_v0.8.tar.gz</a>  
+ *
+ * \subsection bin Binaries:
+ * @li	WinXP Visual C++ 7.1, TinyXml 2.3.7
+ *	- <a href="http://studierstube.org/openvideo/"> openvideo v1.0 </a>
+ *	\n including nodes:
+ *	\n	     - VideoWrapperSrc
+ *	\n	     - TestSrc
+ *	\n	     - GlutSink
+ *	\n	     - VideoSink
+ *	\n	     - Gl_Texture_2D_Sink
+ *	- <a href="http://studierstube.org/openvideo/"> precompiled dependencies </a>
+ *	\n including:
+ *	\n	     - ACE 5.4
+ *	\n	     - VideoWrapper 0.1.1
+ *  
  *
  * \subsection	externals External Downloads
  *
  * @li Tinyxml - <a href="http://sourceforge.net/projects/tinyxml">http://sourceforge.net/projects/tinyxml</a>
  * @li ACE     - <a href="http://www.cs.wustl.edu/~schmidt/ACE.html">http://www.cs.wustl.edu/~schmidt/ACE.html</a>
  *
- * Coming Up:
- * @li	Windows and Linux binaries of OpenVideo, ACE and tinyxml. 
- * 
  *
- * \n
- * @author Denis Kalkofen
- * @date 2005
- */
+ *
  */

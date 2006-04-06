@@ -24,7 +24,7 @@
  * ======================================================================== */
 /** The header file for the OpenCVSrc class.
  *
- * @author Denis Kalkofen
+ * @author Jorn Skaarud Karlsen
  *
  * $Id: OpenCVSrc.h 25 2005-11-28 16:11:59Z denis $
  * @file                                                                   */
@@ -42,23 +42,25 @@
 #include <string>
 #include <openvideo/Node.h>
 
-/**
- * This class is a wrapper for USB and Firewire cameras. Each class
- * supports reading input from one camera and this is transferred to
- * the listening nodes. The functionality is taken from OpenCV.
- * 
- * @ingroup nodes
- * @author Jorn Skaarud Karlsen
- */
+
 
 // Define private class
 class OpenCVSrcP;
 
 // Our classes are in the openvideo namespace
 namespace openvideo {
-
+    /**
+    * @ingroup nodes
+    * This class is a wrapper for USB and Firewire cameras. Each class
+    * supports reading input from one camera and this is transferred to
+    * the listening nodes. The functionality is taken from OpenCV.
+    * 
+    * @author Jorn Skaarud Karlsen
+    */
   // Define source class
-  class OPENVIDEO_API OpenCVSrc : public openvideo::Node {
+  class OPENVIDEO_API OpenCVSrc :
+    public openvideo::Node 
+  {
     /// Typedef inherited for clean access
     typedef Node inherited;
     /// Make sure to be friends with the private class

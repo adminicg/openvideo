@@ -38,16 +38,16 @@
 #include <openvideo/NodeFactory.h>
 #include <openvideo/nodes/GL_TEXTURE_2D_Sink.h>
 
+
+namespace openvideo {
+
 /**
 *@ingroup nodes
 *	A factory to create GL_TEXTURE_2D_Sink nodes.
 */
 
-namespace openvideo {
-
-
 class OPENVIDEO_API  GL_TEXTURE_2D_SinkFactory
-	: public openvideo::NodeFactory
+	: public NodeFactory
 {
 public:
 	/**

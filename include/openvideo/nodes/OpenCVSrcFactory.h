@@ -24,7 +24,7 @@
  * ======================================================================== */
 /** The header file for the OpenCVSrcFactory class.
  *
- * @author Denis Kalkofen
+ * @author Jorn Skaarud Karlsen
  *
  * $Id: OpenCVSrcFactory.h 25 2005-11-28 16:11:59Z denis $
  * @file                                                                   */
@@ -40,13 +40,13 @@
 #include <openvideo/nodes/OpenCVSrc.h>
 #include <openvideo/NodeFactory.h>
 
-/**
- *@ingroup nodes
- *	A factory to create OpenCVSrc nodes.
- */
+
 
 namespace openvideo {
-
+    /**
+    *@ingroup nodes
+    *	A factory to create OpenCVSrc nodes.
+    */
   class OPENVIDEO_API  OpenCVSrcFactory :
   public openvideo::NodeFactory
   {

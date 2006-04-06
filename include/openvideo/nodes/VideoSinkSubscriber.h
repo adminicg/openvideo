@@ -38,7 +38,9 @@
 #include <openvideo/State.h>
 
 namespace openvideo {
-
+/************************************************************************/
+/*                                                                      */
+/************************************************************************/
 class OPENVIDEO_API VideoSinkSubscriber : 
 	public openvideo::Node
 {

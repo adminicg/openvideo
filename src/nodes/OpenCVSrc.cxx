@@ -24,7 +24,7 @@
  * ======================================================================== */
 /** The source file for the OpenCVSrc class.
  *
- * @author Jorn Skaarud Karlsen, Denis Kalkofen
+ * @author Jorn Skaarud Karlsen
  * 
  * $Id: OpenCVSrc.cxx 25 2005-11-28 16:11:59Z denis $
  * @file                                                                   

@@ -34,18 +34,10 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-using namespace openvideo;
-
-LoggerBase::LoggerBase()
-{
-   //nil
-}
-
-LoggerBase::~LoggerBase()
-{
-   //nil
-}
-
+namespace openvideo{
+/************************************************************************/
+/*                                                                      */
+/************************************************************************/
 void
 LoggerBase::logEx(const char* nStr, ...)
 {
@@ -57,6 +49,7 @@ LoggerBase::logEx(const char* nStr, ...)
 
     log(tmpString);
 }
+}//namespace 
 //========================================================================
 // End of LoggerBase.cxx
 //========================================================================

@@ -35,6 +35,8 @@
 
 #include <ace/Event_Handler.h>
 
+
+namespace openvideo{
 /**
 *@ingroup core
 *	Class to handle time out events. 
@@ -42,7 +44,6 @@
 *	timerCB.
 */
 
-namespace openvideo{
 class TimerHandlerACE : public ACE_Event_Handler
 {
 public:

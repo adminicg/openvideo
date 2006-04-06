@@ -39,38 +39,38 @@
 #include <openvideo/Node.h>
 
 
-/**
-*@ingroup nodes
-*	VideoWrapperSrc implements an OpenVideo node to access the videowrapper library. 
-*	The xml entry looks like this:\n
-*@verbatim
-<VideoWrapperSrc 
-				name="VWSrc_1"
-				libId="vc"
-				formatId="UYVY"
-				cameraNum="1"
-				width="320"
-				height="240"
-				frameRate="15"
-				scale="0"> 
-</VideoWrapperSrc>
-@endverbatim
-*	The parameters are : \n
-*	(libID,camNum,width,height,frameRate,scale refer all to VideoWrapper's init. string) \n
-*	@li name = node name 
-*	@li libId = VideoWrapper's library identifier (vc=vidcature)
-*	@li	cameraNum = the camera number this nodes refers to 
-*	@li	width = video widht
-*	@li	height = video height
-*	@li	frameRate = VideoWrapper's update rate
-*	@li	scale = VideoWrapper's scale value
-*	\n
-*   Supported Pixel Formats: \n
-*	@li: R8G8B8
-*/
+
 
 namespace openvideo {
-
+    /**
+    *@ingroup nodes
+    *	VideoWrapperSrc implements an OpenVideo node to access the videowrapper library. 
+    *	The xml entry looks like this:\n
+    *@verbatim
+    <VideoWrapperSrc 
+    name="VWSrc_1"
+    libId="vc"
+    formatId="UYVY"
+    cameraNum="1"
+    width="320"
+    height="240"
+    frameRate="15"
+    scale="0"> 
+    </VideoWrapperSrc>
+    @endverbatim
+    *	The parameters are : \n
+    *	(libID,camNum,width,height,frameRate,scale refer all to VideoWrapper's init. string) \n
+    *	@li name = node name 
+    *	@li libId = VideoWrapper's library identifier (vc=vidcature)
+    *	@li	cameraNum = the camera number this nodes refers to 
+    *	@li	width = video widht
+    *	@li	height = video height
+    *	@li	frameRate = VideoWrapper's update rate
+    *	@li	scale = VideoWrapper's scale value
+    *	\n
+    *   Supported Pixel Formats: \n
+    *	@li: R8G8B8
+    */
 class OPENVIDEO_API VideoWrapperSrc : 
 	public openvideo::Node
 {

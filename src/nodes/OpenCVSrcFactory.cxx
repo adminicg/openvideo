@@ -24,7 +24,7 @@
  * ======================================================================== */
 /** The source file for the OpenCVSrcFactory class.
  *
- * @author Denis Kalkofen
+ * @author Jorn Skaarud Karlsen
  * 
  * $Id: OpenCVSrcFactory.cxx 25 2005-11-28 16:11:59Z denis $
  * @file                                                                   

@@ -47,45 +47,7 @@
 #include <GL/glx.h>
 #endif
 
-/**@ingroup core
- *	The ‘Manager’ class represents OpenVideo's main object which constructs, holds and updates OpenVideo’s runtime data structure. OpenVideo defines its data structure as a directed acyclic graph which is defined in an xml based configuration file. To construct such an OpenVideo graph the ‘Manager’ provides the necessary functionality to parse a given OpenVideo configuration as well as to construct the graph out of the information gained in the parsing step. To construct a single node the ‘Manager’ uses the related factory this specific node implements. Therefore, a list of factories of all known OpenVideo nodes is stored in an instance of a ‘Manager’. \n 
- *	The basic lifecycle of a Manager object looks like this:
- *@verbatim
- 	//1)
- 	//1a) initialize the list of node factories
- 	//1b) set the callback function to update the graph
- 	//1c) set the function which initializes the graph 
- 	//
- 	Manager manager;
- 
- 	//2)
- 	//2a) parse the give configuration 
- 	//2b) construct on OpenVideo graph
- 	manager.parseConfiguration(“aConfiguration”);
- 
- 	//3)
- 	//3a)	initialize the graph (by calling the function defined in (1b) –> this 
- 	//	perhaps rearranges the node list the manager holds) 
- 	//	the list 
- 	//3b)	initialize a timer to permanently update the graph data 
- 	//3c)	start the timer which constantly calls the traversal function which was
- 	//   	defined in 1b)
- 	manager.run()
- 	@endverbatim
- *
- *	The following drawing shows an example of an OpenVideo graph.\n
- *
- *	\image html ovgraph.gif
- *
- *	Internal dependencies ->	* Timer -> to create the timer to trigger the traversal \n
- *								* NodeFactory + Various Node Factories -> to create the nodes \n 
- *								* Node -> basic elements in the graph \n 
- *
- *	External dependencies ->	* TinyXML – to parse OpenVideo’s xml based configuration 
- *
- *
- * @author Denis Kalkofen
- */
+
 #include <openvideo/Logger.h>
 #include <openvideo/Scheduler.h>
 
@@ -96,6 +58,47 @@ class  ACE_Condition_Thread_Mutex;
 namespace openvideo {
 class Node;
 class NodeFactory;
+
+
+/**@ingroup core
+*	The ‘Manager’ class represents OpenVideo's main object which constructs, holds and updates OpenVideo’s runtime data structure. OpenVideo defines its data structure as a directed acyclic graph which is defined in an xml based configuration file. To construct such an OpenVideo graph the ‘Manager’ provides the necessary functionality to parse a given OpenVideo configuration as well as to construct the graph out of the information gained in the parsing step. To construct a single node the ‘Manager’ uses the related factory this specific node implements. Therefore, a list of factories of all known OpenVideo nodes is stored in an instance of a ‘Manager’. \n 
+*	The basic lifecycle of a Manager object looks like this:
+*@verbatim
+//1)
+//1a) initialize the list of node factories
+//1b) set the callback function to update the graph
+//1c) set the function which initializes the graph 
+//
+Manager manager;
+
+//2)
+//2a) parse the give configuration 
+//2b) construct on OpenVideo graph
+manager.parseConfiguration(“aConfiguration”);
+
+//3)
+//3a)	initialize the graph (by calling the function defined in (1b) –> this 
+//	perhaps rearranges the node list the manager holds) 
+//	the list 
+//3b)	initialize a timer to permanently update the graph data 
+//3c)	start the timer which constantly calls the traversal function which was
+//   	defined in 1b)
+manager.run()
+@endverbatim
+*
+*	The following drawing shows an example of an OpenVideo graph.\n
+*
+*	\image html ovgraph.gif
+*
+*	Internal dependencies ->	* Timer -> to create the timer to trigger the traversal \n
+*								* NodeFactory + Various Node Factories -> to create the nodes \n 
+*								* Node -> basic elements in the graph \n 
+*
+*	External dependencies ->	* TinyXML – to parse OpenVideo’s xml based configuration 
+*
+*
+* 
+*/
 class OPENVIDEO_API Manager 
 {
  public:

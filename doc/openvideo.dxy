@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = OpenVideo
-PROJECT_NUMBER         = 1.0
+PROJECT_NUMBER         = 0.8
 OUTPUT_DIRECTORY       = .
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -81,9 +81,14 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ../src
+INPUT                  = D:/workspace/projects/openvideo \
+                         D:/workspace/projects/openvideo/doc/main_page.txt \
+                         D:/workspace/projects/openvideo/doc/changes.txt \
+                         D:/workspace/projects/openvideo/doc/contributions.txt
 FILE_PATTERNS          = *.h \
-                         *.cxx
+                         *.cxx \
+                         *.cpp \
+                         *.c
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO

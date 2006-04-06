@@ -33,18 +33,19 @@
 #include <openvideo/openVideo.h>
 #ifdef  ENABLE_GL_TEXTURE_2D_SINK
 #ifdef WIN32
-#pragma comment(lib,"opengl32.lib")
-#pragma comment(lib,"glu32.lib")
+    #pragma comment(lib,"opengl32.lib")
+    #pragma comment(lib,"glu32.lib")
+    #define WIN32_LEAN_AND_MEAN
 #endif
 #include <ace/Mutex.h>
 
 #include <GL/gl.h>			
 #include <GL/glu.h>		    
 
-using namespace openvideo;
-
 #include <openvideo/State.h>
 #include <openvideo/Manager.h>
+
+namespace openvideo{
 
 unsigned int 
 GL_TEXTURE_2D_Sink::get_video_texture_id()
@@ -268,5 +269,5 @@ GL_TEXTURE_2D_Sink::process()
 	}
 
 }
-
+}//namespace openvideo{
 #endif  //ENABLE_GL_TEXTURE_2D_SINK

@@ -37,7 +37,7 @@
 #include <map>
 #include <string>
 
-
+namespace openvideo {
 /**
 *@ingroup core
 *	A State is used to pass data along OpenVideo's graph.
@@ -50,7 +50,7 @@
 *	\image html Stategraph.gif
 *	
 */
-namespace openvideo {
+
 class OPENVIDEO_API State
 {
 public:

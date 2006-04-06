@@ -34,7 +34,7 @@
 #include <ace/Reactor.h>
 #include <openvideo/TimerHandlerACE.h>
 
-using namespace openvideo;
+namespace openvideo{
 
 // constructor
 TimerACE::TimerACE()
@@ -72,3 +72,4 @@ TimerACE::runEventLoop()
 {
 	ACE_Reactor::run_event_loop();
 }
+}//namespace openvideo{
