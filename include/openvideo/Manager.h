@@ -51,6 +51,8 @@
 #include <openvideo/Logger.h>
 #include <openvideo/Scheduler.h>
 
+
+
 class TiXmlElement;
 class  ACE_Thread_Mutex;
 class  ACE_Condition_Thread_Mutex;
@@ -271,6 +273,7 @@ class OPENVIDEO_API Manager
 
     bool updating;
 
+    void* controlThreadHandle;
     /**
     *	Mutex used in updateLockCond .
     */
@@ -291,6 +294,8 @@ class OPENVIDEO_API Manager
     bool idleSetGLContext;
     bool idleDeleteGLContext;
     
+    static void* startUserInterface(void *);
+    static bool isUserInterfaceRunning;
 #ifdef LINUX
     GLXDrawable dc;
     Display* dsp;

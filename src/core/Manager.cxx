@@ -30,7 +30,7 @@
  * @file                                                                   
  /* ======================================================================= */
 #include <openvideo/Manager.h>
-
+#include <ace/Thread.h>
 #include <ace/Condition_Thread_Mutex.h>
 #include <ace/Thread_Mutex.h>
 
@@ -85,6 +85,7 @@ void* Manager::initTraversalData=NULL;
 bool  Manager::travBlock=false;
 bool  Manager::hasGLContext=false;
 Manager* Manager::instance=NULL;
+bool Manager::isUserInterfaceRunning=false;
 
 Manager::Manager()
 {
@@ -400,8 +401,79 @@ Manager::setInitTravFunction(void (*initTravFunction)(void*),void* data)
 void 
 Manager::run()
 {
+  
   scheduler->init();
+  //start control  thread
+  ACE_hthread_t* controlThreadHandle = new ACE_hthread_t();
+  if(ACE_Thread::spawn((ACE_THR_FUNC)Manager::startUserInterface,
+      0, 	
+     THR_NEW_LWP|THR_JOINABLE, 	
+      0, 	
+     controlThreadHandle,
+      0, 	
+      0, 	
+     0
+     )==-1)
+  { 
+      printf("Error in spawning thread\n"); 
+  }
   scheduler->run();
+   
+}
+
+void* 
+Manager::startUserInterface(void *)
+{ 
+    std::string inputLine;
+    Manager::isUserInterfaceRunning=true;
+    while(Manager::isUserInterfaceRunning)
+    {
+        printf("openvideo>");
+        getline(std::cin, inputLine );
+        //////process input string
+        // get token 
+        std::vector<std::string> inputArr;
+        bool newToken=true;
+        std::string curChar ;
+        for(int i=0;i<(int)inputLine.size();i++)
+        {
+            curChar=inputLine[i];
+            if(curChar==" "){
+                newToken=true;
+                continue;
+            }
+            if(newToken){
+                std::string token="";
+                while(curChar!=" " && i<(int)inputLine.size()) 
+                {
+                    token.push_back(curChar[0]);
+                    i++;
+                    curChar=inputLine[i];
+                }
+                i--;
+                inputArr.push_back(token);
+                newToken=false;
+            }
+        }
+        //process token
+        if(inputArr.size()>0)
+        {
+            std::string command;
+            command=inputArr[0];
+            if(command=="load"){
+
+            }
+            else if(command=="exit"){
+                Manager::isUserInterfaceRunning=false;
+                Manager::getInstance()->stop();
+            }
+            else{
+                printf("ERROR:: dont understand -%s-\n",command.c_str());
+            }
+        }
+    }
+
+    return 0;
 }
 
 void 
