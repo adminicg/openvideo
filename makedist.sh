@@ -4,8 +4,8 @@ NAME=openvideo-1.0.0
 
 rm -f ../$NAME
 ln -s `pwd` ../$NAME
-pushd ..
-tar cvfjh $NAME.tar.bz2 \
+pushd .. > /dev/null
+tar cfjh $NAME.tar.bz2 \
 --exclude ".svn" \
 --exclude "*.dll" \
 --exclude "*.vcproj" \
@@ -16,6 +16,6 @@ tar cvfjh $NAME.tar.bz2 \
 --exclude build.opts \
 --exclude $NAME.tar.bz2 \
 $NAME
-popd
+popd > /dev/null
 mv ../$NAME.tar.bz2 .
 rm ../$NAME
