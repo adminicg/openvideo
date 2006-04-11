@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import os
 import sys
 import buildutils
@@ -40,6 +41,9 @@ else:
     print "****************************************************************************"
     sys.exit(-1)
 
+#****************************************************************************
+# Make sure TinyXml is available
+#****************************************************************************
 if conf.TryAction('pkg-config --exists tinyxml')[0]:
     env.ParseConfig('pkg-config --cflags --libs tinyxml')
 else:
