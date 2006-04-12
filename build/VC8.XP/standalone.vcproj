@@ -19,7 +19,6 @@
 			OutputDirectory="Debug"
 			IntermediateDirectory="Debug"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -100,7 +99,6 @@
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -142,7 +140,7 @@
 				AdditionalDependencies="openVideo.lib  ace.lib"
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/ovStandalone.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(ACEROOT)/lib&quot;;&quot;$(OPENVIDEOROOT)/lib/win32&quot;"
+				AdditionalLibraryDirectories="&quot;$(ACEROOT)/lib/win32&quot;;&quot;$(OPENVIDEOROOT)/lib/win32&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
