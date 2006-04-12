@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)/src&quot;"
+				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)/src&quot;;&quot;$(TINYXMLMODROOT)/src&quot;"
 				PreprocessorDefinitions="HAVE_CONFIGOV_H;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYXML_MOD_DLL;OPENVIDEO_EXPORTS"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
@@ -70,7 +70,7 @@
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/openVideod.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib&quot;;&quot;$(TINYXMLROOT)\lib\win32&quot;"
+				AdditionalLibraryDirectories="&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib&quot;;&quot;$(TINYXMLROOT)\lib\win32&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OPENVIDEOROOT)/lib/win32/openVideod.pdb"
