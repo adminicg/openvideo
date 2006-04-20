@@ -11,8 +11,8 @@ Source:		%{name}-%{version}.tar.bz2
 Packager:	Institute for Computer Graphics and Vision, Graz University of Technology, Austria
 Prefix:		/usr
 BuildRoot: 	%{_tmppath}/buildroot-%{name}-%{version}
-Requires:	tinyxml
-BuildRequires:	scons tinyxml
+Requires:	tinyxml ACE
+BuildRequires:	scons tinyxml-devel ACE-devel
 
 %define _prefix %{prefix}
 
