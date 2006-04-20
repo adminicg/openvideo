@@ -42,10 +42,10 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;"
-				PreprocessorDefinitions="HAVE_CONFIGOV_H;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYXML_MOD_DLL;OPENVIDEO_EXPORTS"
+				PreprocessorDefinitions="HAVE_CONFIGOV_H;WIN32;_DEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				BrowseInformation="1"
@@ -127,7 +127,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;"
+				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;"
 				PreprocessorDefinitions="HAVE_CONFIGOV_H; WIN32;NDEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
@@ -445,10 +445,6 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
-		<File
-			RelativePath="..\..\include\openvideo\configOV.h"
-			>
-		</File>
 		<File
 			RelativePath="..\..\bin\win32\testOpenVideo.xml"
 			>
