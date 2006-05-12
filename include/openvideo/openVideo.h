@@ -40,6 +40,18 @@
 #include <openvideo/configOV.h>
 #endif
 
+
+#if defined(_WIN32_WCE)
+#  define OV_IS_WINCE
+#elif defined(WIN32)
+#  define OV_IS_WINXP
+#endif
+
+#ifdef LINUX
+#  define OV_IS_LINUX
+#endif
+
+
 #if defined(WIN32) || defined(_WIN32_WCE)
 #pragma warning(disable:4251)
 #endif

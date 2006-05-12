@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="openVideod.lib aced.lib"
+				AdditionalDependencies="aced.lib"
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/ovStandaloned.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(ACEROOT)/lib/win32&quot;;&quot;$(OPENVIDEOROOT)/lib/win32&quot;"
@@ -137,7 +137,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="openVideo.lib  ace.lib"
+				AdditionalDependencies="ace.lib"
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/ovStandalone.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(ACEROOT)/lib/win32&quot;;&quot;$(OPENVIDEOROOT)/lib/win32&quot;"

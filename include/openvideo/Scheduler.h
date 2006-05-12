@@ -33,14 +33,14 @@
 #ifndef _SCHEDULEROV_H_
 #define _SCHEDULEROV_H_
 
-#ifdef WIN32
+#if defined(OV_IS_WINXP) || defined(OV_IS_WINCE)
     #include "SchedulerPC.h"
     namespace openvideo{
         typedef openvideo::SchedulerPC Scheduler;
     }
 #endif
 
-#ifdef LINUX
+#if defined(OV_IS_LINUX)
     #include "SchedulerPC.h"
     namespace openvideo{
         typedef openvideo::SchedulerPC Scheduler;

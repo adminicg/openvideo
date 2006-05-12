@@ -33,14 +33,14 @@
 #ifndef _LOGGER_H_
 #define _LOGGER_H_
 
-#ifdef WIN32
+#if defined(OV_IS_WINXP) || defined(OV_IS_WINCE)
     #include "LoggerPC.h"
     namespace openvideo{
         typedef openvideo::LoggerPC Logger;
     }
 #endif
 
-#ifdef LINUX
+#if defined(OV_IS_LINUX)
     #include "LoggerPC.h"
     namespace openvideo{
         typedef openvideo::LoggerPC Logger;

@@ -39,6 +39,10 @@
 #define  ENABLE_TESTSRC
 #define  ENABLE_VIDEOSINK
 
+#ifdef _WIN32_WCE
+#  define ENABLE_SPECTECSRC
+#endif
+
 //
 // if using TinyXML_MOD, uncomment one of the next two
 // definitions to choose between DLL and static linking

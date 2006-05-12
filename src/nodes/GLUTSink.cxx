@@ -41,6 +41,12 @@
 #include <GL/glut.h>
 #include <GL/glu.h>
 
+#ifdef WIN32
+// somehow ::TryEnterCriticalSection() is not declared in release build...
+// (needed by ACE)
+BOOL TryEnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
+#endif //WIN32
+
 #include <ace/OS.h>
 #include <ace/Thread.h>
 #include <ace/Condition_Thread_Mutex.h>
