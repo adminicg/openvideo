@@ -44,6 +44,8 @@
 
 #include <openvideo/NodeFactory.h>
 #include <openvideo/Node.h>
+
+#include <gl/GL.h>
 	
 using namespace openvideo;
 
@@ -62,6 +64,10 @@ using namespace openvideo;
 
 #ifdef ENABLE_VIDEOWRAPPERSRC
 #include <openvideo/nodes/VideoWrapperSrcFactory.h>
+#endif
+
+#ifdef ENABLE_DSVLSRC
+#include <openvideo/nodes/DSVLSrcFactory.h>
 #endif
 
 #ifdef ENABLE_VIDEOSINK
@@ -171,7 +177,7 @@ Manager::doIdleTasks()
       
         idleDeleteGLContext=false;   
 
-#ifdef WIN32
+#ifdef OV_IS_WINDOWS
         hasGLContext=(!wglDeleteContext(glContext));
 #endif
 #ifdef LINUX
@@ -597,6 +603,10 @@ Manager::initNodeFactories()
 {
 #ifdef ENABLE_VIDEOWRAPPERSRC
   factories.push_back(new VideoWrapperSrcFactory());
+#endif
+
+#ifdef ENABLE_DSVLSRC
+  factories.push_back(new DSVLSrcFactory());
 #endif
 
 #ifdef ENABLE_GLUTSINK

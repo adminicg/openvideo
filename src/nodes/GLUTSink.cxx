@@ -32,6 +32,7 @@
 
 #include <openvideo/nodes/GLUTSink.h>
 #include <openvideo/openVideo.h>
+
 #ifdef ENABLE_GLUTSINK
 
 #include <openvideo/State.h>
@@ -55,7 +56,7 @@ BOOL TryEnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
 
 #include <iostream>
 
-#ifdef WIN32
+#if defined(OV_IS_WINXP) && !defined(_IS_KLIMTES_)
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glu32.lib")
 #pragma comment(lib,"glut32.lib")

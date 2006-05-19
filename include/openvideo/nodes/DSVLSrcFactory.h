@@ -22,33 +22,56 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The node configuration file.
+/** The header file for the DSVLSrcFactory class.
   *
-  * @author Denis Kalkofen
+  * @author Daniel Wagner
   *
-  * $Id: configOV.template.h 30 2005-12-10 12:10:50Z denis $
+  * $Id$
   * @file                                                                   */
  /* ======================================================================= */
-//enable/disable nodes
 
-#ifndef _WIN32_WCE
-//#  define  ENABLE_DSVLSRC
-#  define  ENABLE_VIDEOWRAPPERSRC
-#  ifndef HAVE_NO_GLUT
-#    define  ENABLE_GLUTSINK
-#  endif
-#  define  ENABLE_GL_TEXTURE_2D_SINK
-#endif
-#define  ENABLE_TESTSRC
-#define  ENABLE_VIDEOSINK
 
-#ifdef _WIN32_WCE
-#  define ENABLE_SPECTECSRC
-#endif
+#ifndef _DSVLSRCFACTORY_H
+#define _DSVLSRCFACTORY_H
 
-//
-// if using TinyXML_MOD, uncomment one of the next two
-// definitions to choose between DLL and static linking
-//
-//#define TINYXML_MOD_DLL
-//#define TINYXML_MOD_STATIC
+#include <openvideo/openVideo.h>
+
+#ifdef ENABLE_DSVLSRC
+
+#include <openvideo/NodeFactory.h>
+#include <openvideo/nodes/DSVLSrc.h>
+
+namespace openvideo {
+    /**
+    *@ingroup nodes
+    *	A factory to create DSVLSrc nodes.
+    */
+class OPENVIDEO_API  DSVLSrcFactory : public openvideo::NodeFactory
+{
+public:
+	/**
+	*	constructor
+	*/
+    DSVLSrcFactory();
+
+	/**
+	*	destructor
+	*/
+	~DSVLSrcFactory();
+
+	/**
+	*	creates DSVL nodes
+	*/
+	virtual openvideo::DSVLSrc* createNode();
+
+	/**
+	*	returns VideoWrapperSrc as the type of known objects
+	*/
+	virtual const char* getNodeTypeId();
+};
+
+}//namespace openvideo {
+
+#endif // ENABLE_DSVLSRC
+
+#endif // _DSVLSRCFACTORY_H

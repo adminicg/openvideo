@@ -22,33 +22,42 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The node configuration file.
+/** The source file for the DSVLSrcFactory class.
   *
-  * @author Denis Kalkofen
-  *
-  * $Id: configOV.template.h 30 2005-12-10 12:10:50Z denis $
-  * @file                                                                   */
+  * @author Daniel Wagner
+  * 
+  * $Id$
+  * @file                                                                   
  /* ======================================================================= */
-//enable/disable nodes
 
-#ifndef _WIN32_WCE
-//#  define  ENABLE_DSVLSRC
-#  define  ENABLE_VIDEOWRAPPERSRC
-#  ifndef HAVE_NO_GLUT
-#    define  ENABLE_GLUTSINK
-#  endif
-#  define  ENABLE_GL_TEXTURE_2D_SINK
-#endif
-#define  ENABLE_TESTSRC
-#define  ENABLE_VIDEOSINK
+#include <openvideo/nodes/DSVLSrcFactory.h>
+#include <openvideo/openVideo.h>
 
-#ifdef _WIN32_WCE
-#  define ENABLE_SPECTECSRC
-#endif
+#ifdef ENABLE_DSVLSRC
 
-//
-// if using TinyXML_MOD, uncomment one of the next two
-// definitions to choose between DLL and static linking
-//
-//#define TINYXML_MOD_DLL
-//#define TINYXML_MOD_STATIC
+using namespace openvideo;
+
+
+DSVLSrcFactory::DSVLSrcFactory()
+{
+}
+
+
+DSVLSrcFactory::~DSVLSrcFactory()
+{
+}
+
+DSVLSrc*
+DSVLSrcFactory::createNode()
+{
+	return new DSVLSrc();
+}
+
+const char* 
+DSVLSrcFactory::getNodeTypeId()
+{
+	return "DSVLSrc";
+}
+
+
+#endif //ENABLE_DSVLSRC

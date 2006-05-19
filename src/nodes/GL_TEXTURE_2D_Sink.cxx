@@ -31,16 +31,19 @@
  /* ======================================================================= */
 #include <openvideo/nodes/GL_TEXTURE_2D_Sink.h>
 #include <openvideo/openVideo.h>
-#ifdef  ENABLE_GL_TEXTURE_2D_SINK
-#ifdef WIN32
-    #pragma comment(lib,"opengl32.lib")
-    #pragma comment(lib,"glu32.lib")
-    #define WIN32_LEAN_AND_MEAN
-#endif
+
 #include <ace/Mutex.h>
 
-#include <GL/gl.h>			
-#include <GL/glu.h>		    
+#include <GL/gl.h>
+#include <GL/glu.h>
+
+#ifdef  ENABLE_GL_TEXTURE_2D_SINK
+
+#if defined(OV_IS_WINXP) && !defined(_IS_KLIMTES_)
+#  pragma comment(lib,"opengl32.lib")
+#  pragma comment(lib,"glu32.lib")
+#  define WIN32_LEAN_AND_MEAN
+#endif
 
 #include <openvideo/State.h>
 #include <openvideo/Manager.h>

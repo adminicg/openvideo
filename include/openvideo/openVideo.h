@@ -43,8 +43,16 @@
 
 #if defined(_WIN32_WCE)
 #  define OV_IS_WINCE
+#  define OV_IS_WINDOWS
 #elif defined(WIN32)
 #  define OV_IS_WINXP
+#  define OV_IS_WINDOWS
+#endif
+
+#ifdef OV_IS_WINDOWS
+#  if defined(DEBUG) || defined(_DEBUG)
+#    define OV_IS_DEBUG
+#  endif
 #endif
 
 #ifdef LINUX

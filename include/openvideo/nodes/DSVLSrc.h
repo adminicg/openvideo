@@ -22,33 +22,90 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The node configuration file.
+/** The header file for the VideoWrappersrc class.
   *
   * @author Denis Kalkofen
   *
-  * $Id: configOV.template.h 30 2005-12-10 12:10:50Z denis $
+  * $Id: VideoWrapperSrc.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
  /* ======================================================================= */
-//enable/disable nodes
 
-#ifndef _WIN32_WCE
-//#  define  ENABLE_DSVLSRC
-#  define  ENABLE_VIDEOWRAPPERSRC
-#  ifndef HAVE_NO_GLUT
-#    define  ENABLE_GLUTSINK
-#  endif
-#  define  ENABLE_GL_TEXTURE_2D_SINK
-#endif
-#define  ENABLE_TESTSRC
-#define  ENABLE_VIDEOSINK
 
-#ifdef _WIN32_WCE
-#  define ENABLE_SPECTECSRC
-#endif
+#ifndef _DSVLSRC_H
+#define _DSVLSRC_H
 
-//
-// if using TinyXML_MOD, uncomment one of the next two
-// definitions to choose between DLL and static linking
-//
-//#define TINYXML_MOD_DLL
-//#define TINYXML_MOD_STATIC
+#include <openvideo/openVideo.h>
+
+#ifdef ENABLE_DSVLSRC
+
+#include <string>
+
+#include <openvideo/Node.h>
+
+
+class DSVL_VideoSource;
+struct MemoryBufferHandle;
+
+
+namespace openvideo {
+
+class OPENVIDEO_API DSVLSrc : public openvideo::Node
+{
+public:
+	/**
+	*
+	*/
+	DSVLSrc();	
+
+	/**
+	*
+	*/
+	~DSVLSrc();
+
+	/**
+	*	Sets all relevat parameters. 
+	*/
+	virtual bool setParameter(std::string key, std::string value);
+
+	/**
+	*	This function calls intializes the DSVL. it then opens and starts the video stream.
+	*	Finally it creates a new context where it puts the video specific data on.
+	*/
+	virtual void init();
+
+	/**
+	*	Updates the video frame at its context object.
+	*/
+	virtual void process();
+
+	/**
+	*	releases the videoframe (which was previously locked by the process function.
+	*/
+	virtual void postProcess();
+
+	virtual void preProcess();
+	virtual void initPixelFormats();
+
+protected:
+	/**
+	*	the handle to the video stream
+	*/
+	unsigned short g_hVideo;
+
+	/**
+	*	videowrapper's library id.
+	*/
+	std::string configFileName;
+
+
+	DSVL_VideoSource* dsvlSource;
+	MemoryBufferHandle* mbHandle;
+
+	bool flipV;
+	unsigned char* frameBuffer;
+};
+}//namespace openvideo {
+
+#endif // ENABLE_DSVLSRC
+
+#endif // _DSVLSRC_H
