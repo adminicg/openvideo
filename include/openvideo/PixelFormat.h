@@ -37,6 +37,9 @@
 #include <string>
 
 
+namespace openvideo {
+
+
 enum PIXEL_FORMAT {
 	FORMAT_R8G8B8	= 0,
 	FORMAT_B8G8R8	= 1,
@@ -56,6 +59,9 @@ namespace PixelFormat
 	std::string FormatToString(PIXEL_FORMAT format);
 
 }  // namespace PixelFormat
+
+
+}  // namespace openvideo
 
 
 #endif //_PIXELFORMAT_H

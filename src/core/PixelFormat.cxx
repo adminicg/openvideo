@@ -35,6 +35,10 @@
 #include <map>
 
 
+namespace openvideo 
+{
+
+
 namespace PixelFormat
 {
 
@@ -91,3 +95,6 @@ FormatToString(PIXEL_FORMAT format)
 
 
 }  // namespace PixelFormat
+
+
+}  // namespace openvideo
