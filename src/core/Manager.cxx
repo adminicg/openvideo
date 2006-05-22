@@ -45,7 +45,7 @@
 #include <openvideo/NodeFactory.h>
 #include <openvideo/Node.h>
 
-#include <gl/GL.h>
+#include <GL/gl.h>
 	
 using namespace openvideo;
 
