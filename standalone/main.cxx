@@ -13,6 +13,10 @@
 // OpenVideo includes
 #include <openvideo/Manager.h>
 
+#ifdef ENABLE_GLUTSINK
+#include <GL/glut.h>
+#endif //ENABLE_GLUTSINK
+
 // Using namespaces
 using namespace std;
 using namespace openvideo;
@@ -32,6 +36,10 @@ int main(int argc, char ** argv)
     cout << "Usage : " << argv[0] <<  " configfile" << endl;
     return 1;
   }
+
+#ifdef ENABLE_GLUTSINK
+  glutInit(&argc, argv);
+#endif //ENABLE_GLUTSINK
 
   cout << "**************************************" << endl;
   cout << "**** OpenVideo -standalone- v1.0 *****" << endl;

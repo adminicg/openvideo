@@ -70,6 +70,14 @@ using namespace openvideo;
 #include <openvideo/nodes/DSVLSrcFactory.h>
 #endif
 
+#ifdef ENABLE_V4LSRC
+#include <openvideo/nodes/V4LSrcFactory.h>
+#endif
+
+#ifdef ENABLE_V4L2SRC
+#include <openvideo/nodes/V4L2SrcFactory.h>
+#endif
+
 #ifdef ENABLE_VIDEOSINK
 #include <openvideo/nodes/VideoSinkFactory.h>
 #endif
@@ -485,7 +493,12 @@ Manager::startUserInterface(void *)
 void 
 Manager::stop()
 {
-  scheduler->stop();
+    scheduler->stop();
+    
+    for(int i=(int)nodes.size()-1;  i>=0; i--) {
+	logger->logEx("Closing node %s\n",nodes[i]->getName());
+	nodes[i]->stop();
+    }
 }
 
 
@@ -607,6 +620,14 @@ Manager::initNodeFactories()
 
 #ifdef ENABLE_DSVLSRC
   factories.push_back(new DSVLSrcFactory());
+#endif
+
+#ifdef ENABLE_V4LSRC
+  factories.push_back(new V4LSrcFactory());
+#endif
+
+#ifdef ENABLE_V4L2SRC
+  factories.push_back(new V4L2SrcFactory());
 #endif
 
 #ifdef ENABLE_GLUTSINK

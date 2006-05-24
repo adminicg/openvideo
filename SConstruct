@@ -16,6 +16,8 @@ opts.Add(BoolOption('ENABLE_SPECTECSRC'         , 'Enables the spectec source', 
 opts.Add(BoolOption('ENABLE_GLUTSINK'           , 'Enables the GLUT sink', 1))
 opts.Add(BoolOption('ENABLE_GL_TEXTURE_2D_SINK' , 'Enables the GL texture sink', 1))
 opts.Add(BoolOption('ENABLE_TESTSRC'            , 'Enables the test source', 1))
+opts.Add(BoolOption('ENABLE_V4LSRC'             , 'Enables the Video4Linux source', 0))
+opts.Add(BoolOption('ENABLE_V4L2SRC'            , 'Enables the Video4Linux2 source', 1))
 opts.Add(BoolOption('ENABLE_VIDEOSINK'          , 'Enables the video sink', 1))
 opts.Add(BoolOption('ENABLE_OPENCV'             , 'Enables the use of OpenCV capture source', 1))
 opts.Add(BoolOption('OPENVIDEO_DEBUG'           , 'Enables debugging', 0))
@@ -73,9 +75,20 @@ if env['ENABLE_GL_TEXTURE_2D_SINK']:
 if env['ENABLE_TESTSRC']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_TESTSRC'])
     
+if env['ENABLE_V4LSRC']:
+    env.AppendUnique(CPPDEFINES = ['ENABLE_V4LSRC'])
+    env.AppendUnique(LIBPATH = ['../../src/nodes'])
+    env.AppendUnique(LIBS = ['ccvt'])
+
+if env['ENABLE_V4L2SRC']:
+    env.AppendUnique(CPPDEFINES = ['ENABLE_V4L2SRC'])
+    env.AppendUnique(LIBPATH = ['../../src/nodes'])
+    env.AppendUnique(LIBS = ['ccvt'])
+    env.AppendUnique(CCFLAGS = ['-g'])
+
 if env['ENABLE_VIDEOSINK']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_VIDEOSINK'])
-    
+
 if env['ENABLE_OPENCV']:
     if conf.TryAction('pkg-config --exists opencv')[0]:
         env.ParseConfig('pkg-config --cflags --libs opencv')
