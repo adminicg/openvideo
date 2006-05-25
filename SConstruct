@@ -77,14 +77,10 @@ if env['ENABLE_TESTSRC']:
     
 if env['ENABLE_V4LSRC']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_V4LSRC'])
-    env.AppendUnique(LIBPATH = ['../../src/nodes'])
-    env.AppendUnique(LIBS = ['ccvt'])
 
 if env['ENABLE_V4L2SRC']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_V4L2SRC'])
-    env.AppendUnique(LIBPATH = ['../../src/nodes'])
-    env.AppendUnique(LIBS = ['ccvt'])
-    env.AppendUnique(CCFLAGS = ['-g'])
+#    env.AppendUnique(CCFLAGS = ['-g'])
 
 if env['ENABLE_VIDEOSINK']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_VIDEOSINK'])
