@@ -22,9 +22,9 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the VideoWrappersrc class.
+/** The header file for the DSVLSrc class.
   *
-  * @author Denis Kalkofen
+  * @author Daniel Wagner
   *
   * $Id: VideoWrapperSrc.h 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   */
@@ -35,6 +35,7 @@
 #define _DSVLSRC_H
 
 #include <openvideo/openVideo.h>
+#include <openvideo/State.h>
 
 #ifdef ENABLE_DSVLSRC
 
@@ -44,14 +45,18 @@
 
 
 class DSVL_VideoSource;
-struct MemoryBufferHandle;
 
 
 namespace openvideo {
 
+
 class OPENVIDEO_API DSVLSrc : public openvideo::Node
 {
 public:
+	enum {
+		MAX_BUFFERS = 10
+	};
+
 	/**
 	*
 	*/
@@ -63,12 +68,12 @@ public:
 	~DSVLSrc();
 
 	/**
-	*	Sets all relevat parameters. 
+	*	Sets all relevant parameters. 
 	*/
 	virtual bool setParameter(std::string key, std::string value);
 
 	/**
-	*	This function calls intializes the DSVL. it then opens and starts the video stream.
+	*	This function calls initializes the DSVL. it then opens and starts the video stream.
 	*	Finally it creates a new context where it puts the video specific data on.
 	*/
 	virtual void init();
@@ -87,23 +92,18 @@ public:
 	virtual void initPixelFormats();
 
 protected:
-	/**
-	*	the handle to the video stream
-	*/
-	unsigned short g_hVideo;
-
-	/**
-	*	videowrapper's library id.
-	*/
+	/// name of the DSVL config file
 	std::string configFileName;
 
 
 	DSVL_VideoSource* dsvlSource;
-	MemoryBufferHandle* mbHandle;
 
 	bool flipV;
-	unsigned char* frameBuffer;
+	int numBuffers;
+	unsigned int updateCtr;
 };
+
+
 }//namespace openvideo {
 
 #endif // ENABLE_DSVLSRC

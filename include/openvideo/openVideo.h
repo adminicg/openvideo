@@ -41,6 +41,21 @@
 #endif
 
 
+#define OPENVIDEO_VERSION_MAJOR 0
+#define OPENVIDEO_VERSION_MINOR 2
+
+
+namespace openvideo {
+
+enum VERSION {
+	VERSION_MAJOR = OPENVIDEO_VERSION_MAJOR,
+	VERSION_MINOR = OPENVIDEO_VERSION_MINOR
+};
+
+}  // namespace openvideo
+
+
+
 #if defined(_WIN32_WCE)
 #  define OV_IS_WINCE
 #  define OV_IS_WINDOWS

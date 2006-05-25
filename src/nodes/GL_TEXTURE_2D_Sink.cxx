@@ -250,8 +250,11 @@ GL_TEXTURE_2D_Sink::process()
         init();
 		return;
     }
-	if(state->frame)
+
+	if(Buffer* buffer = state->getCurrentBuffer())
 	{
+		buffer->lock();
+
 		mutex->acquire();
 		glEnable(GL_TEXTURE_2D);
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
@@ -259,7 +262,7 @@ GL_TEXTURE_2D_Sink::process()
 		glBindTexture(GL_TEXTURE_2D, video_texture_id[0]);
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width,
 						height, this->format, GL_UNSIGNED_BYTE,
-						(void*)state->frame);
+						(void*)buffer->getPixels());
 
 		glDisable(GL_TEXTURE_2D);
         GLenum e;
@@ -269,6 +272,8 @@ GL_TEXTURE_2D_Sink::process()
 
         }
 		mutex->release();
+
+		buffer->unlock();
 	}
 
 }

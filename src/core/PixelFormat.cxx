@@ -32,7 +32,22 @@
 
 
 #include <openvideo/PixelFormat.h>
+
+#ifdef OV_IS_WINDOWS
+#  include <windows.h>
+#endif
+
+#include <GL/gl.h>
 #include <map>
+
+
+#ifndef GL_BGR
+#  define GL_BGR 0x80E0
+#endif
+
+#ifndef GL_BGRA
+#  define GL_BGRA 0x80E1
+#endif
 
 
 namespace openvideo 
@@ -91,6 +106,50 @@ FormatToString(PIXEL_FORMAT format)
 		return formatNames[format];
 
 	return formatNames[FORMAT_UNKNOWN];
+}
+
+
+int getBitsPerPixel(PIXEL_FORMAT format)
+{
+	switch(format)
+	{
+	case FORMAT_R8G8B8X8:
+	case FORMAT_B8G8R8X8:
+		return 32;
+
+	case FORMAT_R8G8B8:
+	case FORMAT_B8G8R8:
+		return 24;
+
+	case FORMAT_R5G6B5:
+		return 16;
+
+	case FORMAT_L8:
+		return 8;
+
+	default:
+		return 0;
+	}
+}
+
+
+PIXEL_FORMAT fromOGL(int format)
+{
+	switch(format)
+	{
+	case GL_RGB:
+		return FORMAT_R8G8B8;
+	case GL_BGR:
+		return FORMAT_B8G8R8;
+	case GL_RGBA:
+		return FORMAT_R8G8B8X8;
+	case GL_BGRA:
+		return FORMAT_B8G8R8X8;
+	case GL_LUMINANCE:
+		return FORMAT_L8;
+	default:
+		return FORMAT_UNKNOWN;
+	}
 }
 
 

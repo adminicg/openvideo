@@ -37,18 +37,18 @@ using namespace openvideo;
 
 VideoSinkSubscriber::VideoSinkSubscriber()
 {
-	useResource=false;
+	//useResource=false;
 }
 
 VideoSinkSubscriber::~VideoSinkSubscriber()
 {	
 }
 
-bool
+/*bool
 VideoSinkSubscriber::isResourceInUse()
 {
 	return useResource;
-}
+}*/
 
 
 #endif  //ENABLE_VideoSink

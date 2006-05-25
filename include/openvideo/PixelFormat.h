@@ -58,6 +58,10 @@ namespace PixelFormat
 
 	std::string FormatToString(PIXEL_FORMAT format);
 
+	PIXEL_FORMAT fromOGL(int format);
+
+	int getBitsPerPixel(PIXEL_FORMAT format);
+
 }  // namespace PixelFormat
 
 

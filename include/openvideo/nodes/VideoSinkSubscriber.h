@@ -52,9 +52,10 @@ public:
 
 	virtual void update(openvideo::State* curState)=0;
 
-	bool isResourceInUse();
+	//bool isResourceInUse();
+
 protected:
-	bool useResource;
+	//bool useResource;
 	/**
 	*	constructor
 	*/

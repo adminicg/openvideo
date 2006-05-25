@@ -29,28 +29,66 @@
   * $Id: TestSrc.cxx 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   
  /* ======================================================================= */
+
+
 #include <openvideo/nodes/TestSrc.h>
 #include <openvideo/openVideo.h>
+
+
 #ifdef ENABLE_TESTSRC
+
+
 #include <openvideo/Manager.h>
 #include <openvideo/State.h>
 
-using namespace openvideo;
+
+namespace openvideo {
+
+
+// Allows TestSrc to set internal data of openvideo::Frame
+class TestSrcBuffer : public Buffer
+{
+friend class TestSrc;
+public:
+	TestSrcBuffer(unsigned char* pixbuffer)
+	{
+		buffer = pixbuffer;
+	}
+
+	~TestSrcBuffer()
+	{
+		delete buffer;
+		buffer = NULL;
+	}
+
+	//void setState(Frame::STATE newstate)  {  state = newstate;  }
+	void incUpdateCounter()  {  updateCtr++;  }
+};
+
+
+// Allows TestSrc to set internal data of openvideo::State
+class TestSrcState : public State
+{
+public:
+	BufferVector& getBuffers()  {  return buffers;  }
+};
+
+
 
 // constructor
 TestSrc::TestSrc()
 {
-    state=new State();
+    state=new TestSrcState();
     width=320;
     height=240;
-    img=new unsigned char[width*height*3];
 }
 
 // destructor
 TestSrc::~TestSrc()
 {
     delete state;
-    delete img;
+
+
 }
 
 void 
@@ -69,11 +107,15 @@ TestSrc::init()
     state->width=width;
     state->height=height;
 
-   
-    for(int i=0;i<(width*height*3);i++)
-    {
-		img[i]=255;
-    }
+	// make a double buffered state
+	for(int i=0; i<2; i++)
+	{
+		unsigned char *pixels = new unsigned char[width*height*3];
+		memset(pixels, 255, width*height*3);
+
+		reinterpret_cast<TestSrcState*>(state)->getBuffers().push_back(new TestSrcBuffer(pixels));
+	}
+	
     posX=posY=0;
 }
 
@@ -81,6 +123,16 @@ TestSrc::init()
 void 
 TestSrc::process()
 {
+	TestSrcBuffer* buffer = reinterpret_cast<TestSrcBuffer*>(state->findFreeBuffer());
+
+	if(!buffer)
+	{
+		Manager::getInstance()->getLogger()->log("OpenVideo::DSVLSrc all buffers locked, can not read a new camera image!\n");
+		return;
+	}
+
+	unsigned char* img = const_cast<unsigned char*>(buffer->getPixels());
+
     unsigned char R,G,B;
     int dist=10;
     for(int y=posY;y<posY+dist;y++)
@@ -99,41 +151,48 @@ TestSrc::process()
 	    }
     }
     posX++;;
+
     if(posX>=width-(dist*3)){
-	posX=0;
-	posY=posY+dist;
-	if(posY>=height-dist)
-	    posY=0;
-    }
+		posX=0;
+		posY=posY+dist;
+		if(posY>=height-dist)
+			posY=0;
+	}
    
    
     for(int y=posY;y<posY+dist;y++)
     {
-	int ix=0;
-	for(int x=posX;x<posX+(dist*3);x++)
-	{
-	    if(ix<=dist){
-		R=255;
-		G=0;
-		B=0;
-	    }else if(ix>dist && ix<=dist*2){
-		R=0;
-		G=255;
-		B=0;
-	    }else if(ix>dist*2 && ix<dist*3){
-		R=0;
-		G=0;
-		B=255;
-	    }else if(ix>=dist*3){
-		ix=0;
-	    }
+		int ix=0;
+		for(int x=posX;x<posX+(dist*3);x++)
+		{
+			if(ix<=dist){
+			R=255;
+			G=0;
+			B=0;
+			}else if(ix>dist && ix<=dist*2){
+			R=0;
+			G=255;
+			B=0;
+			}else if(ix>dist*2 && ix<dist*3){
+			R=0;
+			G=0;
+			B=255;
+			}else if(ix>=dist*3){
+			ix=0;
+			}
 
-	    img[(3*width*y)+(3*x)  ]=R;
-	    img[(3*width*y)+(3*x)+1]=G;
-	    img[(3*width*y)+(3*x)+2]=B;
-	    ix++;
-	}
+			img[(3*width*y)+(3*x)  ]=R;
+			img[(3*width*y)+(3*x)+1]=G;
+			img[(3*width*y)+(3*x)+2]=B;
+			ix++;
+		}
     }
-    state->frame=img;
+
+	buffer->incUpdateCounter();
 }
+
+
+}  // namespace openvideo
+
+
 #endif //#ifdef ENABLE_TESTSRC

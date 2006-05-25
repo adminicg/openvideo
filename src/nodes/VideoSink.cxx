@@ -29,10 +29,14 @@
   * $Id: VideoSink.cxx 31 2005-12-10 15:42:59Z denis $
   * @file                                                                   
  /* ======================================================================= */
+
+
 #include <openvideo/nodes/VideoSink.h>
 #include <openvideo/openVideo.h>
 #include <openvideo/nodes/VideoSinkSubscriber.h>
+
 #ifdef  ENABLE_VIDEOSINK
+
 
 using namespace openvideo;
 
@@ -77,27 +81,25 @@ VideoSink::init()
 	state=inputs[0]->getState();
 }
 
+
 void
 VideoSink::process()
 {
-	if(state->frame)
-	{
-		//update subsrcibers
-		for(int i=0;i<size_subscribers;i++)
-			subsrcibers[i]->update(state);
-	}	
+	// send update notification to subsrcibers
+	for(int i=0;i<size_subscribers;i++)
+		subsrcibers[i]->update(state);
 }
 
 void
 VideoSink::postProcess()
 {
-	for(int i=0;i<size_subscribers;i++)
+	/*for(int i=0;i<size_subscribers;i++)
 	{
 		if(subsrcibers[i]->isResourceInUse())
 		{
 			//wait till 
 		}
-	}
+	}*/
 }
 
 void 

@@ -24,11 +24,116 @@
  * ======================================================================== */
 /** The source file for the State class.
   *
-  * @author Denis Kalkofen
+  * @author Denis Kalkofen, Daniel Wagner
   * 
   * $Id: State.cxx 15 2005-11-10 19:23:15Z daniel $
   * @file                                                                   
  /* ======================================================================= */
-#include <openvideo/State.h>
 
-//everything is inlined
+
+#include <openvideo/State.h>
+#include <ACE/Thread_Mutex.h>
+
+
+namespace openvideo {
+
+
+void
+Buffer::unlock()
+{
+	lockCtr--;
+	assert(lockCtr>=0);
+}
+
+
+void
+State::unlockAllBuffers()
+{
+	for(size_t i=0; i<buffers.size(); i++)
+		buffers[i]->unlock();
+}
+
+
+Buffer*
+State::findFreeBuffer()
+{
+	for(size_t i=0; i<buffers.size(); i++)
+	{
+		if(!buffers[i]->isLocked())
+			return buffers[i];
+	}
+
+	return NULL;
+}
+
+
+int
+State::getNumLockedBuffers() const
+{
+	int c=0;
+
+	for(size_t i=0; i<buffers.size(); i++)
+		if(buffers[i]->isLocked())
+			c++;
+
+	return c;
+}
+
+
+BufferSynchronizer::BufferSynchronizer()
+{
+	buffer = NULL;
+	mutex = new ACE_Thread_Mutex;
+}
+
+
+BufferSynchronizer::~BufferSynchronizer()
+{
+	if(buffer)
+		buffer->unlock();
+	buffer = NULL;
+
+	delete mutex;
+	mutex = NULL;
+}
+
+
+void
+BufferSynchronizer::assign(Buffer* newBuffer)
+{
+	if(buffer == newBuffer)
+		return;
+
+	mutex->acquire();
+
+		Buffer* oldBuffer = buffer;
+		if(newBuffer)
+			newBuffer->lock();
+		buffer = newBuffer;
+		if(oldBuffer)
+			oldBuffer->unlock();
+
+	mutex->release();
+}
+
+
+Buffer*
+BufferSynchronizer::getLocked()
+{
+	Buffer* retBuffer;
+
+	if(!buffer)
+		return NULL;
+
+	mutex->acquire();
+
+		retBuffer = buffer;
+		retBuffer->lock();
+
+	mutex->release();
+
+	return retBuffer;
+}
+
+
+}  // namespace openvideo

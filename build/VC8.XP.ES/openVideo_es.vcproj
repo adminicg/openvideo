@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(KLIMTESROOT)/include;&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;"
+				AdditionalIncludeDirectories="$(KLIMTESROOT)/include;&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(DSVLROOT)/src"
 				PreprocessorDefinitions="HAVE_CONFIGOV_H;WIN32;_DEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS;_CRT_SECURE_NO_DEPRECATE;HAVE_NO_GLUT"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
@@ -70,7 +70,7 @@
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/openVideo_esd.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(KLIMTESROOT)/lib/win32;&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;"
+				AdditionalLibraryDirectories="$(KLIMTESROOT)/lib/win32;&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;$(DSVLROOT)/lib"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OPENVIDEOROOT)/lib/win32/openVideo_esd.pdb"
@@ -127,7 +127,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(KLIMTESROOT)/include;&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;"
+				AdditionalIncludeDirectories="$(KLIMTESROOT)/include;&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(DSVLROOT)/src"
 				PreprocessorDefinitions="HAVE_CONFIGOV_H; WIN32;NDEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS;_CRT_SECURE_NO_DEPRECATE;HAVE_NO_GLUT"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
@@ -153,7 +153,7 @@
 				AdditionalDependencies="ace.lib klimtes.lib"
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/openVideo_es.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(KLIMTESROOT)/lib/win32;&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLMODROOT)/lib/Win32&quot;"
+				AdditionalLibraryDirectories="$(KLIMTESROOT)/lib/win32;&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLMODROOT)/lib/Win32&quot;;$(DSVLROOT)/lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OPENVIDEOROOT)/lib/win32/openVideo_es.pdb"
 				SubSystem="2"
@@ -199,6 +199,14 @@
 			<Filter
 				Name="Nodes"
 				>
+				<File
+					RelativePath="..\..\src\nodes\DSVLSrc.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\DSVLSrcFactory.cxx"
+					>
+				</File>
 				<File
 					RelativePath="..\..\src\nodes\GL_TEXTURE_2D_Sink.cxx"
 					>
@@ -301,6 +309,14 @@
 			<Filter
 				Name="Nodes"
 				>
+				<File
+					RelativePath="..\..\include\openvideo\nodes\DSVLSrc.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\openvideo\nodes\DSVLSrcFactory.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\include\openvideo\nodes\GL_TEXTURE_2D_Sink.h"
 					>

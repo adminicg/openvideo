@@ -67,7 +67,6 @@ using namespace openvideo;
 bool GLUTSink::isGlutThread=false;
 std::vector<GLUTSink*> GLUTSink::glutSinks;
 bool GLUTSink::glutRedraw=false;
-ACE_Mutex* GLUTSink::redrawLock=NULL;
 
 
 GLUTSink::GLUTSink()
@@ -76,13 +75,9 @@ GLUTSink::GLUTSink()
 	originX=originY=0;
 	width=height=0;
 	updateVideo=false;
-	updateLock=new ACE_Thread_Mutex();
-	updateLockCond=new ACE_Condition_Thread_Mutex(*updateLock);
-	if(redrawLock==NULL){
-	    GLUTSink::redrawLock=new ACE_Mutex();
-	}
 	internalFormat=0;
     glContext=NULL;
+	updateCtr = 0;
 #ifdef LINUX
     dsp=NULL;    
 #endif
@@ -139,13 +134,6 @@ GLUTSink::initPixelFormats()
 
 GLUTSink::~GLUTSink()
 {
-	delete updateLockCond;
-	delete updateLock;
-
-	if(GLUTSink::redrawLock){
-		delete GLUTSink::redrawLock;
-		GLUTSink::redrawLock=NULL;
-	}
 }
 
 
@@ -338,36 +326,44 @@ GLUTSink::start()
 void
 GLUTSink::process()
 {
+	if(!state)
+		return;
 
-  if(state && state->frame)
-  {
-    updateLock->acquire();
-    updateVideo=true; //set flag to indicate a redraw
-
-    
-    GLUTSink::redrawLock->acquire();
-    GLUTSink::glutRedraw=true;//idle func calls glutPostRedisplay();
-    GLUTSink::redrawLock->release();
-   
-
-    updateLockCond->wait(); // Wait for an update to 
-    updateLock->release(); 
-  } 
-
+	if(Buffer* buffer = state->getCurrentBuffer())
+		bufferSychronizer.assign(buffer);
 }
 
 
 void 
 GLUTSink::updateTexture()
-{	    
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, video_texture_id);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
-					width,height, this->format, GL_UNSIGNED_BYTE,
-					(void*)state->frame);
-    glDisable(GL_TEXTURE_2D);	
+{
+	// bufferSychronizer does all the synchronization work...
+	//
+	if(Buffer* buffer = bufferSychronizer.getLocked())
+	{
+		// only update if this buffer contains new content!
+		//
+		if(updateCtr != buffer->getUpdateCounter())
+		{
+			updateCtr = buffer->getUpdateCounter();
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+			glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, video_texture_id);
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
+							width,height, this->format, GL_UNSIGNED_BYTE,
+							(void*)buffer->getPixels());
+			glDisable(GL_TEXTURE_2D);
+			//printf("T");
+		}
+		else
+		{
+			//printf("t");
+		}
+
+		buffer->unlock();
+	}
 }
+
 
 void 
 GLUTSink::redraw()
@@ -411,22 +407,14 @@ GLUTSink::redraw()
 }
 
 void 
-GLUTSink::idleFunc ()
+GLUTSink::idleFunc()
 {
-    GLUTSink::redrawLock->acquire();
-    if(GLUTSink::glutRedraw)
-    {
-		GLUTSink::glutRedraw=false;
-		glutPostRedisplay();
-    }
-    GLUTSink::redrawLock->release();
-   
+	glutPostRedisplay();
 }
 
 void 
-GLUTSink::mainDisplayFunc ()
+GLUTSink::mainDisplayFunc()
 {
-
 	if(Manager::getInstance()->glContextChanged)
 		//if(!wglGetCurrentContext())
 	{
@@ -451,23 +439,17 @@ GLUTSink::mainDisplayFunc ()
 		}
 		Manager::getInstance()->glContextChanged=false;
 	}
+
     int size=(int)GLUTSink::glutSinks.size();
     for (int i=0;i<size;i++)
     {	
-        glutSinks[i]->updateLock->acquire();
-        if(glutSinks[i]->updateVideo)
-        {	
-            glutSinks[i]->updateVideo=false;
-            glutSetWindow(glutSinks[i]->winHandle);
-            glutSinks[i]->updateTexture();
-            glutSinks[i]->redraw();
-        }
-        glutSinks[i]->updateLockCond->broadcast();
-        glutSinks[i]->updateLock->release();
+		glutSetWindow(glutSinks[i]->winHandle);
+		glutSinks[i]->updateTexture();
+		glutSinks[i]->redraw();
     }
 
     glutSwapBuffers();
-
+	//Sleep(10);
 }
 
 #endif //ENABLE_GLUTSINK

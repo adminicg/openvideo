@@ -50,7 +50,66 @@
 
 #include <openvideo/State.h>
 
-using namespace openvideo;
+namespace openvideo {
+
+
+
+// DSVLSrcBuffer gives DSVLSrc full access to openvideo::Buffer
+class VideoWrapperSrcBuffer : public Buffer
+{
+	friend class VideoWrapperSrc;
+public:
+	VideoWrapperSrcBuffer(State* state, unsigned short video) : hVideo(video)
+	{
+		int bytesPerPixel = PixelFormat::getBitsPerPixel(state->format) / 8;		// assumes simple pixelformat (x times 8 bits)
+		int stride = bytesPerPixel*state->width;
+		bufferSize = stride*state->height;
+
+		// VideoWrapper does not have doublebuffering, so we need to do copies...
+		//
+		buffer = new unsigned char[bufferSize];
+	}
+
+	~VideoWrapperSrcBuffer()
+	{
+		delete buffer;
+	}
+
+	bool getNewFrame()
+	{
+		timeval timestamp;
+		unsigned char* buf = NULL;
+
+		// try to get a new frame
+		VIDEO_getFrame(hVideo, &buf, &timestamp);
+		if(buf)
+		{
+			memcpy(buffer, buf, bufferSize);
+			updateCtr++;
+
+			// since we made a copy we can immediately release the frame...
+			VIDEO_releaseFrame(hVideo);
+			return true;
+		}
+		return false;
+	}
+
+protected:
+	unsigned short	hVideo;
+	int				bufferSize;
+};
+
+
+// DSVLSrcState gives DSVLSrc full access to openvideo::State
+class VideoWrapperSrcState : public State
+{
+public:
+	BufferVector& getBuffers()  {  return buffers;  }
+	void setCurrentBuffer(Buffer* buf)  {  currentBuffer = buf;  }
+};
+
+#define VideoWrapper_State(_STATE)    reinterpret_cast<VideoWrapperSrcState*>(_STATE)
+
 
 VideoWrapperSrc::VideoWrapperSrc()
 {
@@ -58,7 +117,7 @@ VideoWrapperSrc::VideoWrapperSrc()
 	strcpy(formatId,"");
 	cameraNum=width=height=frameRate=format=0;
 	scale=0.0;
-	
+	numBuffers = 2;
 }
 	
 VideoWrapperSrc::~VideoWrapperSrc()
@@ -70,6 +129,7 @@ VideoWrapperSrc::initPixelFormats()
 {
 	pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8));
 }
+
 
 void
 VideoWrapperSrc::init()
@@ -104,36 +164,45 @@ VideoWrapperSrc::init()
 	// display video properties
 	//printf("video is %d x %d, and format is %d \n", width,height, format);
 	
-	state=new State();
+	state = new VideoWrapperSrcState();
 	state->clear();
-	state->width=width;
-	state->height=height;
-	state->format=format;
+	state->width = width;
+	state->height = height;
+	state->format = PixelFormat::fromOGL(format);
+	assert(state->format != FORMAT_UNKNOWN);
 
+	for(int i=0; i<numBuffers; i++)
+		VideoWrapper_State(state)->getBuffers().push_back(new VideoWrapperSrcBuffer(state, g_hVideo));
 }
+
 
 void
 VideoWrapperSrc::preProcess()
 {
-    if(state->frame)
-        VIDEO_releaseFrame(g_hVideo);
-    state->frame=NULL;
 }
+
 
 void
 VideoWrapperSrc::process()
 {
-	timeval timestamp;
-	VIDEO_getFrame(g_hVideo, &(state->frame), &timestamp);
+	if(VideoWrapperSrcBuffer* buffer = reinterpret_cast<VideoWrapperSrcBuffer*>(state->findFreeBuffer()))
+	{
+		if(buffer->getNewFrame())
+		{
+			VideoWrapper_State(state)->setCurrentBuffer(buffer);
+		}
+		//else
+		//	Manager::getInstance()->getLogger()->log("OpenVideo::VideoWrapperSrc: did not get a new frame\n");
+	}
+	else
+		Manager::getInstance()->getLogger()->log("OpenVideo::VideoWrapperSrc all frames locked, can not read a new camera image!\n");
 }
+
 
 void
 VideoWrapperSrc::postProcess()
 {
-
 }
-
-
 
 
 bool 
@@ -177,8 +246,21 @@ VideoWrapperSrc::setParameter(std::string key, std::string value)
 		return true;
 	}
 
+	if(key=="num-buffers")
+	{
+		numBuffers = atoi(value.c_str());
+		if(numBuffers<1)
+			numBuffers = 1;
+		if(numBuffers>MAX_BUFFERS)
+			numBuffers = MAX_BUFFERS;
+		return true;
+	}
+
 	return false;
 }
+
+
+}  // namespace openvideo
 
 
 #endif //ENABLE_VIDEOWRAPPERSRC

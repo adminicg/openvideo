@@ -42,6 +42,11 @@
 
 
 namespace openvideo {
+
+
+class VideoWrapperSrcBuffer;
+
+
     /**
     *@ingroup nodes
     *	VideoWrapperSrc implements an OpenVideo node to access the videowrapper library. 
@@ -72,9 +77,14 @@ namespace openvideo {
     *	@li: R8G8B8
     */
 class OPENVIDEO_API VideoWrapperSrc : 
-	public openvideo::Node
+public openvideo::Node
+
 {
 public:
+	enum {
+		MAX_BUFFERS = 10
+	};
+
 	/**
 	*
 	*/
@@ -133,6 +143,10 @@ protected:
 	*	videowrapper's scale value.
 	*/
 	float scale;
+
+
+	/// Number of frame buffers
+	int numBuffers;
 };
 }//namespace openvideo {
 

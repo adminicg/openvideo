@@ -32,12 +32,56 @@
 
 #ifndef _STATEOV_H
 #define _STATEOV_H
+
+
 #include "openVideo.h"
+#include "PixelFormat.h"
 
 #include <map>
 #include <string>
+#include <vector>
+#include <assert.h>
+
+
+class ACE_Thread_Mutex;
+
 
 namespace openvideo {
+
+
+class DSVLSrc;
+
+
+class OPENVIDEO_API Buffer
+{
+public:
+	Buffer() : buffer(NULL), lockCtr(0), updateCtr(0)
+	{}
+
+	virtual ~Buffer()
+	{}
+
+	virtual const unsigned char* getPixels()  {  return buffer;  }
+
+	virtual int getLockCounter()  {  return lockCtr;  }
+
+	virtual void lock()  {  lockCtr++;  }
+
+	virtual void unlock();
+
+	virtual bool isLocked()  {  return lockCtr>0;  }
+
+	virtual unsigned int getUpdateCounter()  {  return updateCtr;  }
+
+protected:
+	unsigned char*	buffer;
+	int				lockCtr;
+	unsigned int	updateCtr;
+};
+
+
+typedef std::vector<Buffer*> BufferVector;
+
 /**
 *@ingroup core
 *	A State is used to pass data along OpenVideo's graph.
@@ -50,25 +94,19 @@ namespace openvideo {
 *	\image html Stategraph.gif
 *	
 */
-
 class OPENVIDEO_API State
 {
 public:
 	/** 
 	*	constructor
     */
-    State();    
+    State();
    	
 	/** 
 	*	destructor
     */
-	~State();
+	virtual ~State();
 	
-	/** 
-	*	Store a pointer to a video frame
-    */
-	unsigned char* frame;
-
 	/** 
 	*	Store the image width.
     */
@@ -82,7 +120,7 @@ public:
 	/** 
 	*	Store the image format
     */
-	int format;
+	PIXEL_FORMAT format;
 
 	/** 
 	*	Clear the entire State.
@@ -104,15 +142,83 @@ public:
     */
 	void  removeElement(std::string key);
 
-protected:
+	/// Returns the latest updated buffer
+	virtual Buffer* getCurrentBuffer()  {  return currentBuffer;  }
+
+	/// Unlocks all frame buffers
+	void unlockAllBuffers();
+
+
+	/// Returns a frame with state STATE_UNUSED. If no frame can be found, NULL is returned
+	Buffer* findFreeBuffer();
+
+	int getNumFrames() const  {  return buffers.size();  }
+
+	int getNumLockedBuffers() const;
 
 private:
 	/** 
 	*	A map to store additional data in the State.
     */
-
 	std::map<std::string,void*> elements;
+
+
+protected:
+	BufferVector buffers;
+	Buffer* currentBuffer;
 };
+
+
+/// Synchronizes buffer storage and assignment
+/**
+ *  Makes sure that a client can get a locked buffer
+ *  in one thread without overwriting that buffer variable
+ *  from another thread.
+ */
+// This class prevents a problem that could happen
+// in a usual client internal thread:
+//
+//   buffer = currentBuffer;
+//   buffer->lock();
+//   ...
+//   buffer->unlock();
+//
+// The internal thread makes a copy of the variable to
+// make sure that another thread can update currentBuffer at any time.
+// The problem happens if currentBuffer is unlocked between
+// 'buffer = currentBuffer;' and 'buffer->lock();'
+// To prevent this a client should use BufferSynchronizer which
+// provides an atomic action for getting a locked buffer
+// without overwriting the variable before it is locked
+//
+class OPENVIDEO_API BufferSynchronizer
+{
+public:
+	BufferSynchronizer();
+	~BufferSynchronizer();
+
+	/// Assigns the new buffer to the internal buffer pointer
+	/**
+	 *  This methods synchronizes the assignment with the getLocked() operation
+	 *  and thereby makes sure that a client can always get a valid, locked buffer object.
+	 */
+	void assign(Buffer* newBuffer);
+
+	/// Returns a buffer object with a lock count increased by one
+	/**
+	 *  The calling instance is responsible for unlocking
+	 *  the buffer as soon as it is no longer used.
+	 *  Note: testing for NULL is suggested since getLocked() might return NULL,
+	 *  if no buffer of NULL was assigned!
+	 */
+	Buffer* getLocked();
+
+protected:
+	Buffer*				buffer;
+	ACE_Thread_Mutex*	mutex;
+};
+
+
 
 // ----> inlines <-----
 // constructor method.
@@ -131,10 +237,10 @@ inline void
 State::clear()
 {
 	elements.clear();
-	frame=NULL;
-	width=0;
-	height=0;
-	format=0;
+	width = height =0;
+	format = FORMAT_UNKNOWN;
+	currentBuffer = NULL;
+	// FIXME: should this methods also free all buffers?
 }
 inline void 
 State::addElement(std::string key,void* value)
@@ -158,6 +264,9 @@ State::removeElement(std::string key)
 	elements.erase(key);
 }
 
-}//namespace openvideo {
 
-#endif
+}  //namespace openvideo
+
+
+#endif //_STATEOV_H
+

@@ -24,7 +24,7 @@
  * ======================================================================== */
 /** The source file for the DSVLSrc class.
   *
-  * @author Denis Kalkofen
+  * @author Daniel Wagner
   * 
   * $Id: DSVLSrc.cxx 30 2005-12-10 12:10:50Z denis $
   * @file                                                                   
@@ -53,27 +53,132 @@
 #include <openvideo/State.h>
 #include <assert.h>
 
-using namespace openvideo;
+
+namespace openvideo {
+
+
+void
+flipImage(unsigned char* nSrc, unsigned char *nDst, int nStride, int nHeight)
+{
+	nSrc += nStride*(nHeight-1);
+
+	for(int i=0; i<nHeight; i++)
+	{
+		memcpy(nDst, nSrc, nStride);
+		nDst += nStride;
+		nSrc -= nStride;
+	}
+}
+
+
+
+// DSVLSrcFrame gives DSVLSrc full access to openvideo::Buffer
+class DSVLSrcBuffer : public Buffer
+{
+friend class DSVLSrc;
+public:
+	DSVLSrcBuffer(DSVL_VideoSource* src, bool flipVert) : source(src), flipV(flipVert)
+	{
+		checkedOut = false;
+		dsvlBuffer = copyBuffer = NULL;
+	}
+
+	~DSVLSrcBuffer()
+	{
+		delete copyBuffer;
+	}
+
+	bool getNewFrame(State& st, unsigned int ctr)
+	{
+		DWORD wait_result = source->WaitForNextSample(100/60);
+
+		if(checkedOut)
+		{
+			source->CheckinMemoryBuffer(mbHandle);
+			checkedOut = false;
+		}
+
+		if(SUCCEEDED(source->CheckoutMemoryBuffer(&mbHandle, &dsvlBuffer)))
+		{
+			checkedOut = true;
+
+			if(flipV)
+			{
+				flipImage(st);
+				buffer = copyBuffer;
+			}
+			else
+				buffer = dsvlBuffer;
+
+			updateCtr = ctr;
+			//printf("U");
+			//state = STATE_UPDATED;
+			//printf("N");
+			return true;
+		}
+
+		Manager::getInstance()->getLogger()->log("OpenVideo::DSVLSrc warning: failed to deliver frame\n");
+		return false;
+	}
+
+	void flipImage(State& st)
+	{
+		int bytesPerPixel = PixelFormat::getBitsPerPixel(st.format) / 8;		// assumes simple pixelformat (x times 8 bits)
+		int stride = bytesPerPixel*st.width;
+
+		if(copyBuffer==NULL)
+			copyBuffer = new unsigned char[stride*st.height];
+
+		openvideo::flipImage(dsvlBuffer, copyBuffer, stride, st.height);
+	}
+
+protected:
+	DSVL_VideoSource	*source;
+	MemoryBufferHandle	mbHandle;
+	unsigned char		*dsvlBuffer, *copyBuffer;
+	bool				flipV;
+	bool				checkedOut;
+};
+
+
+// DSVLSrcState gives DSVLSrc full access to openvideo::State
+class DSVLSrcState : public State
+{
+public:
+	~DSVLSrcState()
+	{
+		for(size_t i=0; i<buffers.size(); i++)
+			delete buffers[i];
+		buffers.clear();
+	}
+
+	BufferVector& getBuffers()  {  return buffers;  }
+
+	void setCurrentBuffer(Buffer* buf)  {  currentBuffer = buf;  }
+};
+
+#define DSVL_State(_STATE)  reinterpret_cast<DSVLSrcState*>(_STATE)
+
 
 DSVLSrc::DSVLSrc()
 {
-	mbHandle = new MemoryBufferHandle;	
 	dsvlSource = NULL;
 
 	name = "DSVLSrc";
 	flipV = false;
-	frameBuffer = NULL;
+	numBuffers = 2;
+	updateCtr = 1;
 }
 	
 DSVLSrc::~DSVLSrc()
 {
-	dsvlSource->CheckinMemoryBuffer(*mbHandle);
+	state->unlockAllBuffers();
+
+	// FIXME: is it sage to delete this here?
+	delete state;
 
 	delete dsvlSource;
 	dsvlSource = NULL;
-
-	delete mbHandle;
-	mbHandle = NULL;
 }
 
 void 
@@ -112,7 +217,7 @@ DSVLSrc::init()
 		return;
 	}
 
-	if(FAILED(dsvlSource->EnableMemoryBuffer(2)))
+	if(FAILED(dsvlSource->EnableMemoryBuffer(1,numBuffers)))
 	{
 		Manager::getInstance()->getLogger()->log("OpenVideo: ERROR - DSVL setting memory buffers\n");
 		return;
@@ -126,18 +231,14 @@ DSVLSrc::init()
 
 	Manager::getInstance()->getLogger()->logEx("OpenVideo: DSVL initialized with %d x %d at %d fps\n", cap_width, cap_height, (int)cap_fps);
 
-	state=new State();
+	state = new DSVLSrcState();
 	state->clear();
 	state->width=cap_width;
 	state->height=cap_height;
 	state->format = FORMAT_B8G8R8;
-	state->frame = NULL;
 
-	if(flipV)
-	{
-		assert(state->format == FORMAT_B8G8R8);
-		frameBuffer = new unsigned char[state->width*state->height*3];
-	}
+	for(int i=0; i<numBuffers; i++)
+		DSVL_State(state)->getBuffers().push_back(new DSVLSrcBuffer(dsvlSource, flipV));
 }
 
 
@@ -147,46 +248,22 @@ DSVLSrc::preProcess()
 }
 
 
-static void
-flipImage(unsigned char* nSrc, unsigned char *nDst, int nStride, int nHeight)
-{
-	nSrc += nStride*(nHeight-1);
-
-	for(int i=0; i<nHeight; i++)
-	{
-		memcpy(nDst, nSrc, nStride);
-		nDst += nStride;
-		nSrc -= nStride;
-	}
-}
-
 void
 DSVLSrc::process()
 {
-	DWORD wait_result = dsvlSource->WaitForNextSample(100/60);
-
-	if(flipV)
+	if(DSVLSrcBuffer* buffer = reinterpret_cast<DSVLSrcBuffer*>(state->findFreeBuffer()))
 	{
-		unsigned char* tmpPtr = NULL;
-		if(!SUCCEEDED(dsvlSource->CheckoutMemoryBuffer(mbHandle, &tmpPtr)))
+		// our overloaded Buffer class does all the work...
+		//
+		if(buffer->getNewFrame(*state, updateCtr))
 		{
-			Manager::getInstance()->getLogger()->log("OpenVideo: ERROR - DSVL failed to deliver frame\n");
-			return;
+			DSVL_State(state)->setCurrentBuffer(buffer);
+			updateCtr++;
+			//printf("U");
 		}
-
-		flipImage(tmpPtr, frameBuffer, state->width*3, state->height);
-		state->frame = frameBuffer;
-		dsvlSource->CheckinMemoryBuffer(*mbHandle);
 	}
 	else
-	{
-		if(!SUCCEEDED(dsvlSource->CheckoutMemoryBuffer(mbHandle, &state->frame)))
-		{
-			Manager::getInstance()->getLogger()->log("OpenVideo: ERROR - DSVL failed to deliver frame\n");
-			return;
-		}
-	}
-
+		Manager::getInstance()->getLogger()->log("OpenVideo::DSVLSrc all frames locked, can not read a new camera image!\n");
 
 
 	//FILE* fp = fopen("dump.raw", "wb");
@@ -197,9 +274,6 @@ DSVLSrc::process()
 void
 DSVLSrc::postProcess()
 {
-	if(!flipV)
-		dsvlSource->CheckinMemoryBuffer(*mbHandle);
-	state->frame = NULL;
 }
 
 
@@ -221,8 +295,21 @@ DSVLSrc::setParameter(std::string key, std::string value)
 		return true;
 	}
 
+	if(key=="num-buffers")
+	{
+		numBuffers = atoi(value.c_str());
+		if(numBuffers<1)
+			numBuffers = 1;
+		if(numBuffers>MAX_BUFFERS)
+			numBuffers = MAX_BUFFERS;
+		return true;
+	}
+
 	return false;
 }
+
+
+}  // namespace openvideo
 
 
 #endif //ENABLE_DSVLSRC

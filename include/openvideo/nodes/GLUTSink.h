@@ -43,15 +43,15 @@
 #endif
 
 #include <openvideo/Node.h>
-
-
-class  ACE_Thread_Mutex;
-class  ACE_Condition_Thread_Mutex;
-class  ACE_Mutex;
-
+#include <openvideo/State.h>
 
 
 namespace openvideo {
+
+
+//class Buffer;
+
+
 /**
 *@ingroup nodes
 *	GLUTSink implements an OpenVideo node to display a certain video stream. 
@@ -140,21 +140,6 @@ protected:
     static bool isGlutThread;
 
 	/**
-	*	Mutex used in updateLockCond .
-	*/
-    ACE_Thread_Mutex *updateLock;
-
-    /** 
-    *       A condition variable which waits for an update to updateLock.
-	*/
-    ACE_Condition_Thread_Mutex *updateLockCond;
-
-	/**
-	*	mutex to write to the variable which indicates a new glutPostRedisplay()
-	*/
-    static ACE_Mutex *redrawLock;
-
-	/**
 	*	The sinks window handle.
 	*/
     int winHandle;
@@ -210,6 +195,10 @@ protected:
 	*	maximal texture size
 	*/
     enum {TEXTURE_WIDTH = 1024, TEXTURE_HEIGHT = 1024};
+
+	BufferSynchronizer	bufferSychronizer;
+	unsigned int		updateCtr;
+
 
 #ifdef LINUX
     GLXDrawable dc;

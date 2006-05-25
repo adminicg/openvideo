@@ -71,11 +71,6 @@ public:
 	virtual void initPixelFormats();
 
  protected:
- 	/**
-	*	image 
-	*/
-	unsigned char *img;
-
 	/**
 	*	image widht and height
 	*/
