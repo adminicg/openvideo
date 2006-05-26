@@ -26,7 +26,7 @@
  *
  * @author Jorn Skaarud Karlsen
  *
- * $Id: OpenCVSrcFactory.h 25 2005-11-28 16:11:59Z denis $
+ * $Id$
  * @file                                                                   */
 /* ======================================================================= */
 #ifndef _OPENCVSRCFACTORY_H

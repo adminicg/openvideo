@@ -26,21 +26,25 @@
   *
   * @author Denis Kalkofen
   *
-  * $Id: configOV.template.h 30 2005-12-10 12:10:50Z denis $
+  * $Id$
   * @file                                                                   */
  /* ======================================================================= */
+
 //enable/disable nodes
 
+
 #ifndef _WIN32_WCE
-//#  define  ENABLE_DSVLSRC
-#  define  ENABLE_VIDEOWRAPPERSRC
+#  define  ENABLE_DSVLSRC
+//#  define  ENABLE_VIDEOWRAPPERSRC
 #  ifndef HAVE_NO_GLUT
 #    define  ENABLE_GLUTSINK
 #  endif
 #  define  ENABLE_GL_TEXTURE_2D_SINK
 #endif
+
 #define  ENABLE_TESTSRC
 #define  ENABLE_VIDEOSINK
+//#define  ENABLE_IMAGESRC
 
 #ifdef _WIN32_WCE
 #  define ENABLE_SPECTECSRC
@@ -50,5 +54,15 @@
 // if using TinyXML_MOD, uncomment one of the next two
 // definitions to choose between DLL and static linking
 //
-//#define TINYXML_MOD_DLL
-//#define TINYXML_MOD_STATIC
+#ifndef TINYXML_MOD_DLL
+#  define TINYXML_MOD_DLL
+#endif
+
+//#ifndef TINYXML_MOD_STATIC
+//#  define TINYXML_MOD_STATIC
+//#endif
+
+#if defined(TINYXML_MOD_DLL) && defined(TINYXML_MOD_STATIC)
+#  pragma message(">>> ERROR: can not define TINYXML_MOD_DLL and TINYXML_MOD_STATIC at the same time!")
+#  pragma error(">>> ERROR: can not define TINYXML_MOD_DLL and TINYXML_MOD_STATIC at the same time!")
+#endif

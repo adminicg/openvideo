@@ -26,7 +26,7 @@
   *
   * @author Denis Kalkofen
   *
-  * $Id: GL_TEXTURE_2D_Sink.h 34 2005-12-17 17:46:05Z denis $
+  * $Id$
   * @file                                                                   */
  /* ======================================================================= */
 #ifndef _GL_TEXTURE_2D_SINK_H

@@ -22,47 +22,93 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the TestSrcFactory class.
+/** The header file for the ImageSrc class.
   *
-  * @author Denis Kalkofen
+  * @author Daniel Wagner
   *
   * $Id$
   * @file                                                                   */
  /* ======================================================================= */
-#ifndef _TESTSRCFACTORY_H
-#define _TESTSRCFACTORY_H
-#include <openvideo/openVideo.h>
-#ifdef ENABLE_TESTSRC
-#include <openvideo/nodes/TestSrc.h>
-#include <openvideo/NodeFactory.h>
 
+
+#ifndef _IMAGESRC_H
+#define _IMAGESRC_H
+
+#include <openvideo/openVideo.h>
+#include <openvideo/State.h>
+
+#ifdef ENABLE_IMAGESRC
+
+#include <string>
+#include <vector>
+
+#include <openvideo/Node.h>
+
+class ACE_Time_Value;
 
 
 namespace openvideo {
-/**
-*@ingroup nodes
-*	A factory to create TestSrc nodes.
-*/
-class OPENVIDEO_API  TestSrcFactory :
-	public openvideo::NodeFactory
+
+
+class OPENVIDEO_API ImageSrc : public openvideo::Node
 {
 public:
 	/**
-	*	constructor
+	*
 	*/
-	TestSrcFactory(){};
+	ImageSrc();	
 
 	/**
-	*	creates TestSrc nodes
+	*
 	*/
-	virtual const char* getNodeTypeId();
-	
+	~ImageSrc();
+
+	/// Switches to next picture
 	/**
-	*	returns TestSrc as the type of known objects
+	 *  This method must be used to switch to the next image in
+	 *  manual mode. In delay mode it can be used to immediately
+	 *  switch to the next image. Delay restarts then.
+	 */
+	virtual void nextImage()  {  doNextPic = true;  }
+
+	/**
+	*	Sets all relevant parameters. 
 	*/
-	virtual openvideo::TestSrc* createNode();
+	virtual bool setParameter(std::string key, std::string value);
+
+	/**
+	*	This function calls initializes the DSVL. it then opens and starts the video stream.
+	*	Finally it creates a new context where it puts the video specific data on.
+	*/
+	virtual void init();
+
+	/**
+	*	Updates the video frame at its context object.
+	*/
+	virtual void process();
+
+	/**
+	*	releases the videoframe (which was previously locked by the process function.
+	*/
+	virtual void postProcess();
+
+	virtual void preProcess();
+	virtual void initPixelFormats();
+
+protected:
+	int							numBuffers;
+	unsigned int				updateCtr;
+	size_t						curIdx;
+	int							width,height;
+	std::vector<std::string>	fileNames;
+	float						delay;
+	bool						manual, doNextPic;
+	ACE_Time_Value				*lastUpdate;
 };
-} //namespace openvideo {
 
-#endif //#ifdef ENABLE_TESTSRC
-#endif
+
+}//namespace openvideo {
+
+#endif // ENABLE_DSVLSRC
+
+#endif // _IMAGESRC_H

@@ -26,7 +26,7 @@
   *
   * @author Daniel Wagner
   * 
-  * $Id: DSVLSrc.cxx 30 2005-12-10 12:10:50Z denis $
+  * $Id$
   * @file                                                                   
  /* ======================================================================= */
 
@@ -57,7 +57,7 @@
 namespace openvideo {
 
 
-void
+static void
 flipImage(unsigned char* nSrc, unsigned char *nDst, int nStride, int nHeight)
 {
 	nSrc += nStride*(nHeight-1);

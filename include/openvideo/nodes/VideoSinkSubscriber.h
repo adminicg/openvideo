@@ -26,7 +26,7 @@
   *
   * @author Denis Kalkofen
   *
-  * $Id: VideoSinkSubscriber.h 30 2005-12-10 12:10:50Z denis $
+  * $Id$
   * @file                                                                   */
  /* ======================================================================= */
 #ifndef _VIDEO_SINK_SUBSCRIBER_H

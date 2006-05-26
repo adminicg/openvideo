@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(DSVLROOT)/src"
+				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(DSVLROOT)/src;$(SIMAGEROOT)/include"
 				PreprocessorDefinitions="HAVE_CONFIGOV_H;WIN32;_DEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
@@ -70,7 +70,7 @@
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/openVideod.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;$(DSVLROOT)/lib"
+				AdditionalLibraryDirectories="&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;$(DSVLROOT)/lib;$(SIMAGEROOT)/lib/Win32;$(LIBJPEGROOT)/lib/Win32"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
@@ -128,7 +128,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(DSVLROOT)/src"
+				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(DSVLROOT)/src;$(SIMAGEROOT)/include"
 				PreprocessorDefinitions="HAVE_CONFIGOV_H; WIN32;NDEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
@@ -154,7 +154,7 @@
 				AdditionalDependencies="ace.lib"
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/openVideo.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;$(DSVLROOT)/lib"
+				AdditionalLibraryDirectories="&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;$(DSVLROOT)/lib;$(SIMAGEROOT)/lib/Win32;$(LIBJPEGROOT)/lib/Win32"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OPENVIDEOROOT)/lib/win32/openVideo.pdb"
 				SubSystem="2"
@@ -222,6 +222,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\nodes\GLUTSinkFactory.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\ImageSrc.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\ImageSrcFactory.cxx"
 					>
 				</File>
 				<File
@@ -324,6 +332,14 @@
 				</File>
 				<File
 					RelativePath="..\..\include\openvideo\nodes\GLUTSinkFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\openvideo\nodes\ImageSrc.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\openvideo\nodes\ImageSrcFactory.h"
 					>
 				</File>
 				<File

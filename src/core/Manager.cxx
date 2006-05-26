@@ -86,6 +86,10 @@ using namespace openvideo;
 #include <openvideo/nodes/SpectecSrcFactory.h>
 #endif
 
+#ifdef ENABLE_IMAGESRC
+#include <openvideo/nodes/ImageSrcFactory.h>
+#endif
+
 #ifdef ENABLE_OPENCV
 #include <openvideo/nodes/OpenCVSrcFactory.h>
 #endif
@@ -648,6 +652,10 @@ Manager::initNodeFactories()
 
 #ifdef ENABLE_SPECTECSRC
   factories.push_back(new SpectecSrcFactory());
+#endif
+
+#ifdef ENABLE_IMAGESRC
+  factories.push_back(new ImageSrcFactory());
 #endif
 
 #ifdef ENABLE_OPENCV

@@ -26,7 +26,7 @@
   *
   * @author Denis Kalkofen
   * 
-  * $Id: GL_TEXTURE_2D_Sink.cxx 35 2005-12-23 17:42:35Z denis $
+  * $Id$
   * @file                                                                   
  /* ======================================================================= */
 #include <openvideo/nodes/GL_TEXTURE_2D_Sink.h>

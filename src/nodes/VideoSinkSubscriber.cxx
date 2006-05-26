@@ -26,7 +26,7 @@
   *
   * @author Denis Kalkofen
   * 
-  * $Id: VideoSinkSubscriber.cxx 31 2005-12-10 15:42:59Z denis $
+  * $Id$
   * @file                                                                   
  /* ======================================================================= */
 #include <openvideo/nodes/VideoSinkSubscriber.h>

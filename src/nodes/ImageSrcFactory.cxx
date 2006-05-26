@@ -22,47 +22,48 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The header file for the TestSrcFactory class.
+/** The source file for the ImageSrcFactory class.
   *
-  * @author Denis Kalkofen
-  *
+  * @author Daniel Wagner
+  * 
   * $Id$
-  * @file                                                                   */
+  * @file                                                                   
  /* ======================================================================= */
-#ifndef _TESTSRCFACTORY_H
-#define _TESTSRCFACTORY_H
-#include <openvideo/openVideo.h>
-#ifdef ENABLE_TESTSRC
-#include <openvideo/nodes/TestSrc.h>
-#include <openvideo/NodeFactory.h>
 
+
+#include <openvideo/nodes/ImageSrcFactory.h>
+#include <openvideo/openVideo.h>
+
+
+#ifdef ENABLE_IMAGESRC
 
 
 namespace openvideo {
-/**
-*@ingroup nodes
-*	A factory to create TestSrc nodes.
-*/
-class OPENVIDEO_API  TestSrcFactory :
-	public openvideo::NodeFactory
+
+
+ImageSrcFactory::ImageSrcFactory()
 {
-public:
-	/**
-	*	constructor
-	*/
-	TestSrcFactory(){};
+}
 
-	/**
-	*	creates TestSrc nodes
-	*/
-	virtual const char* getNodeTypeId();
-	
-	/**
-	*	returns TestSrc as the type of known objects
-	*/
-	virtual openvideo::TestSrc* createNode();
-};
-} //namespace openvideo {
 
-#endif //#ifdef ENABLE_TESTSRC
-#endif
+ImageSrcFactory::~ImageSrcFactory()
+{
+}
+
+ImageSrc*
+ImageSrcFactory::createNode()
+{
+	return new ImageSrc();
+}
+
+const char* 
+ImageSrcFactory::getNodeTypeId()
+{
+	return "ImageSrc";
+}
+
+
+}  // namespace openvideo
+
+
+#endif //ENABLE_IMAGESRC
