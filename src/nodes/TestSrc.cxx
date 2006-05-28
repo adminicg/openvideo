@@ -78,6 +78,7 @@ public:
 // constructor
 TestSrc::TestSrc()
 {
+	name = typeName = "TestSrc";
     state=new TestSrcState();
     width=320;
     height=240;

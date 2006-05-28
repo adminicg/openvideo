@@ -143,7 +143,7 @@ ImageSrc::ImageSrc()
 	numBuffers = 0;
 	width = 320;
 	height = 240;
-	name = "ImageSrc";
+	name = typeName = "ImageSrc";
 	updateCtr = 1;
 	curIdx = 0;
 	delay = 1.0f;
@@ -215,10 +215,10 @@ ImageSrc::init()
 		if(curPixelFormat==FORMAT_R5G6B5)
 		{
 			unsigned char *buf1a = new unsigned char[width*height*2];
-			convertRGB24toRGB565(reinterpret_cast<unsigned short*>(buf2), buf1, width*height);
+			convertRGB24toRGB565(reinterpret_cast<unsigned short*>(buf1a), buf1, width*height);
 			simage_free_image(buf1);
-			flipImage(buf1a, buf2, width*2, height);			// simage loads images y-flipped
 			buf2 = new unsigned char[width*height*2];
+			flipImage(buf1a, buf2, width*2, height);			// simage loads images y-flipped
 			delete buf1a;
 		}
 		else
@@ -229,7 +229,7 @@ ImageSrc::init()
 		}
 
 		//FILE* fp = fopen("dump.raw", "wb");
-		//fwrite(buf2, width*height*3, 1, fp);
+		//fwrite(buf2, width*height*2, 1, fp);
 		//fclose(fp);
 
 		IMAGE_State(state)->getBuffers().push_back(new ImageSrcBuffer(buf2));

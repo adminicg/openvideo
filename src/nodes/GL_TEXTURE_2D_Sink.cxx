@@ -60,6 +60,7 @@ GL_TEXTURE_2D_Sink::get_video_texture_id()
 
 GL_TEXTURE_2D_Sink::GL_TEXTURE_2D_Sink()
 {
+	name = typeName = "GL_TEXTURE_2D_Sink";
 	mutex = new ACE_Mutex();
 	width=height=0;	
 	isStarted=false;

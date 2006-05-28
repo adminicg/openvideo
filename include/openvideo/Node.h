@@ -201,6 +201,9 @@ public:
 	const char* getDefName();
 
 
+	virtual const std::string& getTypeName() const  {  return typeName;  }
+
+
 protected:
 	/**
 	*	A vector to hold the children (outputs)
@@ -235,6 +238,10 @@ protected:
 	*	The node's name.
 	*/
 	std::string name;
+
+	/// The node's type name
+	std::string typeName;
+
 
 	/**
 	*	The node's 'DEF' name

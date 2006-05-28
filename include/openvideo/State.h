@@ -65,7 +65,7 @@ public:
 
 	virtual int getLockCounter()  {  return lockCtr;  }
 
-	virtual void lock()  {  lockCtr++;  }
+	virtual void lock();
 
 	virtual void unlock();
 

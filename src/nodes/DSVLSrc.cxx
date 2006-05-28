@@ -57,6 +57,34 @@
 namespace openvideo {
 
 
+static const char*
+getDSVLPixelFormatString(PIXELFORMAT format)
+{
+	switch(format)
+	{
+	default:
+	case PIXELFORMAT_UNKNOWN:
+		return "PIXELFORMAT_UNKNOWN";
+	case PIXELFORMAT_UYVY:
+		return "PIXELFORMAT_UYVY";
+	case PIXELFORMAT_YUY2:
+		return "PIXELFORMAT_YUY2";
+	case PIXELFORMAT_RGB565:
+		return "PIXELFORMAT_RGB565";
+	case PIXELFORMAT_RGB555:
+		return "PIXELFORMAT_RGB555";
+	case PIXELFORMAT_RGB24:
+		return "PIXELFORMAT_RGB24";
+	case PIXELFORMAT_RGB32:
+		return "PIXELFORMAT_RGB32";
+	case PIXELFORMAT_INVALID:
+		return "PIXELFORMAT_INVALID";
+	case PIXELFORMAT_QUERY:
+		return "PIXELFORMAT_QUERY";
+	}
+}
+
+
 static void
 flipImage(unsigned char* nSrc, unsigned char *nDst, int nStride, int nHeight)
 {
@@ -164,7 +192,7 @@ DSVLSrc::DSVLSrc()
 {
 	dsvlSource = NULL;
 
-	name = "DSVLSrc";
+	name = typeName = "DSVLSrc";
 	flipV = false;
 	numBuffers = 2;
 	updateCtr = 1;
@@ -185,6 +213,7 @@ void
 DSVLSrc::initPixelFormats()
 {
 	pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8));
+	pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R5G6B5));
 }
 
 
@@ -204,6 +233,8 @@ DSVLSrc::init()
 	LONG	cap_width = 0;
 	LONG	cap_height = 0;
 	double	cap_fps = 0.0;
+	PIXELFORMAT pf = PIXELFORMAT_UNKNOWN;
+	//PIXELFORMAT_RGB565
 
 	if(FAILED(dsvlSource->BuildGraphFromXMLFile(const_cast<char*>(configFileName.c_str()))))
 	{
@@ -211,9 +242,24 @@ DSVLSrc::init()
 		return;
 	}
 
-	if(FAILED(dsvlSource->GetCurrentMediaFormat(&cap_width,&cap_height,&cap_fps,NULL)))
+	if(FAILED(dsvlSource->GetCurrentMediaFormat(&cap_width,&cap_height,&cap_fps,&pf)))
 	{
 		Manager::getInstance()->getLogger()->log("OpenVideo: ERROR - DSVL failed retrieving video configuration\n");
+		return;
+	}
+
+	if(curPixelFormat==FORMAT_B8G8R8 || curPixelFormat==FORMAT_R5G6B5)
+	{
+		if((curPixelFormat==FORMAT_B8G8R8 && pf!=PIXELFORMAT_RGB24) || (curPixelFormat==FORMAT_R5G6B5 && pf!=PIXELFORMAT_RGB565))
+		{
+			Manager::getInstance()->getLogger()->logEx("OpenVideo:DSVLSrc: wrong configuration - openvideo wants %s but DSVL delivers %s",
+													   PixelFormat::FormatToString(curPixelFormat).c_str(), getDSVLPixelFormatString(pf));
+			return;
+		}
+	}
+	else
+	{
+		Manager::getInstance()->getLogger()->log("OpenVideo:DSVLSrc: ERROR - only B8G8R8 and R5G6B5 are supported\n");
 		return;
 	}
 
@@ -235,7 +281,7 @@ DSVLSrc::init()
 	state->clear();
 	state->width=cap_width;
 	state->height=cap_height;
-	state->format = FORMAT_B8G8R8;
+	state->format = curPixelFormat;  //FORMAT_B8G8R8;
 
 	for(int i=0; i<numBuffers; i++)
 		DSVL_State(state)->getBuffers().push_back(new DSVLSrcBuffer(dsvlSource, flipV));

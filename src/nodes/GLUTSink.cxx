@@ -71,6 +71,7 @@ bool GLUTSink::glutRedraw=false;
 
 GLUTSink::GLUTSink()
 {
+	name = typeName = "GLUTSink";
 	state=NULL;
 	originX=originY=0;
 	width=height=0;

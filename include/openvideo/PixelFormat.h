@@ -52,17 +52,20 @@ enum PIXEL_FORMAT {
 };
 
 
-namespace PixelFormat
+class OPENVIDEO_API PixelFormat
 {
-	PIXEL_FORMAT StringToFormat(const std::string& formatName);
+public:
+	static PIXEL_FORMAT StringToFormat(const std::string& formatName);
 
-	std::string FormatToString(PIXEL_FORMAT format);
+	static std::string FormatToString(PIXEL_FORMAT format);
 
-	PIXEL_FORMAT fromOGL(int format);
+	static PIXEL_FORMAT fromOGL(int format);
 
-	int getBitsPerPixel(PIXEL_FORMAT format);
+	static bool toOGL(PIXEL_FORMAT format, unsigned int& oglFormat, int& oglInternalFormat);
 
-}  // namespace PixelFormat
+	static int getBitsPerPixel(PIXEL_FORMAT format);
+
+};  // namespace PixelFormat
 
 
 }  // namespace openvideo

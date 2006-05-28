@@ -46,6 +46,7 @@ using namespace openvideo;
 
 VideoSink::VideoSink()
 {
+	name = typeName = "VideoSink";
 	isStarted=false;
 	internalFormat=0;
 	size_subscribers=0;
@@ -64,6 +65,7 @@ VideoSink::initPixelFormats()
 	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8X8));
 	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8X8));
 	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_L8));
+	this->pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R5G6B5));
 }
 
 VideoSink::~VideoSink()

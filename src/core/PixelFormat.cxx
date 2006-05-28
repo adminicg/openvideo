@@ -54,9 +54,6 @@ namespace openvideo
 {
 
 
-namespace PixelFormat
-{
-
 typedef std::map<std::string, PIXEL_FORMAT>	StringFormatMap;
 typedef std::pair<std::string, PIXEL_FORMAT> StringFormatPair;
 
@@ -85,7 +82,7 @@ fillStringFormatMap()
 
 
 PIXEL_FORMAT
-StringToFormat(const std::string& formatName)
+PixelFormat::StringToFormat(const std::string& formatName)
 {
 	if(stringFormatMap.empty())
 		fillStringFormatMap();
@@ -100,7 +97,7 @@ StringToFormat(const std::string& formatName)
 
 
 std::string
-FormatToString(PIXEL_FORMAT format)
+PixelFormat::FormatToString(PIXEL_FORMAT format)
 {
 	if(format>=0 && format<FORMAT_UNKNOWN)
 		return formatNames[format];
@@ -109,7 +106,8 @@ FormatToString(PIXEL_FORMAT format)
 }
 
 
-int getBitsPerPixel(PIXEL_FORMAT format)
+int
+PixelFormat::getBitsPerPixel(PIXEL_FORMAT format)
 {
 	switch(format)
 	{
@@ -133,7 +131,8 @@ int getBitsPerPixel(PIXEL_FORMAT format)
 }
 
 
-PIXEL_FORMAT fromOGL(int format)
+PIXEL_FORMAT
+PixelFormat::fromOGL(int format)
 {
 	switch(format)
 	{
@@ -153,7 +152,39 @@ PIXEL_FORMAT fromOGL(int format)
 }
 
 
-}  // namespace PixelFormat
+bool
+PixelFormat::toOGL(PIXEL_FORMAT format, unsigned int& oglFormat, int& oglInternalFormat)
+{
+	switch(format)
+	{
+	case FORMAT_R8G8B8:
+		oglFormat=GL_RGB;
+		oglInternalFormat=3;
+		return true;
+
+	case FORMAT_B8G8R8:
+		oglFormat=GL_BGR_EXT;
+		oglInternalFormat=3;
+		return true;
+
+	case FORMAT_R8G8B8X8:
+		oglFormat=GL_RGBA;
+		oglInternalFormat=4;
+		return true;
+
+	case FORMAT_B8G8R8X8:
+		oglFormat=GL_BGRA_EXT;
+		oglInternalFormat=4;
+		return true;
+
+	case FORMAT_L8:
+		oglFormat=GL_LUMINANCE;
+		oglInternalFormat=GL_LUMINANCE8;
+		return true;
+	}
+
+	return false;
+}
 
 
 }  // namespace openvideo

@@ -39,6 +39,13 @@ namespace openvideo {
 
 
 void
+Buffer::lock()
+{
+	lockCtr++;
+}
+
+
+void
 Buffer::unlock()
 {
 	lockCtr--;

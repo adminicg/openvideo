@@ -113,6 +113,7 @@ public:
 
 VideoWrapperSrc::VideoWrapperSrc()
 {
+	name = typeName = "VideoWrapperSrc";
 	strcpy(libId,"");
 	strcpy(formatId,"");
 	cameraNum=width=height=frameRate=format=0;
