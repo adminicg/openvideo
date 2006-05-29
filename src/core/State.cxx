@@ -32,7 +32,7 @@
 
 
 #include <openvideo/State.h>
-#include <ACE/Thread_Mutex.h>
+#include <ace/Thread_Mutex.h>
 
 
 namespace openvideo {
