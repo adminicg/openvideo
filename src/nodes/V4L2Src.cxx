@@ -63,24 +63,59 @@
 
 namespace openvideo {
 
+    // V4L2SrcBuffer gives V4L2Src full access to openvideo::Buffer
+    class V4L2SrcBuffer : public Buffer
+    {
+	friend class V4L2Src;
+    public:
+	V4L2SrcBuffer(unsigned char* pixbuffer)
+	{
+            buffer = pixbuffer;
+	}
+        
+	~V4L2SrcBuffer()
+	{
+            delete buffer;
+            buffer = NULL;
+	}
+
+	void incUpdateCounter()  {  updateCtr++;  }
+        
+    };
+
+
+    //V4L2SrcState gives V4L2Src full access to openvideo::State
+    class V4L2SrcState : public State
+    {
+    public:
+	BufferVector& getBuffers()  {  return buffers;  }
+        void setCurrentBuffer(Buffer* buf)  {  currentBuffer = buf;  }
+    };
+    
+#define V4L2_State(_STATE)    reinterpret_cast<V4L2SrcState*>(_STATE)
+    
+    
     // Initialize variable to default values.
     V4L2Src::V4L2Src() : videoWidth(640), videoHeight(480), fps(10),
                          pixelFormat(FORMAT_R8G8B8X8), videoFd(-1),
                          ioMode(IO_METHOD_MMAP), buffers(NULL), nBuffers(0), 
-                         initialized(false), imageRGB32(0)
+                         initialized(false)
     {
         strcpy(videoDevice, "/dev/video0");
+
+        // allocate new state
+        state = new V4L2SrcState;
     }
     
     V4L2Src::~V4L2Src()
     {
+        state->unlockAllBuffers();
         delete state;
     }
 
     void 
     V4L2Src::init() {
 
-        state=new State();
         state->clear();
 
 	Manager::getInstance()->getLogger()->logEx("Resolution = %d %d\n", videoWidth, videoHeight);
@@ -90,12 +125,20 @@ namespace openvideo {
         state->height=videoHeight;
         state->format=pixelFormat;
 
-        // allocate buffer for output image data in RGB32 format
-        imageRGB32 = (unsigned int*)malloc(videoWidth*videoHeight*sizeof(unsigned int));
-
+	// make a double buffered state
+	Manager::getInstance()->getLogger()->logEx("V4L2Src: Using double buffering\n");        
+	for(int i=0; i<2; i++)
+	{
+            unsigned char *pixels = (unsigned char*)malloc(videoWidth*videoHeight*sizeof(unsigned int));
+            // clear buffer
+            memset(pixels, 0, videoWidth*videoHeight*sizeof(unsigned int));
+            
+            reinterpret_cast<V4L2SrcState*>(state)->getBuffers().push_back(new V4L2SrcBuffer(pixels));
+	}
+        
         // initialization (must be done after setting all parameters)
 	Manager::getInstance()->getLogger()->log("OpenVideo: starting driver initialization ... ");
-
+        
         if (openDevice())
             initialized = initDevice();
         
@@ -105,7 +148,7 @@ namespace openvideo {
         setFrameRate(fps);
 	Manager::getInstance()->getLogger()->log("done.\n");
     }
-
+    
     void 
     V4L2Src::initPixelFormats() {
         pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8X8));
@@ -180,7 +223,7 @@ namespace openvideo {
         using namespace std; 
 
         if (videoFd < 0) {
-            state->frame = NULL;
+            Manager::getInstance()->getLogger()->log("ERROR: no video devices available.\n");
             return;
         }
 
@@ -285,15 +328,25 @@ namespace openvideo {
     void
     V4L2Src::processImage(const void* p) 
     {
+	V4L2SrcBuffer* buffer = reinterpret_cast<V4L2SrcBuffer*>(state->findFreeBuffer());
+
+	if(!buffer)
+	{
+            Manager::getInstance()->getLogger()->log("OpenVideo::V4L2Src all buffers locked, can not read a new camera image!\n");
+            return;
+	}
+	unsigned char* img = const_cast<unsigned char*>(buffer->getPixels());
+
         // convert from YUV420 to RGBA32
-        converter.convertToRGB32((unsigned char*)p, videoWidth, videoHeight, imageRGB32, false);
-        state->frame = (unsigned char*)imageRGB32;
+        converter.convertToRGB32((unsigned char*)p, videoWidth, videoHeight, reinterpret_cast<unsigned int*>(img), false);
+        V4L2_State(state)->setCurrentBuffer(buffer);
+        
+ 	buffer->incUpdateCounter();
     }
 
     void
     V4L2Src::postProcess()
     {
-        state->frame=NULL;
     }
 
     bool

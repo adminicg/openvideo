@@ -188,9 +188,6 @@ namespace openvideo {
 
         /// Image converter between YUV420 -> RGB32, by Daniel Wagner
         ConverterYV12 converter;
-
-        /// Image buffer holding the final converted image for state frame
-        unsigned int* imageRGB32;
     };
 
 } // namespace
