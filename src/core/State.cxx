@@ -38,18 +38,39 @@
 namespace openvideo {
 
 
+Buffer::Buffer() : buffer(NULL)
+{
+	lockCtr = 0;
+	updateCtr = 0;
+	mutex = new ACE_Thread_Mutex;
+	width = height = 0;
+	format = FORMAT_UNKNOWN;
+}
+
+
+Buffer::~Buffer()
+{
+	delete mutex;
+	mutex = NULL;
+}
+
+
 void
 Buffer::lock()
 {
+	mutex->acquire();
 	lockCtr++;
+	mutex->release();
 }
 
 
 void
 Buffer::unlock()
 {
+	mutex->acquire();
 	lockCtr--;
 	assert(lockCtr>=0);
+	mutex->release();
 }
 
 
@@ -65,10 +86,8 @@ Buffer*
 State::findFreeBuffer()
 {
 	for(size_t i=0; i<buffers.size(); i++)
-	{
 		if(!buffers[i]->isLocked())
 			return buffers[i];
-	}
 
 	return NULL;
 }
@@ -127,10 +146,10 @@ BufferSynchronizer::assign(Buffer* newBuffer)
 Buffer*
 BufferSynchronizer::getLocked()
 {
-	Buffer* retBuffer;
-
 	if(!buffer)
 		return NULL;
+
+	Buffer* retBuffer;
 
 	mutex->acquire();
 

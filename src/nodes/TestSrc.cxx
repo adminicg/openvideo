@@ -50,9 +50,12 @@ class TestSrcBuffer : public Buffer
 {
 friend class TestSrc;
 public:
-	TestSrcBuffer(unsigned char* pixbuffer)
+	TestSrcBuffer(unsigned char* pixbuffer, State* state)
 	{
 		buffer = pixbuffer;
+		width = state->width;
+		height = state->height;
+		format = state->format;
 	}
 
 	~TestSrcBuffer()
@@ -114,7 +117,7 @@ TestSrc::init()
 		unsigned char *pixels = new unsigned char[width*height*3];
 		memset(pixels, 255, width*height*3);
 
-		reinterpret_cast<TestSrcState*>(state)->getBuffers().push_back(new TestSrcBuffer(pixels));
+		reinterpret_cast<TestSrcState*>(state)->getBuffers().push_back(new TestSrcBuffer(pixels, state));
 	}
 	
     posX=posY=0;

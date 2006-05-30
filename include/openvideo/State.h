@@ -55,28 +55,35 @@ class DSVLSrc;
 class OPENVIDEO_API Buffer
 {
 public:
-	Buffer() : buffer(NULL), lockCtr(0), updateCtr(0)
-	{}
+	Buffer();
 
-	virtual ~Buffer()
-	{}
+	virtual ~Buffer();
 
-	virtual const unsigned char* getPixels()  {  return buffer;  }
+	virtual const unsigned char* getPixels() const  {  return buffer;  }
 
-	virtual int getLockCounter()  {  return lockCtr;  }
+	virtual int getWidth() const  {  return width;  }
+
+	virtual int getHeight() const  {  return height;  }
+
+	virtual PIXEL_FORMAT getFormat() const  {  return format;  }
+
+	virtual int getLockCounter() const  {  return lockCtr;  }
 
 	virtual void lock();
 
 	virtual void unlock();
 
-	virtual bool isLocked()  {  return lockCtr>0;  }
+	virtual bool isLocked() const  {  return lockCtr>0;  }
 
-	virtual unsigned int getUpdateCounter()  {  return updateCtr;  }
+	virtual unsigned int getUpdateCounter() const  {  return updateCtr;  }
 
 protected:
-	unsigned char*	buffer;
-	int				lockCtr;
-	unsigned int	updateCtr;
+	unsigned char*		buffer;
+	int					lockCtr;
+	unsigned int		updateCtr;
+	ACE_Thread_Mutex*	mutex;
+	int					width,height;
+	PIXEL_FORMAT		format;
 };
 
 

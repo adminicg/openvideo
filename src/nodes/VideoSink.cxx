@@ -88,7 +88,8 @@ void
 VideoSink::process()
 {
 	// send update notification to subsrcibers
-	for(int i=0;i<size_subscribers;i++)
+	//for(int i=0;i<size_subscribers;i++)
+	for(int i=size_subscribers-1; i>=0;i--)
 		subsrcibers[i]->update(state);
 }
 

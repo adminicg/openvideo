@@ -99,9 +99,12 @@ class ImageSrcBuffer : public Buffer
 {
 friend class ImageSrc;
 public:
-	ImageSrcBuffer(unsigned char* pixels)
+	ImageSrcBuffer(unsigned char* pixels, State* state)
 	{
 		buffer = pixels;
+		width = state->width;
+		height = state->height;
+		format = state->format;
 	}
 
 	~ImageSrcBuffer()
@@ -232,7 +235,7 @@ ImageSrc::init()
 		//fwrite(buf2, width*height*2, 1, fp);
 		//fclose(fp);
 
-		IMAGE_State(state)->getBuffers().push_back(new ImageSrcBuffer(buf2));
+		IMAGE_State(state)->getBuffers().push_back(new ImageSrcBuffer(buf2, state));
 	}
 
 	// make sure we have an update the first time process() is called...

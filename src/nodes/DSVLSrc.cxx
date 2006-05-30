@@ -105,10 +105,13 @@ class DSVLSrcBuffer : public Buffer
 {
 friend class DSVLSrc;
 public:
-	DSVLSrcBuffer(DSVL_VideoSource* src, bool flipVert) : source(src), flipV(flipVert)
+	DSVLSrcBuffer(DSVL_VideoSource* src, bool flipVert, State* state) : source(src), flipV(flipVert)
 	{
 		checkedOut = false;
 		dsvlBuffer = copyBuffer = NULL;
+		width = state->width;
+		height = state->height;
+		format = state->format;
 	}
 
 	~DSVLSrcBuffer()
@@ -116,12 +119,18 @@ public:
 		delete copyBuffer;
 	}
 
-	bool getNewFrame(State& st, unsigned int ctr)
+	bool getNewFrame(unsigned int ctr)
 	{
 		DWORD wait_result = source->WaitForNextSample(100/60);
 
+		if(wait_result!=0)			// time-out?
+			return false;
+
 		if(checkedOut)
 		{
+			// keeping DSVL buffsers is currently disabled
+			// so this should never be called!
+			assert(false);
 			source->CheckinMemoryBuffer(mbHandle);
 			checkedOut = false;
 		}
@@ -130,34 +139,63 @@ public:
 		{
 			checkedOut = true;
 
+			if(mbHandle.n <= sampleCtr)
+			{
+				// only keep new frames
+				//
+				source->CheckinMemoryBuffer(mbHandle);
+				checkedOut = false;
+				return false;
+			}
+
+			sampleCtr = mbHandle.n;
+
 			if(flipV)
 			{
-				flipImage(st);
+				flipImage();
 				buffer = copyBuffer;
 			}
 			else
-				buffer = dsvlBuffer;
+			{
+				copyImage();
+				buffer = copyBuffer;
+				//buffer = dsvlBuffer;
+			}
+
+			// FIXME-Daniel-20060530: currently there is a bug with keeping DSVL's memory buffers
+			//                        so we always copy the video frames and release the buffer immediatelly
+			source->CheckinMemoryBuffer(mbHandle);
+			checkedOut = false;
 
 			updateCtr = ctr;
-			//printf("U");
-			//state = STATE_UPDATED;
-			//printf("N");
 			return true;
 		}
 
-		Manager::getInstance()->getLogger()->log("OpenVideo::DSVLSrc warning: failed to deliver frame\n");
+		Manager::getInstance()->getLogger()->log("OpenVideo::DSVLSrc warning: failed to get video frame\n");
 		return false;
 	}
 
-	void flipImage(State& st)
+	void flipImage()
 	{
-		int bytesPerPixel = PixelFormat::getBitsPerPixel(st.format) / 8;		// assumes simple pixelformat (x times 8 bits)
-		int stride = bytesPerPixel*st.width;
+		int bytesPerPixel = PixelFormat::getBitsPerPixel(format) / 8;		// assumes simple pixel-format (x times 8 bits)
+		int stride = bytesPerPixel*width;
 
 		if(copyBuffer==NULL)
-			copyBuffer = new unsigned char[stride*st.height];
+			copyBuffer = new unsigned char[stride*height];
 
-		openvideo::flipImage(dsvlBuffer, copyBuffer, stride, st.height);
+		openvideo::flipImage(dsvlBuffer, copyBuffer, stride, height);
+	}
+
+
+	void copyImage()
+	{
+		int bytesPerPixel = PixelFormat::getBitsPerPixel(format) / 8;		// assumes simple pixel-format (x times 8 bits)
+		int stride = bytesPerPixel*width;
+
+		if(copyBuffer==NULL)
+			copyBuffer = new unsigned char[stride*height];
+
+		memcpy(copyBuffer, dsvlBuffer, height*stride);
 	}
 
 protected:
@@ -166,7 +204,10 @@ protected:
 	unsigned char		*dsvlBuffer, *copyBuffer;
 	bool				flipV;
 	bool				checkedOut;
+	static unsigned int	sampleCtr;
 };
+
+unsigned int DSVLSrcBuffer::sampleCtr = 0;
 
 
 // DSVLSrcState gives DSVLSrc full access to openvideo::State
@@ -234,7 +275,6 @@ DSVLSrc::init()
 	LONG	cap_height = 0;
 	double	cap_fps = 0.0;
 	PIXELFORMAT pf = PIXELFORMAT_UNKNOWN;
-	//PIXELFORMAT_RGB565
 
 	if(FAILED(dsvlSource->BuildGraphFromXMLFile(const_cast<char*>(configFileName.c_str()))))
 	{
@@ -281,10 +321,10 @@ DSVLSrc::init()
 	state->clear();
 	state->width=cap_width;
 	state->height=cap_height;
-	state->format = curPixelFormat;  //FORMAT_B8G8R8;
+	state->format = curPixelFormat;
 
 	for(int i=0; i<numBuffers; i++)
-		DSVL_State(state)->getBuffers().push_back(new DSVLSrcBuffer(dsvlSource, flipV));
+		DSVL_State(state)->getBuffers().push_back(new DSVLSrcBuffer(dsvlSource, flipV, state));
 }
 
 
@@ -301,11 +341,20 @@ DSVLSrc::process()
 	{
 		// our overloaded Buffer class does all the work...
 		//
-		if(buffer->getNewFrame(*state, updateCtr))
+		if(buffer->getNewFrame(updateCtr))
 		{
 			DSVL_State(state)->setCurrentBuffer(buffer);
 			updateCtr++;
-			//printf("U");
+
+			// Debug code to animate the video frame in case we don't get new video data
+			// FIXME-Daniel-20060530: This should be removed in the future...
+			static bool tst = false;
+			static int c=0;
+			if(tst)
+			{
+				memset((void*)buffer->getPixels(), c, 320*240*3);
+				c = (c+1)&0xff;
+			}
 		}
 	}
 	else

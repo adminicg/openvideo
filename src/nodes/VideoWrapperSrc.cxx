@@ -64,6 +64,9 @@ public:
 		int bytesPerPixel = PixelFormat::getBitsPerPixel(state->format) / 8;		// assumes simple pixelformat (x times 8 bits)
 		int stride = bytesPerPixel*state->width;
 		bufferSize = stride*state->height;
+		width = state->width;
+		height = state->height;
+		format = state->format;
 
 		// VideoWrapper does not have doublebuffering, so we need to do copies...
 		//
