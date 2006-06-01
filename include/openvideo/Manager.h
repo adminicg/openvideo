@@ -154,11 +154,11 @@ class OPENVIDEO_API Manager
 	*/
     openvideo::Node* getNode(std::string nodeName);
 
-#ifdef WIN32
+#ifdef OV_IS_WINDOWS
     void setGLContext(HGLRC _glContext,HDC _dc);
 #endif
 
-#ifdef LINUX
+#ifdef OV_IS_LINUX
      void setGLContext(GLXDrawable _drawable, GLXContext _glContext, Display* _dsp);
 #endif
 
@@ -296,13 +296,13 @@ class OPENVIDEO_API Manager
     
     static void* startUserInterface(void *);
     static bool isUserInterfaceRunning;
-#ifdef LINUX
+#ifdef OV_IS_LINUX
     GLXDrawable dc;
     Display* dsp;
     GLXContext glContext;
 #endif
 
-#ifdef WIN32
+#ifdef OV_IS_WINXP
     HGLRC glContext;
     HDC dc;
 #endif

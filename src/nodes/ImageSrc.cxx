@@ -30,6 +30,7 @@
   * @file                                                                   
  /* ======================================================================= */
 
+#include <stdlib.h>
 #include <openvideo/nodes/ImageSrc.h>
 #include <openvideo/openVideo.h>
 

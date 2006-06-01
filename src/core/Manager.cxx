@@ -29,6 +29,9 @@
  * $Id$
  * @file                                                                   
  /* ======================================================================= */
+
+
+#include <stdlib.h>
 #include <openvideo/Manager.h>
 #include <ace/Thread.h>
 #include <ace/Condition_Thread_Mutex.h>
@@ -121,9 +124,11 @@ Manager::Manager()
   idleSetGLContext=false;
   idleDeleteGLContext=false;
   //dc=NULL;
+#if !defined(OV_IS_WINCE)
   glContext=NULL;
   glContextChanged=false;
-#ifdef LINUX
+#endif
+#ifdef OV_IS_LINUX
   dsp=NULL;
 #endif
 }
@@ -164,17 +169,19 @@ Manager::update(void*)
 void 
 Manager::doIdleTasks()
 {
+#ifndef OV_IS_WINCE
     /////////////////////////////////// set glcontext ///////////////////////////////
     if(idleSetGLContext)
     {
         idleSetGLContext=false;
+
 		if(dc && glContext)
 		{
             
-#ifdef WIN32
+#ifdef OV_IS_WINXP
           hasGLContext=wglMakeCurrent(dc,glContext);
 #endif
-#ifdef LINUX
+#ifdef OV_IS_LINUX
           hasGLContext=glXMakeCurrent(dsp,dc,glContext);
 #endif
             if(!hasGLContext)
@@ -186,13 +193,12 @@ Manager::doIdleTasks()
     /////////////////////////////////// delete glcontext ///////////////////////////////
     else if(idleDeleteGLContext)
     {
-      
         idleDeleteGLContext=false;   
 
 #ifdef OV_IS_WINDOWS
         hasGLContext=(!wglDeleteContext(glContext));
 #endif
-#ifdef LINUX
+#ifdef OV_IS_LINUX
 	glXDestroyContext(dsp, glContext);
 #endif
         if(hasGLContext)
@@ -207,7 +213,7 @@ Manager::doIdleTasks()
         
     }
 
-
+#endif // OV_IS_WINCE
     resume();
 }
 
@@ -225,7 +231,7 @@ Manager::pause()
     updateLock->release();
 }
 
-#ifdef WIN32
+#ifdef OV_IS_WINXP
     void 
     Manager::setGLContext(HGLRC _glContext,HDC _dc)
     {
@@ -237,7 +243,7 @@ Manager::pause()
     }
 #endif
 
-#ifdef LINUX
+#ifdef OV_IS_LINUX
     void 
     Manager::setGLContext(GLXDrawable _drawable, GLXContext _ovGLContext, Display* _dsp)
     {

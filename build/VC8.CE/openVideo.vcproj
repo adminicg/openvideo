@@ -47,8 +47,8 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;../../include&quot;;&quot;$(ACEROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(SPECTECROOT)/include"
-				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE=$(CEVER);$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;OPENVIDEO_EXPORTS;_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIGOV_H"
+				AdditionalIncludeDirectories="&quot;../../include&quot;;&quot;$(ACEROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(SPECTECROOT)/include;$(KLIMTESROOT)/include;$(SIMAGEROOT)/include"
+				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE=$(CEVER);$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;OPENVIDEO_EXPORTS;_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIGOV_H;SIMAGE_NOT_DLL;POCKETPC2003_UI_MODEL;ACE_HAS_ACE_TOKEN;ACE_HAS_ACE_SVCCONF"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -70,7 +70,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,4.20 /machine:ARM /ARMPADCODE"
-				AdditionalDependencies="ccrtrtti.lib ACE_ClientDLLd.lib"
+				AdditionalDependencies="ccrtrtti.lib ACEd.lib"
 				OutputFile="$(OutDir)/openVideod.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(TINYXMLMODROOT)/lib/WM2003;$(ACEROOT)/lib/WM2003"
@@ -130,8 +130,8 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;../../include&quot;;&quot;$(ACEROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(SPECTECROOT)/include"
-				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE=$(CEVER);$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIGOV_H"
+				AdditionalIncludeDirectories="&quot;../../include&quot;;&quot;$(ACEROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(SPECTECROOT)/include;$(KLIMTESROOT)/include;$(SIMAGEROOT)/include"
+				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE=$(CEVER);$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIGOV_H;POCKETPC2003_UI_MODEL;ACE_HAS_ACE_TOKEN;ACE_HAS_ACE_SVCCONF;SIMAGE_NOT_DLL"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -153,10 +153,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,5.01"
-				AdditionalDependencies="ACE_ClientDLLd.lib"
+				AdditionalDependencies="ACEd.lib simagelibesd.lib LibJPEGd.lib LibCEd.lib"
 				OutputFile="$(OutDir)/openVideod.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(TINYXMLMODROOT)/lib/WM2005;$(ACEROOT)/lib/WM2005"
+				AdditionalLibraryDirectories="$(TINYXMLMODROOT)/lib/WM2005;$(ACEROOT)/lib/WM2005;$(SIMAGEROOT)/lib/WM2005;$(LIBJPEGROOT)/lib/WM2005;$(LIBCEROOT)/lib/WM2005"
 				DelayLoadDLLs="$(NOINHERIT)"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/openVideod.pdb"
@@ -180,7 +180,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory="/Windows"
+				RemoteDirectory="/"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>
@@ -293,8 +293,8 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="2"
-				AdditionalIncludeDirectories="&quot;../../include&quot;;&quot;$(ACEROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(SPECTECROOT)/include"
-				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE=$(CEVER);$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;OPENVIDEO_EXPORTS;_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIGOV_H;ACE_AS_STATIC_LIBS"
+				AdditionalIncludeDirectories="&quot;../../include&quot;;&quot;$(ACEROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(SPECTECROOT)/include;$(KLIMTESROOT)/include"
+				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE=$(CEVER);$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;OPENVIDEO_EXPORTS;_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIGOV_H;ACE_AS_STATIC_LIBS;SIMAGE_NOT_DLL;POCKETPC2003_UI_MODEL;ACE_HAS_ACE_TOKEN;ACE_HAS_ACE_SVCCONF"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -315,7 +315,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,4.20 /machine:ARM /ARMPADCODE"
-				AdditionalDependencies="ccrtrtti.lib ACE_ClientLib.lib"
+				AdditionalDependencies="ccrtrtti.lib ACE.lib"
 				OutputFile="$(OutDir)/openVideo.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(TINYXMLMODROOT)/lib/WM2003;$(ACEROOT)/lib/WM2003"
@@ -377,8 +377,8 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="2"
-				AdditionalIncludeDirectories="&quot;../../include&quot;;&quot;$(ACEROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(SPECTECROOT)/include"
-				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE=$(CEVER);$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIGOV_H"
+				AdditionalIncludeDirectories="&quot;../../include&quot;;&quot;$(ACEROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(SPECTECROOT)/include;$(KLIMTESROOT)/include;$(SIMAGEROOT)/include"
+				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE=$(CEVER);$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIGOV_H;POCKETPC2003_UI_MODEL;ACE_HAS_ACE_TOKEN;ACE_HAS_ACE_SVCCONF;SIMAGE_NOT_DLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -399,10 +399,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,5.01"
-				AdditionalDependencies="ACE_ClientDLL.lib"
+				AdditionalDependencies="ACE.lib simagelibes.lib LibJPEG.lib LibCE.lib"
 				OutputFile="$(OutDir)/openVideo.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(TINYXMLMODROOT)/lib/WM2005;$(ACEROOT)/lib/WM2005"
+				AdditionalLibraryDirectories="$(TINYXMLMODROOT)/lib/WM2005;$(ACEROOT)/lib/WM2005;$(SIMAGEROOT)/lib/WM2005;$(LIBJPEGROOT)/lib/WM2005;$(LIBCEROOT)/lib/WM2005"
 				DelayLoadDLLs="$(NOINHERIT)"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/openVideo.pdb"
@@ -428,7 +428,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory="/Windows"
+				RemoteDirectory="/"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>
@@ -530,11 +530,55 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\nodes\ImageSrc.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\openvideo\nodes\ImageSrc.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\nodes\ImageSrcFactory.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\openvideo\nodes\ImageSrcFactory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\openvideo\Logger.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\LoggerBase.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\openvideo\LoggerBase.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\LoggerPC.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\openvideo\LoggerPC.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\core\Manager.cxx"
 				>
 			</File>
 			<File
 				RelativePath="..\..\include\openvideo\Manager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\wince\MemManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\wince\MemManager.h"
 				>
 			</File>
 			<File
@@ -559,6 +603,26 @@
 			</File>
 			<File
 				RelativePath="..\..\include\openvideo\PixelFormat.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\openvideo\Scheduler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\SchedulerBase.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\openvideo\SchedulerBase.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\core\SchedulerPC.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\openvideo\SchedulerPC.h"
 				>
 			</File>
 			<File
@@ -602,19 +666,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\Timer.cxx"
+				RelativePath="..\..\src\core\TimerACE.cxx"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\openvideo\Timer.h"
+				RelativePath="..\..\include\openvideo\TimerACE.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\core\TimerHandler.cxx"
+				RelativePath="..\..\include\openvideo\TimerBase.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\openvideo\TimerHandler.h"
+				RelativePath="..\..\src\core\TimerHandlerACE.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\openvideo\TimerHandlerACE.h"
 				>
 			</File>
 			<File

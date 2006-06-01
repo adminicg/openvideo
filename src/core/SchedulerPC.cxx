@@ -30,6 +30,7 @@
 * @file                                                                   */
 /* ======================================================================= */
 
+#include <stdlib.h>
 #include <openvideo/SchedulerPC.h>
 #include <openvideo/TimerACE.h>
 #include <openvideo/Manager.h>
