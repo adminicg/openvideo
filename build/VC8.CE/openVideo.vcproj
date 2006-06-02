@@ -153,7 +153,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,5.01"
-				AdditionalDependencies="ACEd.lib simagelibesd.lib LibJPEGd.lib LibCEd.lib"
+				AdditionalDependencies="ACEminid.lib simagelibesd.lib LibJPEGd.lib LibCEd.lib"
 				OutputFile="$(OutDir)/openVideod.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(TINYXMLMODROOT)/lib/WM2005;$(ACEROOT)/lib/WM2005;$(SIMAGEROOT)/lib/WM2005;$(LIBJPEGROOT)/lib/WM2005;$(LIBCEROOT)/lib/WM2005"
@@ -399,7 +399,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,5.01"
-				AdditionalDependencies="ACE.lib simagelibes.lib LibJPEG.lib LibCE.lib"
+				AdditionalDependencies="ACEmini.lib simagelibes.lib LibJPEG.lib LibCE.lib"
 				OutputFile="$(OutDir)/openVideo.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(TINYXMLMODROOT)/lib/WM2005;$(ACEROOT)/lib/WM2005;$(SIMAGEROOT)/lib/WM2005;$(LIBJPEGROOT)/lib/WM2005;$(LIBCEROOT)/lib/WM2005"
