@@ -50,8 +50,6 @@
 
 #include <GL/gl.h>
 	
-using namespace openvideo;
-
 /////known nodes
 #ifdef ENABLE_GLUTSINK
 #include <openvideo/nodes/GLUTSinkFactory.h>
@@ -81,6 +79,18 @@ using namespace openvideo;
 #include <openvideo/nodes/V4L2SrcFactory.h>
 #endif
 
+#ifdef ENABLE_LIVE555SRC
+#include <openvideo/nodes/Live555SrcFactory.h>
+#endif
+
+#ifdef ENABLE_FFMPEGSINK
+#include <openvideo/nodes/FFmpegSinkFactory.h>
+#endif
+
+#ifdef ENABLE_FFMPEGSRC
+#include <openvideo/nodes/FFmpegSrcFactory.h>
+#endif
+
 #ifdef ENABLE_VIDEOSINK
 #include <openvideo/nodes/VideoSinkFactory.h>
 #endif
@@ -98,6 +108,9 @@ using namespace openvideo;
 #endif
 
 #include <iostream>
+
+
+BEGIN_NAMESPACE_OV
 
 void (*Manager::traversalFunc)	  (void*)=NULL;
 void (*Manager::initTraversalFunc)(void*)=NULL;
@@ -487,7 +500,7 @@ Manager::startUserInterface(void *)
             if(command=="load"){
 
             }
-            else if(command=="exit"){
+            else if(command=="exit" || command=="e"){
                 Manager::isUserInterfaceRunning=false;
                 Manager::getInstance()->stop();
             }
@@ -640,6 +653,18 @@ Manager::initNodeFactories()
   factories.push_back(new V4L2SrcFactory());
 #endif
 
+#ifdef ENABLE_LIVE555SRC
+  factories.push_back(new Live555SrcFactory());
+#endif
+
+#ifdef ENABLE_FFMPEGSINK
+  factories.push_back(new FFmpegSinkFactory());
+#endif
+
+#ifdef ENABLE_FFMPEGSRC
+  factories.push_back(new FFmpegSrcFactory());
+#endif
+
 #ifdef ENABLE_GLUTSINK
   factories.push_back(new GLUTSinkFactory());
 #endif
@@ -670,3 +695,4 @@ Manager::initNodeFactories()
 
 }
 
+END_NAMESPACE_OV

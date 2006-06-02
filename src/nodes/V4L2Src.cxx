@@ -68,9 +68,12 @@ namespace openvideo {
     {
 	friend class V4L2Src;
     public:
-	V4L2SrcBuffer(unsigned char* pixbuffer)
+	V4L2SrcBuffer(State *state, unsigned char* pixbuffer)
 	{
             buffer = pixbuffer;
+            format = state->format;
+            width = state->width;
+            height = state->height;
 	}
         
 	~V4L2SrcBuffer()
@@ -96,7 +99,7 @@ namespace openvideo {
     
     
     // Initialize variable to default values.
-    V4L2Src::V4L2Src() : videoWidth(640), videoHeight(480), fps(10),
+    V4L2Src::V4L2Src() : videoWidth(640), videoHeight(480), fps(30),
                          pixelFormat(FORMAT_R8G8B8X8), videoFd(-1),
                          ioMode(IO_METHOD_MMAP), buffers(NULL), nBuffers(0), 
                          initialized(false)
@@ -123,7 +126,7 @@ namespace openvideo {
 
         state->width=videoWidth;
         state->height=videoHeight;
-        state->format=pixelFormat;
+	state->format = pixelFormat;
 
 	// make a double buffered state
 	Manager::getInstance()->getLogger()->logEx("V4L2Src: Using double buffering\n");        
@@ -132,8 +135,8 @@ namespace openvideo {
             unsigned char *pixels = (unsigned char*)malloc(videoWidth*videoHeight*sizeof(unsigned int));
             // clear buffer
             memset(pixels, 0, videoWidth*videoHeight*sizeof(unsigned int));
-            
-            reinterpret_cast<V4L2SrcState*>(state)->getBuffers().push_back(new V4L2SrcBuffer(pixels));
+
+            reinterpret_cast<V4L2SrcState*>(state)->getBuffers().push_back(new V4L2SrcBuffer(state, pixels));
 	}
         
         // initialization (must be done after setting all parameters)
@@ -339,9 +342,17 @@ namespace openvideo {
 
         // convert from YUV420 to RGBA32
         converter.convertToRGB32((unsigned char*)p, videoWidth, videoHeight, reinterpret_cast<unsigned int*>(img), false);
+
+
+//         for (int xxx=0; xxx<videoWidth*videoHeight*sizeof(unsigned int); xxx++)
+//         {
+//             img[xxx] = 128+buffer->getUpdateCounter();
+//         }
+            
         V4L2_State(state)->setCurrentBuffer(buffer);
+//         printf("swapping buffers ...\n");
         
- 	buffer->incUpdateCounter();
+   	buffer->incUpdateCounter();
     }
 
     void

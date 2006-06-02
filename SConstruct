@@ -18,6 +18,9 @@ opts.Add(BoolOption('ENABLE_GL_TEXTURE_2D_SINK' , 'Enables the GL texture sink',
 opts.Add(BoolOption('ENABLE_TESTSRC'            , 'Enables the test source', 1))
 opts.Add(BoolOption('ENABLE_V4LSRC'             , 'Enables the Video4Linux source', 0))
 opts.Add(BoolOption('ENABLE_V4L2SRC'            , 'Enables the Video4Linux2 source', 1))
+opts.Add(BoolOption('ENABLE_LIVE555SRC'         , 'Enables the LIVER555Src support', 0))
+opts.Add(BoolOption('ENABLE_FFMPEGSRC'          , 'Enables FFmpeg decoding support', 0))
+opts.Add(BoolOption('ENABLE_FFMPEGSINK'         , 'Enables FFmpeg encoding support', 0))
 opts.Add(BoolOption('ENABLE_VIDEOSINK'          , 'Enables the video sink', 1))
 opts.Add(BoolOption('ENABLE_OPENCV'             , 'Enables the use of OpenCV capture source', 1))
 opts.Add(BoolOption('OPENVIDEO_DEBUG'           , 'Enables debugging', 0))
@@ -81,6 +84,18 @@ if env['ENABLE_V4LSRC']:
 if env['ENABLE_V4L2SRC']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_V4L2SRC'])
 #    env.AppendUnique(CCFLAGS = ['-g'])
+
+if env['ENABLE_LIVE555SRC']:
+    env.AppendUnique(CPPDEFINES = ['ENABLE_LIVE555SRC'])
+
+if env['ENABLE_FFMPEGSINK']:
+    env.ParseConfig('ffmpeg-config --cflags --libs avformat')
+    env.AppendUnique(CPPDEFINES = ['ENABLE_FFMPEGSINK'])
+
+if env['ENABLE_FFMPEGSRC']:
+    env.ParseConfig('ffmpeg-config --cflags --libs avformat')
+    env.AppendUnique(CCFLAGS = ['-g'])
+    env.AppendUnique(CPPDEFINES = ['ENABLE_FFMPEGSRC'])
 
 if env['ENABLE_VIDEOSINK']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_VIDEOSINK'])

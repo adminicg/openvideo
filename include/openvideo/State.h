@@ -229,7 +229,6 @@ protected:
 
 // ----> inlines <-----
 // constructor method.
-using namespace openvideo;
 
 inline State::State()
 {

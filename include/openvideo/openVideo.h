@@ -89,6 +89,12 @@ enum VERSION {
 	#define OPENVIDEO_API
 #endif
 
+/// comfortable namespace setting
+
+#define BEGIN_NAMESPACE_OV namespace openvideo {
+#define END_NAMESPACE_OV }; // namespace
+
+
 /**
  * @defgroup core Core Classes
  *	The 'Core' classes provide OpenVideo with its basic functionality to construct and update a 
