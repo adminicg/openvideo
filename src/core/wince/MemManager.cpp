@@ -12,6 +12,8 @@
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #  define COIN_DLL_API __declspec(dllexport)
+#else
+#  define COIN_DLL_API
 #endif
 
 
