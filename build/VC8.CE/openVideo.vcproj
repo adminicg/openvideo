@@ -379,7 +379,7 @@
 				Optimization="2"
 				AdditionalIncludeDirectories="&quot;../../include&quot;;&quot;$(ACEROOT)&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;$(SPECTECROOT)/include;$(KLIMTESROOT)/include;$(SIMAGEROOT)/include"
 				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE=$(CEVER);$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIGOV_H;POCKETPC2003_UI_MODEL;ACE_HAS_ACE_TOKEN;ACE_HAS_ACE_SVCCONF;SIMAGE_NOT_DLL"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
