@@ -179,6 +179,14 @@ Manager::update(void*)
    self->updateLock->release();
 }
 
+
+void 
+Manager::updateSingleThreaded()
+{
+	(*Manager::traversalFunc)(Manager::traversalData);
+}
+
+
 void 
 Manager::doIdleTasks()
 {
@@ -440,6 +448,8 @@ Manager::run()
 {
   
   scheduler->init();
+
+#ifndef OV_IS_WINCE
   //start control  thread
   ACE_hthread_t* controlThreadHandle = new ACE_hthread_t();
   if(ACE_Thread::spawn((ACE_THR_FUNC)Manager::startUserInterface,
@@ -454,6 +464,8 @@ Manager::run()
   { 
       printf("Error in spawning thread\n"); 
   }
+#endif // OV_IS_WINCE
+
   scheduler->run();
    
 }

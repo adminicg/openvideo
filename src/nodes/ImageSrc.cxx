@@ -237,6 +237,7 @@ ImageSrc::init()
 		//fclose(fp);
 
 		IMAGE_State(state)->getBuffers().push_back(new ImageSrcBuffer(buf2, state));
+		Manager::getInstance()->getLogger()->logEx("OpenVideo::ImageSrc: image '%s' loaded\n", fileNames[i].c_str());
 	}
 
 	// make sure we have an update the first time process() is called...

@@ -115,6 +115,15 @@ class OPENVIDEO_API Manager
     */
     static void update(void*);
 
+
+	/// Traverses the OpenVideo graph one single time
+	/**
+	 *  This method should only be called to let OpenVideo run in the
+	 *  same thread as the application does. In such a scenario it is the
+	 *  application author's duty to call this method periodically.
+	 */
+	void updateSingleThreaded();
+
     /** 
 	*	adds a NodeFactory to the list of known factories'
 	*/
