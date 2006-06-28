@@ -110,14 +110,9 @@ private:
 
     /// Input filename to open
     std::string fileName;
-
-    /// Stores an AV packet pro processing each frame
-    AVPacket packet;
-
-    /// Stores the bytes remaining for reading
-    int      bytesRemaining;
-
-    uint8_t  *rawData;
+    
+    // buffer used for storing the frames
+    uint8_t *buffer;
 
     // dummy counter for saving images
     int iFrame;

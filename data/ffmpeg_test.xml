@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openvideo scheduleMode="idle" updateRate="10">
+<openvideo scheduleMode="timer" updateRate="20">
 	<FFmpegSrc name="FFmpegSrc" pixelformat="R8G8B8" file="test.mpg"> 
 		<GLUTSink name="glsink1" pixelformat="R8G8B8"/> 
 	</FFmpegSrc>

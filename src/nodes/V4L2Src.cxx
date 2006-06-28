@@ -189,7 +189,8 @@ namespace openvideo {
 		type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
                 
 		if (xioctl (videoFd, VIDIOC_STREAMON, &type) == -1)
-                    assert(0);
+                    initialized = false;
+                    //assert(0);
 
 		break;
 
@@ -206,13 +207,13 @@ namespace openvideo {
                     buf.length      = buffers[i].length;
 
                     if (xioctl (videoFd, VIDIOC_QBUF, &buf) == -1)
-                        assert(0);
+                        initialized = false;
 		}
                 
 		type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
 		if (xioctl (videoFd, VIDIOC_STREAMON, &type) == -1)
-                    assert(0);
+                    initialized = false;
                 
 		break;
 	}
@@ -696,7 +697,7 @@ namespace openvideo {
     void
     V4L2Src::stop() 
     {
-        initialized = false;
+        using namespace std;
 
         enum v4l2_buf_type type;
 
@@ -709,12 +710,16 @@ namespace openvideo {
             case IO_METHOD_USERPTR:
 		type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
-		if (xioctl (videoFd, VIDIOC_STREAMOFF, &type) == -1)
-                    assert (0);
+                if (initialized)
+                    if (xioctl (videoFd, VIDIOC_STREAMOFF, &type) == -1)
+                        cerr << "ERROR: Error while stopping V4L2 device" << endl;
                 break;
 	}
 
-        closeDevice();
+        if (initialized)
+            closeDevice();
+
+        initialized = false;
     }
 
     int

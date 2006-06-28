@@ -55,7 +55,7 @@ public:
     
     ~FFmpegSrcBuffer()
     {
-        delete buffer;
+        delete [] buffer;
         buffer = NULL;
     }
 
@@ -74,13 +74,11 @@ public:
 #define FFmpeg_State(_STATE)    reinterpret_cast<FFmpegSrcState*>(_STATE)
 
 
-FFmpegSrc::FFmpegSrc() : videoStream(-1), bytesRemaining(0), iFrame(0)
+FFmpegSrc::FFmpegSrc() : videoStream(-1), iFrame(0)
 {
     // Register all formats and codecs
     av_register_all();
 
-    packet.data=NULL;
-    
     // allocate new state
     state = new FFmpegSrcState;
 }
@@ -102,6 +100,8 @@ FFmpegSrc::~FFmpegSrc()
 
     state->unlockAllBuffers();
     delete state;
+
+    delete [] buffer;
 
 }
 
@@ -200,14 +200,12 @@ FFmpegSrc::init()
                                       codecContext->height);
 
     // allocate a plane buffer for initialization
-    uint8_t *buf;
-    buf = new uint8_t[numBytes];
+    buffer = new uint8_t[numBytes];
 
     // Assign appropriate parts of buffer to image planes in frameRGB
-    avpicture_fill((AVPicture *)frameRGB, buf, PIX_FMT_RGB24,
+    avpicture_fill((AVPicture *)frameRGB, buffer, PIX_FMT_RGB24,
                    codecContext->width, codecContext->height);
 
-    delete buf;
     
     // done.
 }
@@ -215,9 +213,19 @@ FFmpegSrc::init()
 bool
 FFmpegSrc::getFrame()
 {
+    static AVPacket packet;
+    static int      bytesRemaining = 0;
+    uint8_t         *rawData;
     int             bytesDecoded;
     int             frameFinished;
+    static bool     fFirstTime = true;
 
+    if(fFirstTime)
+    {
+        fFirstTime=false;
+        packet.data=NULL;
+    }
+    
     // Decode packets until we have decoded a complete frame
     while (true)
     {
@@ -278,15 +286,14 @@ FFmpegSrc::getFrame()
 void
 FFmpegSrc::process()
 { 
-
     if (getFrame())
     {
         img_convert((AVPicture *)frameRGB, PIX_FMT_RGB24, (AVPicture*)frame, 
                     codecContext->pix_fmt, codecContext->width, codecContext->height);
-
+        
         // send data to the OV State
-//          processImage();
-        saveImage();
+        processImage();
+        // saveImage();
     }
 }
 
@@ -299,9 +306,6 @@ void FFmpegSrc::saveImage()
     char szFilename[32];
     int  y;
 
-    if (iFrame > 5)
-        return;
-
     // Open file
     sprintf(szFilename, "frame%d.ppm", iFrame++);
     pFile=fopen(szFilename, "wb");
@@ -313,7 +317,7 @@ void FFmpegSrc::saveImage()
     
     // Write pixel data
     for(y=0; y<codecContext->height; y++)
-        fwrite(frame->data[0]+y*frame->linesize[0], 1, codecContext->width*3, pFile);
+        fwrite(frameRGB->data[0]+y*frameRGB->linesize[0], 1, codecContext->width*3, pFile);
 
     // Close file
     fclose(pFile);
@@ -322,7 +326,9 @@ void FFmpegSrc::saveImage()
 void
 FFmpegSrc::processImage()
 {
-    
+     using namespace std;
+     cerr << "processimage ...\n";
+
     FFmpegSrcBuffer* buffer = reinterpret_cast<FFmpegSrcBuffer*>(state->findFreeBuffer());
     
     if(!buffer)
@@ -331,16 +337,8 @@ FFmpegSrc::processImage()
         return;
     }
     unsigned char* img = const_cast<unsigned char*>(buffer->getPixels());
-    uint8_t *pR = frame->data[0];
-    uint8_t *pG = frame->data[1];
-    uint8_t *pB = frame->data[2];
-    
-    // compose one image out of four separate planes (RGB)
-    for (int i=0; i<codecContext->width*codecContext->height; i++) {
-        img = pR++; img++;
-        img = pG++; img++;
-        img = pB++; img++;
-    }
+
+    memcpy(img, frameRGB->data[0], codecContext->height*codecContext->width*3);
 
     FFmpeg_State(state)->setCurrentBuffer(buffer);
     buffer->incUpdateCounter();
