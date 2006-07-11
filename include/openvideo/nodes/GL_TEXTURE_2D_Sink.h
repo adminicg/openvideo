@@ -99,7 +99,7 @@ public:
 	/**
 	*	indicated whether the sink is started or not.
 	*/
-	bool isStarted;
+	volatile bool isStarted;
 
 	virtual void initPixelFormats();
 protected:
