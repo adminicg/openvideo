@@ -63,7 +63,7 @@ GL_TEXTURE_2D_Sink::GL_TEXTURE_2D_Sink()
 	name = typeName = "GL_TEXTURE_2D_Sink";
 	mutex = new ACE_Mutex();
 	width=height=0;	
-	isStarted=false;
+	isRunning=false;
 	internalFormat=0;
 	buffer=0;
 	video_texture_id[0]=0;
@@ -111,7 +111,7 @@ GL_TEXTURE_2D_Sink::release()
 void
 GL_TEXTURE_2D_Sink::init()
 {
-     isStarted=false;
+     isRunning=false;
     //check if a device context is present
 #ifdef WIN32
     HGLRC curContext=NULL;
@@ -235,7 +235,7 @@ GL_TEXTURE_2D_Sink::init()
 	    return ;
     }
     //////////////////////////////////////////////
-    isStarted=true;
+    isRunning=true;
 
 }
 
@@ -246,7 +246,7 @@ GL_TEXTURE_2D_Sink::process()
 {
     if(!Manager::hasGLContext)
         return;
-    if(!isStarted)
+    if(!isRunning)
     {
         init();
 		return;

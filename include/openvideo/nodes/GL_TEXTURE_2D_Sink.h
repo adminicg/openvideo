@@ -96,15 +96,23 @@ public:
 	*/
 	unsigned int get_video_texture_id();
 
-	/**
-	*	indicated whether the sink is started or not.
-	*/
-	volatile bool isStarted;
-
 	virtual void initPixelFormats();
-protected:
+
 	/**
-	*	mutext to lock the sink's data.
+	*	indicates whether the sink is started or not.
+	*/
+	bool isStarted() const { return isRunning; }
+
+	/**
+	*	wait synchronously until sink is started.
+	*/
+	void waitStarted() const { while (! isRunning); }
+
+protected:
+	volatile bool isRunning;
+
+	/**
+	*	mutex to lock the sink's data.
 	*/
 	ACE_Mutex* mutex;
 
