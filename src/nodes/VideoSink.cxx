@@ -47,7 +47,7 @@ using namespace openvideo;
 VideoSink::VideoSink()
 {
 	name = typeName = "VideoSink";
-	isStarted=false;
+	isRunning=false;
 	internalFormat=0;
 	size_subscribers=0;
 }
@@ -79,7 +79,7 @@ VideoSink::init()
 {
 	//
     //////////////////////////////////////////////
-    isStarted=true;
+    isRunning=true;
 	state=inputs[0]->getState();
 }
 

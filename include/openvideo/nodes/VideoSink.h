@@ -80,15 +80,24 @@ public:
 	virtual void process();
 
 	virtual void postProcess();
-	/**
-	*	indicated whether the sink is started or not.
-	*/
-	bool isStarted;
 
 	virtual void initPixelFormats();
 	
 	void subscribe(VideoSinkSubscriber* aSubscriber);
+
+	/**
+	*	indicates whether the sink is started or not.
+	*/
+	bool isStarted() const { return isRunning; }
+
+	/**
+	*	wait synchronously until sink is started.
+	*/
+	void waitStarted() const { while (! isRunning); }
+
 protected:
+	volatile bool isRunning;
+
 	/**
 	*	Internal texture format. defines the number of color components in the texture. valid values = 1,2,3, or 4.
 	*/
