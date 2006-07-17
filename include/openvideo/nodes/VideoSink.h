@@ -84,6 +84,8 @@ public:
 	virtual void initPixelFormats();
 	
 	void subscribe(VideoSinkSubscriber* aSubscriber);
+	
+	void unsubscribe(const VideoSinkSubscriber* aSubscriber);
 
 	/**
 	*	indicates whether the sink is started or not.
@@ -103,8 +105,7 @@ protected:
 	*/
 	int internalFormat;
 
-	std::vector<VideoSinkSubscriber*> subsrcibers;
-	int size_subscribers;
+	std::vector<VideoSinkSubscriber*> subscribers;
 };
 
 } //namespace openvideo {

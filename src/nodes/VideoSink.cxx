@@ -49,7 +49,6 @@ VideoSink::VideoSink()
 	name = typeName = "VideoSink";
 	isRunning=false;
 	internalFormat=0;
-	size_subscribers=0;
 }
 
 void 
@@ -88,17 +87,17 @@ void
 VideoSink::process()
 {
 	// send update notification to subsrcibers
-	//for(int i=0;i<size_subscribers;i++)
-	for(int i=size_subscribers-1; i>=0;i--)
-		subsrcibers[i]->update(state);
+	//for(int i=0;i<subscribers.size();i++)
+	for(int i=subscribers.size()-1; i>=0;i--)
+		subscribers[i]->update(state);
 }
 
 void
 VideoSink::postProcess()
 {
-	/*for(int i=0;i<size_subscribers;i++)
+	/*for(int i=0;i<subscribers.size();i++)
 	{
-		if(subsrcibers[i]->isResourceInUse())
+		if(subscribers[i]->isResourceInUse())
 		{
 			//wait till 
 		}
@@ -108,8 +107,16 @@ VideoSink::postProcess()
 void 
 VideoSink::subscribe(VideoSinkSubscriber* aSubscriber)
 {
-	subsrcibers.push_back(aSubscriber);
-	size_subscribers++;
+	subscribers.push_back(aSubscriber);
+}
+
+void 
+VideoSink::unsubscribe(const VideoSinkSubscriber* aSubscriber)
+{
+	std::vector<VideoSinkSubscriber*> subscribersCopy(subscribers);
+	for (int i = subscribers.size() - 1;i >= 0;i --)
+		if (subscribersCopy[i] == aSubscriber)
+			subscribers.erase(subscribers.begin() + i);
 }
 
 #endif  //ENABLE_VideoSink
