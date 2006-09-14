@@ -1,4 +1,3 @@
-
 #***************************************************************************************
 #
 #                  BUILD TARGETS DEFINITION
@@ -31,22 +30,63 @@
 #***************************************************************************************
 
 import os
+import sys
 
-version = '1.0'
-project = 'OpenVideo'
-installRoot = os.getcwd()
+version      = '1.0'
+project      = 'OpenVideo'
+description  = project + ' is a modified small library for handling video input'
+mainlib      = 'openvideo'
+installRoot  = os.getcwd()
+includeDir   = os.path.join(os.getcwd(),'include')
 
+
+enableFlags = { 'VIDEOWRAPPERSRC'    :    'false',
+                'SPECTECSRC'         :    'false',
+                'GLUTSINK'           :    'true',
+                'GL_TEXTURE_2D_SINK' :    'true',
+                'TESTSRC'            :    'true',
+                'V4LSRC'             :    'false',
+                'V4L2SRC'            :    'false',
+                'LIVE555SRC'         :    'false',
+                'FFMPEGSRC'          :    'false',
+                'FFMPEGSINK'         :    'false',
+                'VIDEOSINK'          :    'true',
+                'DSVLSRC'            :    'true',
+                'OPENCV'             :    'false'}
+
+
+
+# list of libraries that will be searched by the scanner. The scanner will try to locate the libraries
+# and the flags needed to build with those libraries. The obtained result will be used by the build, for
+# each target that lists a library in its 'libs' or in its 'use' sections.
+libraryList =['ace', 'tinyxml', 'glut', 'openvideo', 'dsvl']
 
 dl ={'name'     : 'openvideo',
     'type'      : 'DL',
-    'libs'      : ['ace', 'tinyxml_mod'],
+    'libs'      : ['ace', 'tinyxml', 'glut', 'dsvl'],
     'src_use'   : ['ALL'],
-#    'src_ignore': ['TinyXML/TinyXML_autolink.cpp'],
     'defines'   : ['"OPENVIDEO_DEBUG=0"']
 	}
 
+ov ={'name':'openvideo',
+     'type':'PRG',
+     'libs':['ace', 'glut', 'openvideo'],
+     'src_use': [os.path.join(os.getcwd(), 'standalone', 'main.cxx')]
+     }
 
-targetList = [dl]
+
+gllibs = []
+if sys.platform == 'win32':
+    dl['src_ignore'] = ['nodes\\v4l.c', 'core\\DLL.cxx']
+    gllibs = ['opengl32', 'glu32', 'glut32']
+    enableFlags['OPENCV']  = 'false'
+    enableFlags['DSVLSRC'] = 'true'
+else:
+    gllibs = ['GL', 'GLU']
+    enableFlags['OPENCV']  = 'true'
+    enableFlags['DSVLSRC'] = 'false'
+
+targetList = [dl, ov]
 
      
 
