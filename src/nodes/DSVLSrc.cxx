@@ -56,6 +56,74 @@
 
 namespace openvideo {
 
+/*
+ * Added a couple of functions (thanks Daniel), to handle exceptions
+ */
+
+int filter(const char* nWhere, unsigned int nCode, struct
+           _EXCEPTION_POINTERS *nEp)
+{
+    // log what happened...
+    return EXCEPTION_EXECUTE_HANDLER;
+}
+
+static const char* getExceptionStringFromCode(unsigned int code)
+{
+    switch(code)
+    {
+    case EXCEPTION_ACCESS_VIOLATION:
+        return "EXCEPTION_ACCESS_VIOLATION";
+
+    case EXCEPTION_BREAKPOINT:
+        return "EXCEPTION_BREAKPOINT";
+
+    case EXCEPTION_DATATYPE_MISALIGNMENT:
+        return "EXCEPTION_DATATYPE_MISALIGNMENT";
+
+    case EXCEPTION_SINGLE_STEP:
+        return "EXCEPTION_SINGLE_STEP";
+
+    case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
+        return "EXCEPTION_ARRAY_BOUNDS_EXCEEDED";
+
+    case EXCEPTION_FLT_DENORMAL_OPERAND:
+        return "EXCEPTION_FLT_DENORMAL_OPERAND";
+
+    case EXCEPTION_FLT_DIVIDE_BY_ZERO:
+        return "EXCEPTION_FLT_DIVIDE_BY_ZERO";
+
+    case EXCEPTION_FLT_INEXACT_RESULT:
+        return "EXCEPTION_FLT_INEXACT_RESULT";
+
+    case EXCEPTION_FLT_INVALID_OPERATION:
+        return "EXCEPTION_FLT_INVALID_OPERATION";
+
+    case EXCEPTION_FLT_OVERFLOW:
+        return "EXCEPTION_FLT_OVERFLOW";
+
+    case EXCEPTION_FLT_STACK_CHECK:
+        return "EXCEPTION_FLT_STACK_CHECK";
+
+    case EXCEPTION_FLT_UNDERFLOW:
+        return "EXCEPTION_FLT_UNDERFLOW";
+
+    case EXCEPTION_INT_DIVIDE_BY_ZERO:
+        return "EXCEPTION_INT_DIVIDE_BY_ZERO";
+
+    case EXCEPTION_INT_OVERFLOW:
+        return "EXCEPTION_INT_OVERFLOW";
+
+    case EXCEPTION_PRIV_INSTRUCTION:
+        return "EXCEPTION_PRIV_INSTRUCTION";
+
+    case EXCEPTION_NONCONTINUABLE_EXCEPTION:
+        return "EXCEPTION_NONCONTINUABLE_EXCEPTION";
+
+    default:
+        return "UNKNOWN";
+    }
+}
+
 
 static const char*
 getDSVLPixelFormatString(PIXELFORMAT format)
@@ -333,10 +401,13 @@ DSVLSrc::preProcess()
 {
 }
 
-
 void
 DSVLSrc::process()
 {
+#ifdef WIN32
+__try {
+#endif
+
 	if(DSVLSrcBuffer* buffer = reinterpret_cast<DSVLSrcBuffer*>(state->findFreeBuffer()))
 	{
 		// our overloaded Buffer class does all the work...
@@ -359,6 +430,9 @@ DSVLSrc::process()
 	}
 	else
 		Manager::getInstance()->getLogger()->log("OpenVideo::DSVLSrc all frames locked, can not read a new camera image!\n");
+#ifdef WIN32
+} __except(filter("RenderScenegraph", GetExceptionCode(), GetExceptionInformation())) {}
+#endif
 
 
 	//FILE* fp = fopen("dump.raw", "wb");
