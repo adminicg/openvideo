@@ -38,7 +38,7 @@ description  = project + ' is a modified small library for handling video input'
 mainlib      = 'openvideo'
 installRoot  = os.getcwd()
 includeDir   = os.path.join(os.getcwd(),'include')
-
+prefix       = ''
 
 enableFlags = { 'VIDEOWRAPPERSRC'    :    'false',
                 'SPECTECSRC'         :    'false',
