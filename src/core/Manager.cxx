@@ -43,7 +43,7 @@
 #include <openvideo/configOV.h>
 #endif
 
-#include <tinyxml/tinyxml.h>
+#include <TinyXML/tinyxml.h>
 
 #include <openvideo/NodeFactory.h>
 #include <openvideo/Node.h>

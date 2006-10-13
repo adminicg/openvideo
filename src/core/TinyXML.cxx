@@ -38,7 +38,7 @@
 #include <openvideo/configOV.h>
 #endif
 
-#  include <tinyxml/tinyxml.h>
+#  include <TinyXML/tinyxml.h>
 
 #  if defined(TINYXML_MOD)
 

@@ -31,7 +31,7 @@
 /* ======================================================================= */
 
 #include <openvideo/SchedulerBase.h>
-#include <tinyxml/tinyxml.h>
+#include <TinyXML/tinyxml.h>
 
 using namespace openvideo;
 
