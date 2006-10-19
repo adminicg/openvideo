@@ -6,11 +6,12 @@ rm -f ../$NAME
 ln -s `pwd` ../$NAME
 pushd .. > /dev/null
 tar cvfjh $NAME.tar.bz2 \
---exclude ".svn" \
 --exclude "*.dll" \
+--exclude "*.pyc" \
 --exclude "*.vcproj" \
 --exclude "*~" \
---exclude build \
+--exclude ".svn" \
+--exclude "config.*" \
 --exclude .sconf_temp \
 --exclude .sconsign \
 --exclude build.opts \

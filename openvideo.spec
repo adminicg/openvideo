@@ -11,8 +11,8 @@ Source:		%{name}-%{version}.tar.bz2
 Packager:	Institute for Computer Graphics and Vision, Graz University of Technology, Austria
 Prefix:		/usr
 BuildRoot: 	%{_tmppath}/buildroot-%{name}-%{version}
-Requires:	tinyxml ACE
-BuildRequires:	scons tinyxml-devel ACE-devel
+Requires:	tinyxmlmod ACE
+BuildRequires:	scons tinyxmlmod-devel ACE-devel
 
 %define _prefix %{prefix}
 
@@ -24,11 +24,10 @@ BuildRequires:	scons tinyxml-devel ACE-devel
 %setup
 
 %build
-scons --cache-force PREFIX=$RPM_BUILD_ROOT SUBPREFIX=%{_prefix} LIBDIR=%{_libdir} INCLUDEDIR=%{_includedir}
+scons PREFIX=%{_prefix} LIBDIR=%{_libdir} INCLUDEDIR=%{_includedir}
 
 %install
-scons --cache-force PREFIX=$RPM_BUILD_ROOT SUBPREFIX=%{_prefix} LIBDIR=%{_libdir} INCLUDEDIR=%{_includedir} install
-#rm $RPM_BUILD_ROOT/%{_libdir}/.sconsign
+scons --cache-disable DESTDIR=$RPM_BUILD_ROOT PREFIX=%{_prefix} LIBDIR=%{_libdir} INCLUDEDIR=%{_includedir} install
 
 %clean
 scons -c
@@ -36,9 +35,8 @@ scons -c
 
 %files
 %defattr(-,root,root)
+%{_bindir}/openvideo
 %{_libdir}/*.so*
-%exclude %{_libdir}/.sconsign
-%exclude %{_libdir}/pkgconfig/.sconsign
 
 %package devel
 Summary:	OpenVideo headers
@@ -52,5 +50,3 @@ This package contains header files and include files that are needed for develop
 %defattr(-,root,root)
 %{_libdir}/pkgconfig/*
 %{_prefix}/include/*
-%exclude %{_prefix}/include/openvideo/.sconsign
-%exclude %{_prefix}/include/openvideo/nodes/.sconsign
