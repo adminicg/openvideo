@@ -45,21 +45,22 @@ installRoot  = os.getcwd()
 includeDir   = os.path.join(os.getcwd(),'include')
 prefix       = ''
 
-enableFlags = { 'VIDEOWRAPPERSRC'    :    'false',
-                'SPECTECSRC'         :    'false',
-                'GLUTSINK'           :    'true',
-                'GL_TEXTURE_2D_SINK' :    'true',
-                'TESTSRC'            :    'true',
-                'V4LSRC'             :    'false',
-                'V4L2SRC'            :    'false',
-                'LIVE555SRC'         :    'false',
-                'FFMPEGSRC'          :    'false',
-                'FFMPEGSINK'         :    'false',
-                'VIDEOSINK'          :    'true',
-                'DSVLSRC'            :    'true',
-                'OPENCV'             :    'false'}
+# list of flags that can be enabled by either passing ENABLE_flagname, or by filling 
+# an enableList
 
+enableFlags = [ 'VIDEOWRAPPERSRC', 'SPECTECSRC', 'GLUTSINK',    
+                'GL_TEXTURE_2D_SINK',                 'TESTSRC',
+                'V4LSRC'  ,
+                'V4L2SRC'   ,
+                'LIVE555SRC',
+                'FFMPEGSRC' ,
+                'FFMPEGSINK',
+                'VIDEOSINK',
+                'DSVLSRC',
+                'OPENCV']
 
+# from the above list, the following flags will be enabled by default for both linux and windows
+enableList = ['GLUTSINK', 'GL_TEXTURE_2D_SINK', 'TESTSRC','VIDEOSINK']
 
 # list of libraries that will be searched by the scanner. The scanner will try to locate the libraries
 # and the flags needed to build with those libraries. The obtained result will be used by the build, for
@@ -84,12 +85,11 @@ gllibs = []
 if sys.platform == 'win32':
     dl['src_ignore'] = ['nodes\\v4l.c', 'core\\DLL.cxx']
     gllibs = ['opengl32', 'glu32', 'glut32']
-    enableFlags['OPENCV']  = 'false'
-    enableFlags['DSVLSRC'] = 'true'
+    enableList.append('DSVLSRC')
 else:
     gllibs = ['GL', 'GLU', 'glut']
-    enableFlags['OPENCV']  = 'true'
-    enableFlags['DSVLSRC'] = 'false'
+    enableList.append('OPENCV')
+
 
 targetList = [dl,ov]
      
@@ -151,7 +151,7 @@ elif sys.platform == 'darwin':
 
 srcDir       = os.path.join(os.getcwd(), 'src')	
 
-config_file='config.opts'
+
 	
 print 'CONFIGURE: Searching for installed libraries'
 # to get the include path for all libraries we need to retrieve 
@@ -159,10 +159,10 @@ print 'CONFIGURE: Searching for installed libraries'
 envvars = os.environ
 
 
-targets = []
+
 # create the builder with an empty target list
 buildConfig = icgbuilder.ConfigBuilder(project, scannerType, envvars,
-				       targets, libraryList)
+				       ARGUMENTS, libraryList)
 
 # add extra configuration flags
 buildConfig.version  = version
@@ -177,9 +177,11 @@ buildConfig.setDefaultBuildFlags(defaultBuildFlags)
 # add main include directory to all configurations
 buildConfig.setIncDir(includeDir)
 
-# add enable flags
-for eflag in enableFlags:
-	buildConfig._enable[eflag] = enableFlags[eflag]
+# add enable flags, the first argument is the list of possible flags,
+# the buildConfig needs this list in order to be able to generate the options
+# and help text for them. The second argument is the list of flags that 
+# are enabled for this build (it is a subset of the first argument)
+buildConfig.doEnableFlags(enableFlags, enableList)
 
 # create the build targets
 buildConfig.setTargetList(targetList)
@@ -189,8 +191,8 @@ buildConfig.setTargetList(targetList)
 buildConfig.createBuildEnvironments()
 
 # write a config file to be read by scons and used to build each target
-buildConfig.writeConfigFile(config_file, ARGUMENTS)
-
+buildConfig.writeConfigFile(ARGUMENTS)
+buildConfig.generateOptions()
 #-----------------------------------------------------------------------------
 # Read the options from the config file and update the various necessary flags
 # 
