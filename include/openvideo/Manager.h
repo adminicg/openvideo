@@ -49,6 +49,7 @@
 
 
 #include <openvideo/Logger.h>
+#include <openvideo/OvLogger.h>
 #include <openvideo/Scheduler.h>
 
 

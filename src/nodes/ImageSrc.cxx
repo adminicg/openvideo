@@ -177,7 +177,7 @@ ImageSrc::initPixelFormats()
 void
 ImageSrc::init()
 {
-	Manager::getInstance()->getLogger()->log("OpenVideo: start ImageSrc\n");
+	logPrintS("Building ImageSrc\n");
 
 
 	state = new ImageSrcState();
@@ -193,13 +193,13 @@ ImageSrc::init()
 
 		if(!buf0)
 		{
-			Manager::getInstance()->getLogger()->logEx("OpenVideo::ImageSrc: failed to load %s\n", fileNames[i].c_str());
+			logPrintW("ImageSrc failed to load %s\n", fileNames[i].c_str());
 			continue;
 		}
 
 		if(numC!=3)
 		{
-			Manager::getInstance()->getLogger()->logEx("OpenVideo::ImageSrc: only images width 3 components supported, discarding %s\n", fileNames[i].c_str());
+            logPrintW("ImageSrc: only images width 3 components supported, discarding %s\n", fileNames[i].c_str());
 			simage_free_image(buf0);
 			continue;
 		}
@@ -237,7 +237,7 @@ ImageSrc::init()
 		//fclose(fp);
 
 		IMAGE_State(state)->getBuffers().push_back(new ImageSrcBuffer(buf2, state));
-		Manager::getInstance()->getLogger()->logEx("OpenVideo::ImageSrc: image '%s' loaded\n", fileNames[i].c_str());
+        logPrintI("ImageSrc: image '%s' loaded\n", fileNames[i].c_str());
 	}
 
 	// make sure we have an update the first time process() is called...

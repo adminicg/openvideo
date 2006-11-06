@@ -105,7 +105,7 @@ TestSrc::initPixelFormats()
 void 
 TestSrc::init()
 {
-    Manager::getInstance()->getLogger()->log("OV: TestSrc -> start\n");
+    logPrintS("Building TestSrc\n");
     state->clear();
 
     state->width=width;
@@ -131,7 +131,7 @@ TestSrc::process()
 
 	if(!buffer)
 	{
-		Manager::getInstance()->getLogger()->log("OpenVideo::DSVLSrc all buffers locked, can not read a new camera image!\n");
+		logPrintW("DSVLSrc all buffers locked, can not read a new camera image!\n");
 		return;
 	}
 

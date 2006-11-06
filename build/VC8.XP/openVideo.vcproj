@@ -281,6 +281,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\core\OvLogger.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\core\PixelFormat.cxx"
 					>
 				</File>
@@ -428,6 +432,10 @@
 				</File>
 				<File
 					RelativePath="..\..\include\openvideo\openVideo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\openvideo\OvLogger.h"
 					>
 				</File>
 				<File

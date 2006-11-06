@@ -138,15 +138,15 @@ VideoWrapperSrc::initPixelFormats()
 void
 VideoWrapperSrc::init()
 {
-	Manager::getInstance()->getLogger()->log("OpenVideo: start VideoWrapperSrc\n");
+	logPrintS("Building VideoWrapperSrc\n");
 
 	char camInitString[256];//="vc: 0 320x240 15 UYVY 0";
 	sprintf(camInitString,"%s: %i %ix%i %i %s %f\n",libId,cameraNum,width,height,frameRate,formatId,scale);;
-	Manager::getInstance()->getLogger()->logEx("camInitString= %s",camInitString);
+	logPrintI("camInitString= %s",camInitString);
 
 	if(VIDEO_openVideo(camInitString, &g_hVideo)!= VW_SUCCESS)
 	{
-		Manager::getInstance()->getLogger()->log("failed to open video\n");
+		logPrintE("VideoWrapperSrc failed to open video\n");
 	}
 
 //	VIDEO_setPropertyLong(g_hVideo,CAMERAPROP_BRIGHT,1);
@@ -155,7 +155,7 @@ VideoWrapperSrc::init()
 	// start video
 	if(VIDEO_startVideo(g_hVideo)!= VW_SUCCESS)
 	{
-		Manager::getInstance()->getLogger()->log("failed to start video\n");
+		logPrintE("VideoWrapperSrc failed to start video\n");
 	}
 
 	// get video size
@@ -165,9 +165,6 @@ VideoWrapperSrc::init()
 	// get pixel format
 	VIDEO_getPixelFormat(g_hVideo, &format);
 
-	// display video properties
-	//printf("video is %d x %d, and format is %d \n", width,height, format);
-	
 	state = new VideoWrapperSrcState();
 	state->clear();
 	state->width = width;
@@ -196,10 +193,10 @@ VideoWrapperSrc::process()
 			VideoWrapper_State(state)->setCurrentBuffer(buffer);
 		}
 		//else
-		//	Manager::getInstance()->getLogger()->log("OpenVideo::VideoWrapperSrc: did not get a new frame\n");
+		//	logPrintE("VideoWrapperSrc: did not get a new frame\n");
 	}
 	else
-		Manager::getInstance()->getLogger()->log("OpenVideo::VideoWrapperSrc all frames locked, can not read a new camera image!\n");
+		logPrintW("VideoWrapperSrc all frames locked, can not read a new camera image!\n");
 }
 
 

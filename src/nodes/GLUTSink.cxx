@@ -204,7 +204,7 @@ GLUTSink::mainLoop(void *)
 void 
 GLUTSink::init()
 {
-   Manager::getInstance()->getLogger()->logEx("OpenVideo: init GLUTSink '%s' \n",name.c_str());
+    logPrintS("Init GLUTSink '%s' \n",name.c_str());
 	//glteximage2d supported formats
 	//glteximage2d supported formats
 	///original gl spec. 
@@ -269,7 +269,7 @@ GLUTSink::init()
 			break;
 
 		default:
-			Manager::getInstance()->getLogger()->logEx("GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
+			logPrintE("GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
 				(PixelFormat::FormatToString(curPixelFormat)).c_str());
 			exit(-1);
 
@@ -303,7 +303,7 @@ GLUTSink::init()
 void
 GLUTSink::start()
 {
-	Manager::getInstance()->getLogger()->log("GLUTSink::start()\n");
+	logPrintS("Building GLUTSink\n");
 	if(!GLUTSink::isGlutThread){
 		//start glut in a new thread
 		GLUTSink::isGlutThread=true;
@@ -318,7 +318,7 @@ GLUTSink::start()
 				0
 		)==-1)
 		{ 
-			Manager::getInstance()->getLogger()->log("Error in spawning thread\n"); 
+			logPrintE("GLUTSink Error in spawning thread\n"); 
 		}
 	}
 }
@@ -354,11 +354,9 @@ GLUTSink::updateTexture()
 							width,height, this->format, GL_UNSIGNED_BYTE,
 							(void*)buffer->getPixels());
 			glDisable(GL_TEXTURE_2D);
-			//printf("T");
 		}
 		else
 		{
-			//printf("t");
 		}
 
 		buffer->unlock();
@@ -419,7 +417,7 @@ GLUTSink::mainDisplayFunc()
 	if(Manager::getInstance()->glContextChanged)
 		//if(!wglGetCurrentContext())
 	{
-		printf("GLUTSINK::try to set new gl context \n");
+		logPrintS("GLUTSINK trying to set new gl context \n");
 		if((int)(GLUTSink::glutSinks.size())>0)
 		{
 #ifdef WIN32
@@ -432,9 +430,9 @@ GLUTSink::mainDisplayFunc()
 #endif
 
 			if(hasGLContext)
-				Manager::getInstance()->getLogger()->logEx("OpenVideo: successfully set new glContext in GLUTSink thread\n") ;
+				logPrintI("Successfully set new glContext in GLUTSink thread\n") ;
 			else{
-				Manager::getInstance()->getLogger()->logEx("OpenVideo: couldn't set new glContext\n");
+				logPrintE("Couldn't set new glContext\n");
 				return;
 			}
 		}

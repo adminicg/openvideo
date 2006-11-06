@@ -47,6 +47,7 @@
 
 #include <openvideo/NodeFactory.h>
 #include <openvideo/Node.h>
+#include <openvideo/OvLogger.h>
 
 #include <GL/gl.h>
 	
@@ -206,9 +207,9 @@ Manager::doIdleTasks()
           hasGLContext=glXMakeCurrent(dsp,dc,glContext);
 #endif
             if(!hasGLContext)
-                logger->logEx("OpenVideo: couldn't set glContext\n");
+                logPrintE("Couldn't set glContext\n");
             else
-                logger->logEx("OpenVideo: successfully set glContext\n") ;
+                logPrintS("Successfully set glContext\n") ;
 		}
     }
     /////////////////////////////////// delete glcontext ///////////////////////////////
@@ -223,10 +224,10 @@ Manager::doIdleTasks()
 	glXDestroyContext(dsp, glContext);
 #endif
         if(hasGLContext)
-            logger->logEx("OpenVideo: couldn't delete glContext\n");
+            logPrintE("Couldn't delete glContext\n");
         else
 		{
-            logger->logEx("OpenVideo: successfully deleted glContext\n") ;
+            logPrintI("Successfully deleted glContext\n") ;
             //try to set a new glcontext
 			glContextChanged=true;
 		}
@@ -256,7 +257,7 @@ Manager::pause()
     void 
     Manager::setGLContext(HGLRC _glContext,HDC _dc)
     {
-        printf("    Manager::setGLContext(HGLRC _glContext,HDC _dc) \n");
+        logPrintS("Manager setting the GL Context\n");
         glContext=_glContext;
         dc=_dc;
         idleSetGLContext=true;
@@ -367,7 +368,7 @@ Manager::addNode(TiXmlElement *element)
         }
       }
     if(!nodeFactory){
-      logger->logEx("OpenVideo: can't find a factory for %s\n",element->Value());
+      logPrintE("Can't find a factory for %s\n",element->Value());
       exit(-1);
     }
     //create Node 
@@ -407,7 +408,7 @@ Manager::parseConfiguration(const std::string& filename)
 
   if(!document->LoadFile(filename.c_str()))
     {
-      logger->logEx("OpenVideo:An error occured during parsing\n   Message: %s\n", document->ErrorDesc());
+      logPrintE("An error occured during parsing\n   Message: %s\n", document->ErrorDesc());
       return false;
     }
   //
@@ -462,7 +463,7 @@ Manager::run()
      0
      )==-1)
   { 
-      printf("Error in spawning thread\n"); 
+      logPrintE("Error spawning thread\n"); 
   }
 #endif // OV_IS_WINCE
 
@@ -472,12 +473,15 @@ Manager::run()
 
 void* 
 Manager::startUserInterface(void *)
-{ 
+{
+    logPrintI("Skipping Command Line Interface for OpenVideo\n");
+    return 0;
+
     std::string inputLine;
     Manager::isUserInterfaceRunning=true;
     while(Manager::isUserInterfaceRunning)
     {
-        printf("openvideo>");
+        logPrint("openvideo>");
         getline(std::cin, inputLine );
         //////process input string
         // get token 
@@ -517,7 +521,7 @@ Manager::startUserInterface(void *)
                 Manager::getInstance()->stop();
             }
             else{
-                printf("ERROR:: dont understand -%s-\n",command.c_str());
+                logPrintE("ERROR:: dont understand -%s-\n",command.c_str());
             }
         }
     }
@@ -531,7 +535,7 @@ Manager::stop()
     scheduler->stop();
     
     for(int i=(int)nodes.size()-1;  i>=0; i--) {
-	logger->logEx("Closing node %s\n",nodes[i]->getName());
+	logPrintI("Closing node %s\n",nodes[i]->getName());
 	nodes[i]->stop();
     }
 }
@@ -546,7 +550,7 @@ Manager::initTraversal()
       nodes[i]->initPixelFormats();
       if(!nodes[i]->validateCurrentPixelFormat())
         {
-          logger->logEx("OV: %s uses an unknown pixel format\n",nodes[i]->getName());
+          logPrintE("%s uses an unknown pixel format\n",nodes[i]->getName());
           exit(-1);
         }
     }

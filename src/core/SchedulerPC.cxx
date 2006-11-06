@@ -71,7 +71,7 @@ SchedulerPC::scheduleTimer()
                     NULL,
                     double(1.0/(double)updateRate));
 
-    Manager::getInstance()->getLogger()->log("\nOpenVideo: start main loop !\n");
+    logPrintS("Starting main loop\n");
     timer->runEventLoop();
 }
 

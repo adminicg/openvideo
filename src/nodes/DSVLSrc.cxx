@@ -239,7 +239,7 @@ public:
 			return true;
 		}
 
-		Manager::getInstance()->getLogger()->log("OpenVideo::DSVLSrc warning: failed to get video frame\n");
+		logPrintW("DSVLSrc failed to get video frame\n");
 		return false;
 	}
 
@@ -329,11 +329,11 @@ DSVLSrc::initPixelFormats()
 void
 DSVLSrc::init()
 {
-	Manager::getInstance()->getLogger()->log("OpenVideo: start DSVLSrc\n");
+	logPrintS("Starting DSVLSrc\n");
 
 	if(::CoInitialize(NULL) == S_FALSE)
 	{
-		Manager::getInstance()->getLogger()->log("OpenVideo: ERROR - CoInitialize() failed\n");
+		logPrintE("DSVLSrc CoInitialize() failed\n");
 		return;
 	}
 
@@ -346,13 +346,13 @@ DSVLSrc::init()
 
 	if(FAILED(dsvlSource->BuildGraphFromXMLFile(const_cast<char*>(configFileName.c_str()))))
 	{
-		Manager::getInstance()->getLogger()->log("OpenVideo: ERROR - DSVL failed reading config file\n");
+		logPrintE("DSVL failed reading config file\n");
 		return;
 	}
 
 	if(FAILED(dsvlSource->GetCurrentMediaFormat(&cap_width,&cap_height,&cap_fps,&pf)))
 	{
-		Manager::getInstance()->getLogger()->log("OpenVideo: ERROR - DSVL failed retrieving video configuration\n");
+		logPrintE("DSVL failed retrieving video configuration\n");
 		return;
 	}
 
@@ -360,30 +360,30 @@ DSVLSrc::init()
 	{
 		if((curPixelFormat==FORMAT_B8G8R8 && pf!=PIXELFORMAT_RGB24) || (curPixelFormat==FORMAT_R5G6B5 && pf!=PIXELFORMAT_RGB565))
 		{
-			Manager::getInstance()->getLogger()->logEx("OpenVideo:DSVLSrc: wrong configuration - openvideo wants %s but DSVL delivers %s",
+			logPrintE("DSVLSrc wrong configuration - openvideo wants %s but DSVL delivers %s",
 													   PixelFormat::FormatToString(curPixelFormat).c_str(), getDSVLPixelFormatString(pf));
 			return;
 		}
 	}
 	else
 	{
-		Manager::getInstance()->getLogger()->log("OpenVideo:DSVLSrc: ERROR - only B8G8R8 and R5G6B5 are supported\n");
+		logPrintE("DSVLSrc: only B8G8R8 and R5G6B5 are supported\n");
 		return;
 	}
 
 	if(FAILED(dsvlSource->EnableMemoryBuffer(1,numBuffers)))
 	{
-		Manager::getInstance()->getLogger()->log("OpenVideo: ERROR - DSVL setting memory buffers\n");
+		logPrintE("DSVL setting memory buffers\n");
 		return;
 	}
 
 	if(FAILED(dsvlSource->Run()))
 	{
-		Manager::getInstance()->getLogger()->log("OpenVideo: ERROR - DSVL failed to run\n");
+		logPrintE("DSVL failed to run\n");
 		return;
 	}
 
-	Manager::getInstance()->getLogger()->logEx("OpenVideo: DSVL initialized with %d x %d at %d fps\n", cap_width, cap_height, (int)cap_fps);
+	logPrintS("DSVL initialized with %d x %d at %d fps\n", cap_width, cap_height, (int)cap_fps);
 
 	state = new DSVLSrcState();
 	state->clear();
@@ -429,7 +429,7 @@ __try {
 		}
 	}
 	else
-		Manager::getInstance()->getLogger()->log("OpenVideo::DSVLSrc all frames locked, can not read a new camera image!\n");
+		logPrintW("DSVLSrc all frames locked, can not read a new camera image!\n");
 #ifdef WIN32
 } __except(filter("RenderScenegraph", GetExceptionCode(), GetExceptionInformation())) {}
 #endif

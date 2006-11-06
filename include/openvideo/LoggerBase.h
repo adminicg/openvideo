@@ -30,6 +30,11 @@
 * @file                                                                   */  
 /* ======================================================================= */  
 
+/*
+ *
+ * THIS CLASS IS DEPRECATED
+ *
+ */
 #ifndef _LOGGERBASE_H_
 #define _LOGGERBASE_H_
 

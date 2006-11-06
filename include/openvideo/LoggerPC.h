@@ -30,6 +30,11 @@
 * @file                                                                   */  
 /* ======================================================================= */  
 
+/*
+ *
+ * THIS CLASS IS DEPRECATED
+ *
+ */
 #ifndef _LOGGERPC_H_
 #define _LOGGERPC_H_
 #include <openvideo/LoggerBase.h>

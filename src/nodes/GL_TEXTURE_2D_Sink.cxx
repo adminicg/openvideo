@@ -121,7 +121,7 @@ GL_TEXTURE_2D_Sink::init()
         return;
     }
 #endif
-    Manager::getInstance()->getLogger()->logEx("OpenVideo: init GL_TEXTURE_2D_Sink '%s' \n",name.c_str());
+    logPrintS("Init GL_TEXTURE_2D_Sink '%s' \n",name.c_str());
 	mutex->acquire();
 
 	
@@ -189,7 +189,7 @@ GL_TEXTURE_2D_Sink::init()
 			break;
 
 		default:
-			Manager::getInstance()->getLogger()->logEx("OpenVideo: GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
+			logPrintE("GL_TEXTURE_2D_Sink does not suppport the current pixel format %s\n",
 				(PixelFormat::FormatToString(curPixelFormat)).c_str());
 			return;
     }
@@ -230,8 +230,8 @@ GL_TEXTURE_2D_Sink::init()
     GLenum e;
     if ((e = glGetError ()) != GL_NO_ERROR)
     {	
-	    Manager::getInstance()->getLogger()->logEx("GL error: %s\n", gluErrorString(e));
-	    Manager::getInstance()->getLogger()->logEx("OpenVideo: unable to init GL_TEXTURE_2D_Sink -> check if an opengl context is set");
+	    logPrintE("GL error: %s\n", gluErrorString(e));
+	    logPrintE("Unable to init GL_TEXTURE_2D_Sink -> check if an opengl context is set");
 	    return ;
     }
     //////////////////////////////////////////////
@@ -269,7 +269,7 @@ GL_TEXTURE_2D_Sink::process()
         GLenum e;
         while ((e = glGetError ()) != GL_NO_ERROR)
         {
-            printf("checkGLErrors(): GL error: %s\n", gluErrorString(e));
+            logPrintE("GL Error: %s\n", gluErrorString(e));
 
         }
 		mutex->release();
