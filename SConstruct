@@ -90,7 +90,7 @@ else:
     gllibs = ['GL', 'GLU', 'glut']
     enableList.append('OPENCV')
 
-
+ov['libs'] += gllibs
 targetList = [dl,ov]
      
 #======================== CONFIGURATION SECTION =============================
