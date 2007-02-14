@@ -108,6 +108,10 @@
 #include <openvideo/nodes/OpenCVSrcFactory.h>
 #endif
 
+#ifdef ENABLE_SWITCH
+#include <openvideo/nodes/SwitchFactory.h>
+#endif
+
 #include <iostream>
 
 
@@ -707,6 +711,11 @@ Manager::initNodeFactories()
 
 #ifdef ENABLE_OPENCV
   factories.push_back(new OpenCVSrcFactory());
+#endif
+
+
+#ifdef ENABLE_SWITCH
+  factories.push_back(new SwitchFactory());
 #endif
 
 }

@@ -32,6 +32,7 @@
 
 #ifndef MANAGER_H
 #define MANAGER_H
+
 #include "openVideo.h"
 
 #include <vector>
