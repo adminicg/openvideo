@@ -57,15 +57,15 @@ enableFlags = [ 'VIDEOWRAPPERSRC', 'SPECTECSRC', 'GLUTSINK',
                 'FFMPEGSINK',
                 'VIDEOSINK',
                 'DSVLSRC',
-                'OPENCV']
+                'OPENCV', 'IMAGESRC']
 
 # from the above list, the following flags will be enabled by default for both linux and windows
-enableList = ['GLUTSINK', 'GL_TEXTURE_2D_SINK', 'TESTSRC','VIDEOSINK']
-
+enableList = ['GLUTSINK', 'GL_TEXTURE_2D_SINK', 'TESTSRC','VIDEOSINK', 'IMAGESRC']
+                
 # list of libraries that will be searched by the scanner. The scanner will try to locate the libraries
 # and the flags needed to build with those libraries. The obtained result will be used by the build, for
 # each target that lists a library in its 'libs' or in its 'use' sections.
-libraryList =['ace', 'tinyxml', 'glut', 'openvideo', 'dsvl']
+libraryList =['ace', 'TinyXMLMod', 'glut', 'openvideo', 'dsvl']
 
 dl ={'name'     : 'openvideo',
     'type'      : 'DL',
@@ -89,6 +89,7 @@ if sys.platform == 'win32':
 else:
     gllibs = ['GL', 'GLU', 'glut']
     enableList.append('OPENCV')
+    enableList.append('V4L2SRC')
 
 ov['libs'] += gllibs
 targetList = [dl,ov]
@@ -208,6 +209,9 @@ conf = Configure(env)
 #****************************************************************************
 # Add defines if using a set of nodes
 #****************************************************************************
+
+if user_options_dict['ENABLE_IMAGESRC']:
+    env.AppendUnique(CPPDEFINES = ['ENABLE_IMAGESRC'])
 
 if user_options_dict['ENABLE_VIDEOWRAPPERSRC']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_VIDEOWRAPPERSRC'])
