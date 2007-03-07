@@ -26,7 +26,7 @@
  *
  * @author Petter Risholm
  *
- * $Id: 
+ * $Id:
  * @file                                                                   */
 /* ======================================================================= */
 #ifndef _V4LSRC_H
@@ -41,6 +41,8 @@
 
 #include <openvideo/nodes/v4l.h>
 
+namespace openvideo {
+
 /**
  *   @ingroup nodes
  *   A source for grabbing video from V4L cards.
@@ -53,10 +55,10 @@
  *   format:       The pixel format to pass on to downstream nodes (B8G8R8).
  *   videoMode:    The video mode to use for grabbing (PAL).
  *   videoChannel: Channel to capture from (Composite).
- *   
+ *
  */
-class OPENVIDEO_API V4LSrc : 
-public Node
+class OPENVIDEO_API V4LSrc
+    : public Node
 {
  public:
 
@@ -72,15 +74,15 @@ public Node
   /**
    *
    */
-  V4LSrc();	
+  V4LSrc();
 
   /**
    *
    */
-  ~V4LSrc();
+  virtual ~V4LSrc();
 
   /**
-   *	Sets all relevant parameters. 
+   *	Sets all relevant parameters.
    */
   virtual bool setParameter(std::string key, std::string value);
 
@@ -104,19 +106,19 @@ public Node
 
   /// Video device.
   char videoDevice[40];
-	
+
   /// Width of video frame.
   int videoWidth;
 
   /// Height of video frame.
   int videoHeight;
-	
+
   /// Defines video mode. Can take values (PAL | NTSC). Default is PAL.
   int videoMode;
 
   /// Defines video channel. (Composite|SVideo|TV). Default is Composite.
   VideoChannel videoChannel;
-  
+
   /// Holds the pixel format used.
   PIXEL_FORMAT pixelFormat;
 
@@ -137,6 +139,8 @@ public Node
   /// Switches between the frame buffers (2 are currently used)
   int videoFrame;
 };
+
+}; // namespace openvideo
 
 #endif // ENABLE_V4LSRC
 #endif // __V4LSRC_H

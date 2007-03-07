@@ -25,14 +25,16 @@
 /** The source file for the V4LSrcFactory class.
   *
   * @author Petter Risholm
-  * 
-  * $Id: 
-  * @file                                                                   
+  *
+  * $Id:
+  * @file
  /* ======================================================================= */
 
 #include <openvideo/nodes/V4LSrcFactory.h>
 
 #ifdef ENABLE_V4LSRC
+
+namespace openvideo {
 
 V4LSrcFactory::V4LSrcFactory()
 {
@@ -51,10 +53,12 @@ V4LSrcFactory::createNode()
 
 }
 
-const char* 
+const cha*
 V4LSrcFactory::getNodeTypeId()
 {
   return "V4LSrc";
 }
+
+}; // namespace openvideo
 
 #endif // ENABLE_V4LSRC

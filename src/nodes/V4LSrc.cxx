@@ -25,9 +25,9 @@
 /** The source file for the V4LSrc class.
   *
   * @author Petter Risholm
-  * 
-  * $Id: 
-  * @file                                                                   
+  *
+  * $Id:
+  * @file
  /* ======================================================================= */
 
 #include <openvideo/nodes/V4LSrc.h>
@@ -42,13 +42,15 @@
 #include <sys/mman.h>  /* mmap */
 #include <fcntl.h>
 
+namespace openvideo {
+
 using namespace std;
 
 // Initialize variable to default values.
-V4LSrc::V4LSrc() : videoWidth(640), videoHeight(480), 
-		   videoMode(VIDEO_MODE_PAL), videoChannel(VideoCompositeSource), 
-		   pixelFormat(FORMAT_B8G8R8), videoPixelFormat(V4L_FORMAT_RGB24), 
-		   videoBuffer(NULL), videoFd(-1), videoFrame(0) 
+V4LSrc::V4LSrc() : videoWidth(640), videoHeight(480),
+		   videoMode(VIDEO_MODE_PAL), videoChannel(VideoCompositeSource),
+		   pixelFormat(FORMAT_B8G8R8), videoPixelFormat(V4L_FORMAT_RGB24),
+		   videoBuffer(NULL), videoFd(-1), videoFrame(0)
 {
   strcpy(videoDevice, "/dev/video0");
 
@@ -56,9 +58,9 @@ V4LSrc::V4LSrc() : videoWidth(640), videoHeight(480),
   state->clear();
   state->width=videoWidth;
   state->height=videoHeight;
-  state->format=pixelFormat;	
+  state->format=pixelFormat;
 }
-	
+
 V4LSrc::~V4LSrc()
 {
   if (videoFd >= 0) {
@@ -68,7 +70,7 @@ V4LSrc::~V4LSrc()
   if (videoBuffer != NULL) {
     munmap(videoBuffer, videoInfo.size);
   }
-  
+
   delete state;
 }
 
@@ -78,59 +80,59 @@ V4LSrc::start()
   state->clear();
   state->width=videoWidth;
   state->height=videoHeight;
-  state->format=pixelFormat;	
-  
+  state->format=pixelFormat;
+
   if ((videoFd = open(videoDevice, O_RDWR)) < 0) {
     cerr << "Couldn't open " << videoDevice << endl;
 
     return;
-  } 
-  
+  }
+
   if (V4LMGetMMInfo(videoFd, &videoInfo) < 0) {
     cerr << "Couldn't acquire info struct." << endl;
 
     close(videoFd);
 
     return;
-  } 
+  }
 
-  cout << "v4lMMinfo" << endl 
+  cout << "v4lMMinfo" << endl
        << "\tframes: " << videoInfo.frames << endl
        << "\tsize: " << videoInfo.size << endl;
 
   if (videoInfo.frames < 2) {
     cerr << "Device doesn't support double buffering." << endl;
-    
+
     close (videoFd);
 
     return;
-  } 
+  }
 
   if (V4LSetSource(videoFd, videoChannel, videoMode) <0){
     cerr << "Couldn't set requested source (channel, mode)." << endl;
-    
+
     close(videoFd);
-    
+
     return;
-  } 
+  }
 
   /// Min/max capture width/height
-  V4LCaps videoCaps; 
+  V4LCaps videoCaps;
 
   if (V4LGetCaps(videoFd, &videoCaps) < 0) {
     cerr << "Couldn't get Caps structure." << endl;
-    
-    close(videoFd);
-    
-    return;
-  } 
 
-  if (videoWidth < videoCaps.minwidth) 
+    close(videoFd);
+
+    return;
+  }
+
+  if (videoWidth < videoCaps.minwidth)
     videoWidth = videoCaps.minwidth;
   else if (videoWidth > videoCaps.maxwidth)
     videoWidth = videoCaps.maxwidth;
 
-  if (videoHeight < videoCaps.minheight) 
+  if (videoHeight < videoCaps.minheight)
     videoHeight = videoCaps.minheight;
   else if (videoHeight > videoCaps.maxheight)
     videoHeight = videoCaps.maxheight;
@@ -139,7 +141,7 @@ V4LSrc::start()
   v4lFormat.width  = videoWidth;
   v4lFormat.height = videoHeight;
   v4lFormat.format = videoPixelFormat;
-  
+
   V4LMSetFormat(&v4lFormat);
 
   // FIXME: Should check that we got the correct format.
@@ -155,12 +157,12 @@ V4LSrc::start()
   V4LSetSaturation(videoFd, 65535 / 2);
   V4LSetHue(videoFd,        65535 / 2);
 
-  if ((videoBuffer = (unsigned char *) mmap(0, videoInfo.size, 
-				   PROT_READ| PROT_WRITE, 
-				   MAP_SHARED , videoFd, 0)) 
+  if ((videoBuffer = (unsigned char *) mmap(0, videoInfo.size,
+				   PROT_READ| PROT_WRITE,
+				   MAP_SHARED , videoFd, 0))
       == MAP_FAILED) {
     cerr << "Failed to mmap buffer." << endl ;
-    
+
     close(videoFd);
     return;
   }
@@ -185,23 +187,23 @@ V4LSrc::process()
   // Wait for this frame
   if (V4LMSync(videoFd, videoFrame) < 0) {
     cerr << "Couldn't sync with the device." << endl << flush;
-    
+
     state->frame = NULL;
-    
+
     return;
-  } 
-  
+  }
+
   // start capture of next frame
   if (V4LMCapture(videoFd, 1-videoFrame) < 0) {
     cerr << "Couldn't capture frame." << endl << flush;
 
     state->frame = NULL;
-    
+
     return;
   }
-  
+
   assert(videoBuffer);
-  
+
   // Get pointer to the captured frame
   state->frame = videoBuffer + videoInfo.offsets[videoFrame];
 
@@ -215,14 +217,14 @@ V4LSrc::postProcess()
   state->frame=NULL;
 }
 
-bool 
+bool
 V4LSrc::setParameter(string key, string value)
 {
   cout << "V4LSrc::setParameter: " << key << " " << value << endl;
   if(Node::setParameter(key,value))
       return true;
 
-  
+
   if(key=="width")
     {
       this->videoWidth=atoi(value.c_str());
@@ -233,8 +235,8 @@ V4LSrc::setParameter(string key, string value)
       this->videoHeight=atoi(value.c_str());
       return true;
     }
-  else if (key=="device") 
-    {    
+  else if (key=="device")
+    {
       strcpy(this->videoDevice, value.c_str());
       return true;
     }
@@ -286,7 +288,7 @@ V4LSrc::setParameter(string key, string value)
       else {
 	assert(false && "Wrong videoMode parameter.");
       }
-      
+
       return false;
     }
   else if (key=="videoChannel")
@@ -299,7 +301,7 @@ V4LSrc::setParameter(string key, string value)
 	{
 
 	  videoChannel=VideoCompositeSource;
-	
+
 	}
       else if (value=="SVideo")
 	{
@@ -311,11 +313,13 @@ V4LSrc::setParameter(string key, string value)
 
       return true;
     }
-  else 
+  else
     {
       cout << "No key: " << key << endl;
     }
   return false;
 }
+
+}; // namespace openvideo
 
 #endif // ENABLE_V4LSRC

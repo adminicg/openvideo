@@ -26,7 +26,7 @@
   *
   * @author Petter Risholm
   *
-  * $Id: 
+  * $Id:
   * @file                                                                   */
  /* ======================================================================= */
 
@@ -37,8 +37,10 @@
 
 #ifdef ENABLE_V4LSRC
 
-#include <openvideo/core/NodeFactory.h>
+#include <openvideo/NodeFactory.h>
 #include <openvideo/nodes/V4LSrc.h>
+
+namespace openvideo {
 
 /**
 *@ingroup nodes
@@ -68,6 +70,8 @@ public:
 	*/
 	virtual const char* getNodeTypeId();
 };
+
+}; // namespace openvideo
 
 #endif // ENABLE_V4LSRC
 #endif // __V4LSRCFACTORY_H
