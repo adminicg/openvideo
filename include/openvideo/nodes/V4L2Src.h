@@ -26,7 +26,7 @@
  *
  * @author Bernhard Reitinger
  *
- * $Id: 
+ * $Id:
  * @file                                                                   */
 /* ======================================================================= */
 
@@ -61,17 +61,17 @@ namespace openvideo {
      *   height:       Height of capture frame (480).
      *   device:       The device to capture from (/dev/video0)
      *   format:       The pixel format to pass on to downstream nodes (R8G8B8X8).
-     *   
+     *
      */
-    class OPENVIDEO_API V4L2Src : 
+    class OPENVIDEO_API V4L2Src :
         public Node
     {
     public:
-        
+
         /**
          * Specify the capture mode
          *
-         * 
+         *
          */
         enum IOMode {
             IO_METHOD_READ,
@@ -84,12 +84,12 @@ namespace openvideo {
             void   *start;
             size_t length;
         };
-        
+
 
         /**
          *
          */
-        V4L2Src();	
+        V4L2Src();
 
         /**
          *
@@ -102,7 +102,7 @@ namespace openvideo {
         virtual void initPixelFormats();
 
         /**
-         *	Sets all relevant parameters. 
+         *	Sets all relevant parameters.
          */
         virtual bool setParameter(std::string key, std::string value);
 
@@ -128,16 +128,16 @@ namespace openvideo {
 
         /// Video device.
         char videoDevice[40];
-	
+
         /// Width of video frame.
         int videoWidth;
 
         /// Height of video frame.
         int videoHeight;
-	
+
         /// Frames per second (requires v4l
         int fps;
-	
+
         /// Holds the pixel format used.
         PIXEL_FORMAT pixelFormat;
 
