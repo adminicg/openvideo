@@ -53,7 +53,7 @@ enableFlags = [ 'VIDEOWRAPPERSRC',
                 'GLUTSINK',
                 'GL_TEXTURE_2D_SINK',
                 'TESTSRC',
-#                'V4LSRC', ## [200703]: deprecated
+#                'V4LSRC', ## [200703]: currently broken
                 'V4L2SRC',
                 'LIVE555SRC',
                 'FFMPEGSRC',
@@ -102,10 +102,11 @@ if sys.platform == 'win32':
 elif sys.platform == 'linux' or sys.platform == 'linux2':
 
     gllibs = ['GL', 'GLU', 'glut']
-    
-    enableList.append('OPENCV')
-    dl['libs'] += [ 'opencv' ]
-    ov['libs'] += [ 'opencv' ]
+
+    ## [200703]: currenty broken
+#     enableList.append('OPENCV')
+#     dl['libs'] += [ 'opencv' ]
+#     ov['libs'] += [ 'opencv' ]
 
     enableList.append('V4L2SRC')
 
