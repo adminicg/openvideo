@@ -48,28 +48,37 @@ prefix       = ''
 # list of flags that can be enabled by either passing ENABLE_flagname, or by filling 
 # an enableList
 
-enableFlags = [ 'VIDEOWRAPPERSRC', 'SPECTECSRC', 'GLUTSINK',    
-                'GL_TEXTURE_2D_SINK',                 'TESTSRC',
-                'V4LSRC'  ,
-                'V4L2SRC'   ,
+enableFlags = [ 'VIDEOWRAPPERSRC',
+                'SPECTECSRC',
+                'GLUTSINK',
+                'GL_TEXTURE_2D_SINK',
+                'TESTSRC',
+#                'V4LSRC', ## [200703]: deprecated
+                'V4L2SRC',
                 'LIVE555SRC',
-                'FFMPEGSRC' ,
+                'FFMPEGSRC',
                 'FFMPEGSINK',
                 'VIDEOSINK',
                 'DSVLSRC',
-                'OPENCV', 'IMAGESRC']
+                'OPENCV',
+                'IMAGESRC'
+                ]
 
 # from the above list, the following flags will be enabled by default for both linux and windows
-enableList = ['GLUTSINK', 'GL_TEXTURE_2D_SINK', 'TESTSRC','VIDEOSINK', 'IMAGESRC']
+enableList = ['GLUTSINK',
+              'GL_TEXTURE_2D_SINK',
+              'TESTSRC',
+              'VIDEOSINK',
+              ]
                 
 # list of libraries that will be searched by the scanner. The scanner will try to locate the libraries
 # and the flags needed to build with those libraries. The obtained result will be used by the build, for
 # each target that lists a library in its 'libs' or in its 'use' sections.
-libraryList =['ace', 'TinyXMLMod', 'glut', 'openvideo', 'dsvl']
+libraryList =['ace', 'TinyXMLMod', 'glut', 'openvideo', 'dsvl', 'opencv', 'simage' ]
 
 dl ={'name'     : 'openvideo',
     'type'      : 'DL',
-    'libs'      : ['ACE', 'TinyXML_Mod', 'glut', 'dsvl'],
+    'libs'      : ['ACE', 'TinyXML_Mod', 'glut', 'dsvl' ],
     'src_use'   : ['ALL'],
     'defines'   : ['"OPENVIDEO_DEBUG=0"', '"TINYXML_MOD"']
 	}
@@ -83,13 +92,30 @@ ov ={'name':'openvideo',
 
 gllibs = []
 if sys.platform == 'win32':
+
+    scannerType = 'env'
+
     dl['src_ignore'] = ['nodes\\v4l.c', 'core\\DLL.cxx']
     gllibs = ['opengl32', 'glu32', 'glut32']
     enableList.append('DSVLSRC')
-else:
+    
+elif sys.platform == 'linux' or sys.platform == 'linux2':
+
     gllibs = ['GL', 'GLU', 'glut']
+    
     enableList.append('OPENCV')
+    dl['libs'] += [ 'opencv' ]
+    ov['libs'] += [ 'opencv' ]
+
     enableList.append('V4L2SRC')
+
+    enableList.append('IMAGESRC')
+    dl['libs'] += [ 'simage' ]
+    ov['libs'] += [ 'simage' ]
+
+    
+else:
+    pass
 
 ov['libs'] += gllibs
 targetList = [dl,ov]
@@ -221,7 +247,6 @@ if user_options_dict['ENABLE_SPECTECSRC']:
     
 if user_options_dict['ENABLE_GLUTSINK']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_GLUTSINK'])
-#    gllibs.append ('glut')
     env.AppendUnique(LIBS = gllibs)
     
 if user_options_dict['ENABLE_GL_TEXTURE_2D_SINK']:
@@ -230,9 +255,10 @@ if user_options_dict['ENABLE_GL_TEXTURE_2D_SINK']:
     
 if user_options_dict['ENABLE_TESTSRC']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_TESTSRC'])
-    
-if user_options_dict['ENABLE_V4LSRC']:
-    env.AppendUnique(CPPDEFINES = ['ENABLE_V4LSRC'])
+
+## [200703]: deprecated
+#if user_options_dict['ENABLE_V4LSRC']:
+#    env.AppendUnique(CPPDEFINES = ['ENABLE_V4LSRC'])
 
 if user_options_dict['ENABLE_V4L2SRC']:
     env.AppendUnique(CPPDEFINES = ['ENABLE_V4L2SRC'])
