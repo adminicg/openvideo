@@ -28,7 +28,7 @@
   * 
   * $Id$
   * @file                                                                   
- /* ======================================================================= */
+  * ======================================================================= */
 #include <openvideo/nodes/TestSrcFactory.h>
 #include <openvideo/openVideo.h>
 #ifdef ENABLE_TESTSRC

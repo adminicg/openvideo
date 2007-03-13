@@ -12,22 +12,21 @@
 
 namespace Coin {
 
+  // basic interface for a custom memory manager which can
+  // be implemented by an API user...
+  //
+  class MemoryManager {
+  public:
+    virtual ~MemoryManager() = 0;
 
-// basic interface for a custom memory manager which can
-// be implemented by an API user...
-//
-class MemoryManager {
-public:
-	virtual void* malloc(size_t size) = 0;
+    virtual void* malloc(size_t size) = 0;
+  
+    virtual void free(void* rawmemory) = 0;
+  
+    virtual void* realloc(void *rawMemory, size_t size) = 0;
 
-	virtual void free(void* rawmemory) = 0;
-
-	virtual void* realloc(void *rawMemory, size_t size) = 0;
-
-	virtual void* calloc(size_t num, size_t size) = 0;
-};
-
-
+    virtual void* calloc(size_t num, size_t size) = 0;
+  };
 }	// namespace Coin
 
 

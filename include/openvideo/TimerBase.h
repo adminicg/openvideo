@@ -27,8 +27,8 @@
   * @author Denis Kalkofen
   *
   * $Id$
-  * @file                                                                   */
- /* ======================================================================= */
+  * @file                                                                   
+  * ======================================================================= */
 
 #ifndef _TIMERBASE_H
 #define _TIMERBASE_H
@@ -44,7 +44,7 @@ public:
 	/**
 	*	Destructor
 	*/	
-    ~TimerBase(){}
+    virtual ~TimerBase(){}
   
 	/**
 	*	Schedule the timer.\n 

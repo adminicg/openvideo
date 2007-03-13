@@ -28,7 +28,7 @@
   * 
   * $Id$
   * @file                                                                   
- /* ======================================================================= */
+  * ======================================================================= */
 #include <openvideo/nodes/VideoSinkSubscriber.h>
 #include <openvideo/openVideo.h>
 #ifdef  ENABLE_VIDEOSINK
