@@ -1,0 +1,6 @@
+libopenvideo (1.0-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Alexander Bornik <bornik@icg.tu-graza.ac.at>  Tue, 13 Mar 2007 12:26:45 +0100
+

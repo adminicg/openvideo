@@ -38,7 +38,7 @@ import buildutils
 #***************************************************************************************
 
 version      = '1.0.0'
-project      = 'OpenVideo'
+project      = 'openvideo'
 description  = project + ' is a modified small library for handling video input'
 mainlib      = 'openvideo'
 installRoot  = os.getcwd()
