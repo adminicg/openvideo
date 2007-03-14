@@ -64,7 +64,11 @@ install: build
 	#scons --no-cache install PREFIX=`pwd`/debian/tmp/usr ENABLE_V4L2SRC=1 ENABLE_GLUTSINK=1 ENABLE_FFMPEGSRC=1 ENABLE_SWITCH=1
 	scons --no-cache install PREFIX=`pwd`/debian/tmp/usr ENABLE_V4L2SRC=1 ENABLE_GLUTSINK=1 ENABLE_SWITCH=1
 	sed s:\/home.*.\/debian\/tmp:: debian/tmp/usr/lib/pkgconfig/openvideo.pc -ibak
-	dh_install --sourcedir=debian/tmp
+	mkdir -p debian/tmp/usr/share/libopenvideo
+	cp -r data/* debian/tmp/usr/share/libopenvideo/
+	mkdir -p debian/tmp/usr/share/doc/libopenvideo1-dev
+	cp -r doc/* debian/tmp/usr/share/doc/libopenvideo1-dev/
+	dh_install --sourcedir=debian/tmp --exclude=.svn
 
 # This single target is used to build all the packages, all at once, or
 # one at a time. So keep in mind: any options passed to commands here will
@@ -93,8 +97,6 @@ binary-common:
 
 # Build architecture dependant packages using the common target.
 binary-arch: build install
-	#d-shlibmove --commit --movedev "debian/tmp/usr/include/openvideo" usr/include/ debian/tmp/usr/lib/libopentracker.so
-
 	$(MAKE) -f debian/rules binary-common DH_OPTIONS=-a
 
 # Any other binary targets build just one binary package at a time.
