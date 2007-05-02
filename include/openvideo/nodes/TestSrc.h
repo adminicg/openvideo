@@ -80,6 +80,7 @@ public:
 	*	current square position. 
 	*/
 	int posX,posY;
+	unsigned int updateCtr;
 };
 
 } //namespace openvideo {

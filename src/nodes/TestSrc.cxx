@@ -40,7 +40,7 @@
 
 #include <openvideo/Manager.h>
 #include <openvideo/State.h>
-
+#include <iostream>
 
 namespace openvideo {
 
@@ -72,8 +72,16 @@ public:
 // Allows TestSrc to set internal data of openvideo::State
 class TestSrcState : public State
 {
+
 public:
+	~TestSrcState()
+	{
+	  for(size_t i=0; i<buffers.size(); i++)
+	    delete buffers[i];
+	  buffers.clear();
+	}
 	BufferVector& getBuffers()  {  return buffers;  }
+	void setCurrentBuffer(Buffer* buf)  {  currentBuffer = buf;  }
 };
 
 
@@ -85,6 +93,7 @@ TestSrc::TestSrc()
     state=new TestSrcState();
     width=320;
     height=240;
+    updateCtr = 1;
 }
 
 // destructor
@@ -127,19 +136,34 @@ TestSrc::init()
 void 
 TestSrc::process()
 {
-	TestSrcBuffer* buffer = reinterpret_cast<TestSrcBuffer*>(state->findFreeBuffer());
+  using namespace std;
+  //cerr << "errr" << endl;
+    TestSrcBuffer* buffer = reinterpret_cast<TestSrcBuffer*>(state->findFreeBuffer());
 
-	if(!buffer)
-	{
-		logPrintW("DSVLSrc all buffers locked, can not read a new camera image!\n");
-		return;
-	}
+    if(!buffer)
+      {
+	logPrintW("DSVLSrc all buffers locked, can not read a new camera image!\n");
+	return;
+      }
 
-	unsigned char* img = const_cast<unsigned char*>(buffer->getPixels());
+    reinterpret_cast<TestSrcState*>(state)->setCurrentBuffer(buffer);
+    updateCtr++;
+    
+
+    unsigned char* img = const_cast<unsigned char*>(buffer->getPixels());
 
     unsigned char R,G,B;
     int dist=10;
-    for(int y=posY;y<posY+dist;y++)
+int x,y;
+for(x=0; x<width; x++)
+  for (y = 0; y<height; y++)
+    {
+       img[(3*width*y)+(3*x)  ]=255;
+       img[(3*width*y)+(3*x)+1]=255;
+       img[(3*width*y)+(3*x)+2]=255;
+    }
+
+    for( y=posY;y<posY+dist;y++)
     {
 	    int ix=0;
 	    for(int x=posX;x<posX+(dist*3);x++)
@@ -193,6 +217,7 @@ TestSrc::process()
     }
 
 	buffer->incUpdateCounter();
+
 }
 
 
