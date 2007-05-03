@@ -22,53 +22,65 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** @author   Daniel Wagner, modified by Bernhard Reitinger
+/** @author Alexander Bornik
  *
  * $Id$
  * @file                                                                   */
 /* ======================================================================= */
 
 //
-// Optimized Converter from YV12 to RGB565 and Luminance
-// Written from scratch by Daniel Wagner
-// For questions send a mail to: daniel@icg.tu-graz.ac.at
-//
-// Modified by Bernhard Reitinger in order to convert YV12 to RGBA
-//
-// Highly optimized C++ version. Uses look-up
-// tables for almost everything; thereby requires
-// no multiplication or if operations for doing
-// format conversion including saturation checks.
-//
-// Memory usage: allocates 3249 bytes for lookup tables.
-//
-// Should run pretty fast on any device. Intel IPP
-// probably includes a much faster version using WirelessMXX
-// (would only work on Intel XScale processors).
-//
+// Base class for convertes
 //
 
-#ifndef _CONVERTERYV12_H_
-#define _CONVERTERYV12_H_
-
-#include <openvideo/Converter.h>
+#ifndef _CONVERTER_H_
+#define _CONVERTER_H_
 
 namespace openvideo {
     
-    class ConverterYV12 : public Converter
+    class Converter
     {
     public:
+	
+	enum {
+	    LUTCAP_MIN = -153,
+	    LUTCAP_MAX = 535,
+	    CHANNEL_RANGE = 256
+	};
 
-	void convertToRGB32(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned int* nDstRGB32, bool nSwizzle34, int nCropX=0, int nCropY=0);
+	Converter()  {  init();  }
 
-	void convertToLum(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstLum, bool nSwizzle34, int nCropX=0, int nCropY=0);
+	virtual ~Converter()  {  deinit();  }
 
+	virtual void convertToRGB32(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned int* nDstRGB32, bool nSwizzle34, int nCropX=0, int nCropY=0) = 0;
+
+	virtual void convertToLum(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstLum, bool nSwizzle34, int nCropX=0, int nCropY=0) = 0;
+
+    protected:
+	virtual void init();
+	virtual void deinit();
+
+	int cap(int nV)					{  /*assert(nV>=LUTCAP_MIN && nV<=LUTCAP_MAX);*/  return lutCap[nV];  }
+
+	int getV_for_Red(int nV)		{  /*assert(nV>=0 && nV<CHANNEL_RANGE);*/  return lutV_for_Red[nV];  }
+	int getU_for_Blue(int nU)		{  /*assert(nU>=0 && nU<CHANNEL_RANGE);*/  return lutU_for_Blue[nU];  }
+	int getV_for_Green(int nV)		{  /*assert(nV>=0 && nV<CHANNEL_RANGE);*/  return lutV_for_Green[nV];  }
+	int getU_for_Green(int nU)		{  /*assert(nU>=0 && nU<CHANNEL_RANGE);*/  return lutU_for_Green[nU];  }
+	int getY(int nY)				{  /*assert(nY>=0 && nY<CHANNEL_RANGE);*/  return lutY[nY];  }
+
+	unsigned char	*lutCap0,
+	    *lutCap;
+
+	short			*lutV_for_Red,
+	    *lutU_for_Blue,
+	    *lutV_for_Green,
+	    *lutU_for_Green,
+	    *lutY;
     };
 
 
 }  // namespace openvideo
 
-#endif // _CONVERTERYV12_H_
+#endif // _CONVERTERYUY2_H_
 
 //========================================================================
 // End of $FILENAME$

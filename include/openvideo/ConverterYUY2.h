@@ -22,18 +22,19 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** @author   Daniel Wagner, modified by Bernhard Reitinger
+/** @author Alexander Bornik
  *
  * $Id$
  * @file                                                                   */
 /* ======================================================================= */
 
 //
-// Optimized Converter from YV12 to RGB565 and Luminance
-// Written from scratch by Daniel Wagner
-// For questions send a mail to: daniel@icg.tu-graz.ac.at
+// Optimized Converter from YUV2 to RGBA and Luminance
+// Written by Alexander Borni based on  
+//  Daniel Wagner's Y12 to RGB565 converter
+// For questions send a mail to: bornik@icg.tu-graz.ac.at
 //
-// Modified by Bernhard Reitinger in order to convert YV12 to RGBA
+// Modified by Bernhard Reitinger in order to convert YV12 to RGBA32
 //
 // Highly optimized C++ version. Uses look-up
 // tables for almost everything; thereby requires
@@ -48,27 +49,41 @@
 //
 //
 
-#ifndef _CONVERTERYV12_H_
-#define _CONVERTERYV12_H_
+#ifndef _CONVERTERYUY2_H_
+#define _CONVERTERYUY2_H_
 
 #include <openvideo/Converter.h>
 
+namespace avm {
+    class IVideoDecoder;
+    class BitmapInfo;
+    class CImage;
+}
+
 namespace openvideo {
     
-    class ConverterYV12 : public Converter
+    class ConverterYUY2 : public Converter
     {
     public:
+        ConverterYUY2();
+	virtual void init();
+        virtual void deinit();
 
 	void convertToRGB32(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned int* nDstRGB32, bool nSwizzle34, int nCropX=0, int nCropY=0);
 
 	void convertToLum(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstLum, bool nSwizzle34, int nCropX=0, int nCropY=0);
 
+    protected:
+        avm::IVideoDecoder *ivdec;
+        avm::BitmapInfo *bihin;
+        avm::BitmapInfo *bihout;
+        avm::CImage *outimg;
     };
 
 
 }  // namespace openvideo
 
-#endif // _CONVERTERYV12_H_
+#endif // _CONVERTERYUY2_H_
 
 //========================================================================
 // End of $FILENAME$

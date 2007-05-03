@@ -36,7 +36,7 @@
 #include <openvideo/openVideo.h>
 #include <openvideo/Node.h>
 #include <openvideo/PixelFormat.h>
-#include <openvideo/ConverterYV12.h>
+#include <openvideo/Converter.h>
 #include <string>
 
 #ifdef ENABLE_V4L2SRC
@@ -141,6 +141,10 @@ namespace openvideo {
         /// Holds the pixel format used.
         PIXEL_FORMAT pixelFormat;
 
+        /// Holds video mode identifier
+        std::string videoModeString;
+        unsigned long videoModePixelFormat;
+
     private:
 
         bool openDevice();
@@ -168,9 +172,6 @@ namespace openvideo {
         /// Allow setting the frame rate (only possible with V4L
         void setFrameRate(int fps);
 
-        /// Defines the v4l2 pixel format (Used internally).
-        int videoPixelFormat;
-
         /// Video stream descriptor
         int videoFd;
 
@@ -181,13 +182,14 @@ namespace openvideo {
         struct buffer* buffers;
 
         /// Counter for buffers
-        int nBuffers;
+        unsigned int nBuffers;
 
         /// Indicates if the driver can be initialized
         bool initialized;
 
         /// Image converter between YUV420 -> RGB32, by Daniel Wagner
-        ConverterYV12 converter;
+        Converter * converter;
+        //ConverterYV12 converter;
     };
 
 } // namespace

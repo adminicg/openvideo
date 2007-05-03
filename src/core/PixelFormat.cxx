@@ -54,137 +54,170 @@ namespace openvideo
 {
 
 
-typedef std::map<std::string, PIXEL_FORMAT>	StringFormatMap;
-typedef std::pair<std::string, PIXEL_FORMAT> StringFormatPair;
+    typedef std::map<std::string, PIXEL_FORMAT>	StringFormatMap;
+    typedef std::pair<std::string, PIXEL_FORMAT> StringFormatPair;
 
 
-const char* formatNames[] = {
-		"R8G8B8",
-		"B8G8R8",
-		"R8G8B8X8",
-		"B8G8R8X8",
-		"R5G6B5",
-		"L8",
-		"UNKNOWN"
-	};
+    const char* formatNames[] = {
+        "R8G8B8",
+        "B8G8R8",
+        "R8G8B8X8",
+        "B8G8R8X8",
+        "R5G6B5",
+        "L8",
+        "YUY2",
+        "UYVY",
+        "YV12",
+        "UNKNOWN"
+    };
 
-static StringFormatMap stringFormatMap;
+    static StringFormatMap stringFormatMap;
 
 
-static void
-fillStringFormatMap()
-{
+    static void
+    fillStringFormatMap()
+    {
 	stringFormatMap.clear();
 
 	for(int i=0; i<FORMAT_UNKNOWN; i++)
-		stringFormatMap.insert( StringFormatPair(formatNames[i], static_cast<PIXEL_FORMAT>(i)) );
-}
+            stringFormatMap.insert( StringFormatPair(formatNames[i], static_cast<PIXEL_FORMAT>(i)) );
+    }
 
 
-PIXEL_FORMAT
-PixelFormat::StringToFormat(const std::string& formatName)
-{
+    PIXEL_FORMAT
+    PixelFormat::StringToFormat(const std::string& formatName)
+    {
 	if(stringFormatMap.empty())
-		fillStringFormatMap();
+            fillStringFormatMap();
 
 	StringFormatMap::iterator it = stringFormatMap.find(formatName);
 
 	if(it == stringFormatMap.end())
-		return FORMAT_UNKNOWN;
+            return FORMAT_UNKNOWN;
 
 	return it->second;
-}
+    }
 
 
-std::string
-PixelFormat::FormatToString(PIXEL_FORMAT format)
-{
+    std::string
+    PixelFormat::FormatToString(PIXEL_FORMAT format)
+    {
 	if(format>=0 && format<FORMAT_UNKNOWN)
-		return formatNames[format];
+            return formatNames[format];
 
 	return formatNames[FORMAT_UNKNOWN];
-}
+    }
 
 
-int
-PixelFormat::getBitsPerPixel(PIXEL_FORMAT format)
-{
+    int
+    PixelFormat::getBitsPerPixel(PIXEL_FORMAT format)
+    {
 	switch(format)
 	{
-	case FORMAT_R8G8B8X8:
-	case FORMAT_B8G8R8X8:
-		return 32;
+            case FORMAT_R8G8B8X8:
+            case FORMAT_B8G8R8X8:
+                return 32;
 
-	case FORMAT_R8G8B8:
-	case FORMAT_B8G8R8:
-		return 24;
+            case FORMAT_R8G8B8:
+            case FORMAT_B8G8R8:
+                return 24;
 
-	case FORMAT_R5G6B5:
+            case FORMAT_YV12:
+                return 12;
+
+            case FORMAT_YUY2:
+            case FORMAT_UYVY:
+            case FORMAT_R5G6B5:
 		return 16;
 
-	case FORMAT_L8:
+            case FORMAT_L8:
 		return 8;
 
-	default:
+            default:
 		return 0;
 	}
-}
+    }
 
 
-PIXEL_FORMAT
-PixelFormat::fromOGL(int format)
-{
+    PIXEL_FORMAT
+    PixelFormat::fromOGL(int format)
+    {
 	switch(format)
 	{
-	case GL_RGB:
+            case GL_RGB:
 		return FORMAT_R8G8B8;
-	case GL_BGR:
+            case GL_BGR:
 		return FORMAT_B8G8R8;
-	case GL_RGBA:
+            case GL_RGBA:
 		return FORMAT_R8G8B8X8;
-	case GL_BGRA:
+            case GL_BGRA:
 		return FORMAT_B8G8R8X8;
-	case GL_LUMINANCE:
+            case GL_LUMINANCE:
 		return FORMAT_L8;
-	default:
+            default:
 		return FORMAT_UNKNOWN;
 	}
-}
+    }
 
 
-bool
-PixelFormat::toOGL(PIXEL_FORMAT format, unsigned int& oglFormat, int& oglInternalFormat)
-{
+    bool
+    PixelFormat::toOGL(PIXEL_FORMAT format, unsigned int& oglFormat, int& oglInternalFormat)
+    {
 	switch(format)
 	{
-	case FORMAT_R8G8B8:
+            case FORMAT_R8G8B8:
+            case FORMAT_YUY2:
+            case FORMAT_UYVY:
+            case FORMAT_YV12:
 		oglFormat=GL_RGB;
 		oglInternalFormat=3;
 		return true;
 
-	case FORMAT_B8G8R8:
+            case FORMAT_B8G8R8:
 		oglFormat=GL_BGR_EXT;
 		oglInternalFormat=3;
 		return true;
 
-	case FORMAT_R8G8B8X8:
+            case FORMAT_R8G8B8X8:
 		oglFormat=GL_RGBA;
 		oglInternalFormat=4;
 		return true;
 
-	case FORMAT_B8G8R8X8:
+            case FORMAT_B8G8R8X8:
 		oglFormat=GL_BGRA_EXT;
 		oglInternalFormat=4;
 		return true;
 
-	case FORMAT_L8:
+            case FORMAT_L8:
 		oglFormat=GL_LUMINANCE;
 		oglInternalFormat=GL_LUMINANCE8;
 		return true;
+
+            case FORMAT_R5G6B5:
+                oglFormat = GL_RGB;
+                oglInternalFormat = GL_RGB16;
+                return true;
+            case FORMAT_UNKNOWN:
+                oglFormat = GL_RGB;
+                oglFormat = GL_RGB;
+                return false;
 	}
 
 	return false;
-}
+    }
 
 
 }  // namespace openvideo
+
+//========================================================================
+// End of $FILENAME$
+//========================================================================
+// Local Variables:
+// mode: c++
+// c-basic-offset: 4
+// eval: (c-set-offset 'substatement-open 0)
+// eval: (c-set-offset 'case-label '+)
+// eval: (c-set-offset 'statement 'c-lineup-runin-statements)
+// eval: (setq indent-tabs-mode nil)
+// End:
+//========================================================================

@@ -22,18 +22,19 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** @author   Daniel Wagner, modified by Bernhard Reitinger
+/** @author Alexander Bornik
  *
  * $Id$
  * @file                                                                   */
 /* ======================================================================= */
 
 //
-// Optimized Converter from YV12 to RGB565 and Luminance
-// Written from scratch by Daniel Wagner
-// For questions send a mail to: daniel@icg.tu-graz.ac.at
+// Optimized Converter from YUV2 to RGBA and Luminance
+// Written by Alexander Borni based on  
+//  Daniel Wagner's Y12 to RGB565 converter
+// For questions send a mail to: bornik@icg.tu-graz.ac.at
 //
-// Modified by Bernhard Reitinger in order to convert YV12 to RGBA
+// Modified by Bernhard Reitinger in order to convert YV12 to RGBA32
 //
 // Highly optimized C++ version. Uses look-up
 // tables for almost everything; thereby requires
@@ -48,27 +49,69 @@
 //
 //
 
-#ifndef _CONVERTERYV12_H_
-#define _CONVERTERYV12_H_
-
 #include <openvideo/Converter.h>
+#include <memory.h>
+#include <iostream>
+
 
 namespace openvideo {
-    
-    class ConverterYV12 : public Converter
+
+
+#define RGB888_to_RGB32(r, g, b)		( (unsigned int)( (((r&0xff))<<16) | (((g&0xff))<<8) | (((b&0xff))<<0) ) )
+
+
+    void
+    Converter::init()
     {
-    public:
+        using namespace std;
+        cerr << "Converter::init()" << endl;
+	int i;
 
-	void convertToRGB32(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned int* nDstRGB32, bool nSwizzle34, int nCropX=0, int nCropY=0);
+	// initialize lookup table for capping values to 0..255
+	// works for values [LUTCAP_MIN..LUTCAP_MAX]
+	//
+	lutCap0 = new unsigned char[LUTCAP_MAX-LUTCAP_MIN+1];
+	lutCap = lutCap0 - LUTCAP_MIN;
 
-	void convertToLum(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstLum, bool nSwizzle34, int nCropX=0, int nCropY=0);
+	for(i=LUTCAP_MIN; i<=LUTCAP_MAX; i++)
+            lutCap[i] = i>0 ? (i<256 ? i : 255) : 0;
 
-    };
+	// initialize lookup table for multiplications
+	//
+	lutV_for_Red = new short[CHANNEL_RANGE];
+	for(i=0; i<CHANNEL_RANGE; i++)
+            lutV_for_Red[i] = static_cast<short>(1.596f*(i-128));
 
+	lutU_for_Blue = new short[CHANNEL_RANGE];
+	for(i=0; i<CHANNEL_RANGE; i++)
+            lutU_for_Blue[i] = static_cast<short>(2.018f*(i-128));
+
+	lutV_for_Green = new short[CHANNEL_RANGE];
+	for(i=0; i<CHANNEL_RANGE; i++)
+            lutV_for_Green[i] = static_cast<short>(-0.813f*(i-128));
+
+	lutU_for_Green = new short[CHANNEL_RANGE];
+	for(i=0; i<CHANNEL_RANGE; i++)
+            lutU_for_Green[i] = static_cast<short>(-0.391f*(i-128));
+
+	lutY = new short[CHANNEL_RANGE];
+	for(i=0; i<CHANNEL_RANGE; i++)
+            lutY[i] = static_cast<short>(1.164f*(i-16));
+    }	
+
+
+    void
+    Converter::deinit()
+    {
+	delete lutCap0;
+	delete lutV_for_Red;
+	delete lutU_for_Blue;
+	delete lutV_for_Green;
+	delete lutU_for_Green;
+	delete lutY;
+    }
 
 }  // namespace openvideo
-
-#endif // _CONVERTERYV12_H_
 
 //========================================================================
 // End of $FILENAME$

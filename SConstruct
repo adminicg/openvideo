@@ -74,7 +74,7 @@ enableList = ['GLUTSINK',
 # list of libraries that will be searched by the scanner. The scanner will try to locate the libraries
 # and the flags needed to build with those libraries. The obtained result will be used by the build, for
 # each target that lists a library in its 'libs' or in its 'use' sections.
-libraryList =['ace', 'TinyXMLMod', 'glut', 'openvideo', 'dsvl', 'opencv', 'simage' ]
+libraryList =['ace', 'TinyXMLMod', 'glut', 'openvideo', 'dsvl', 'opencv', 'simage','avifile' ]
 
 dl ={'name'     : 'openvideo',
     'type'      : 'DL',
@@ -111,7 +111,7 @@ elif sys.platform == 'linux' or sys.platform == 'linux2':
     enableList.append('V4L2SRC')
 
     enableList.append('IMAGESRC')
-    dl['libs'] += [ 'simage' ]
+    dl['libs'] += [ 'simage', 'avifile' ]
     ov['libs'] += [ 'simage' ]
 
     

@@ -34,6 +34,8 @@
 #ifdef ENABLE_V4L2SRC
 
 #include <openvideo/nodes/V4L2Src.h>
+#include <openvideo/ConverterYV12.h>
+#include <openvideo/ConverterYUY2.h>
 #include <openvideo/Manager.h>
 #include <openvideo/State.h>
 
@@ -55,6 +57,10 @@
 
 #include <asm/types.h>          /* for videodev2.h */
 #include <linux/videodev2.h>
+
+#ifndef WIN32
+#include <emmintrin.h>
+#endif
 
 // only required for setting framerate manually
 #include <linux/videodev.h>
@@ -100,9 +106,13 @@ namespace openvideo {
     
     // Initialize variable to default values.
     V4L2Src::V4L2Src() : videoWidth(640), videoHeight(480), fps(30),
-                         pixelFormat(FORMAT_R8G8B8X8), videoFd(-1),
+                         pixelFormat(FORMAT_R8G8B8X8), 
+                         videoModeString(),
+                         videoModePixelFormat(V4L2_PIX_FMT_RGB32),
+                         videoFd(-1),
                          ioMode(IO_METHOD_MMAP), buffers(NULL), nBuffers(0), 
-                         initialized(false)
+                         initialized(false),
+                         converter(NULL)
     {
         strcpy(videoDevice, "/dev/video0");
 
@@ -341,17 +351,14 @@ namespace openvideo {
 	}
 	unsigned char* img = const_cast<unsigned char*>(buffer->getPixels());
 
-        // convert from YUV420 to RGBA32
-        converter.convertToRGB32((unsigned char*)p, videoWidth, videoHeight, reinterpret_cast<unsigned int*>(img), false);
-
-
-//         for (int xxx=0; xxx<videoWidth*videoHeight*sizeof(unsigned int); xxx++)
-//         {
-//             img[xxx] = 128+buffer->getUpdateCounter();
-//         }
-            
+        if (converter)
+        {
+            // convert from YUV420 to RGBA32
+            converter->convertToRGB32((unsigned char*)p, videoWidth, videoHeight, reinterpret_cast<unsigned int*>(img), false);
+        }
+        
         V4L2_State(state)->setCurrentBuffer(buffer);
-//         printf("swapping buffers ...\n");
+        //printf("swapping buffers ...\n");
         
    	buffer->incUpdateCounter();
     }
@@ -405,6 +412,10 @@ namespace openvideo {
       
             return true;
         }
+        else if (key=="videomode")
+        {
+            videoModeString = value;            
+        }
         else
         {
             cout << "No key: " << key << endl;
@@ -442,7 +453,8 @@ namespace openvideo {
             cerr << "ERROR: cannot open device" << endl;
             return false;
         }
-        
+
+        return true;
     }
 
     bool
@@ -486,6 +498,56 @@ namespace openvideo {
 		break;
 	};
 
+        v4l2_fmtdesc fmdesc;
+        __u32 modenum = 0;
+        int fmretval = 0;
+        bool videomodevalid = false;
+        fmdesc.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+
+        while (fmretval != -1)
+        {
+            fmdesc.index = modenum;
+            fmretval = xioctl(videoFd, VIDIOC_ENUM_FMT, &fmdesc);
+            
+            if (fmretval!=-1)
+            {
+                string actvmstring((char*)fmdesc.description);
+
+                if (actvmstring == videoModeString || videoModeString == "")
+                {
+                    cerr << " * ";
+                    videoModePixelFormat = fmdesc.pixelformat;
+                    videomodevalid = true;
+                }
+                else
+                {
+                    cerr << "   ";
+                }
+
+                if (fmdesc.flags != V4L2_FMT_FLAG_COMPRESSED)
+                {
+                    cerr << "mode " << modenum << ": \"" 
+                         << fmdesc.description 
+                         << "\" (0x" << hex << fmdesc.pixelformat << ")" 
+                         << dec << endl;
+                }
+                else
+                {
+                    cerr << "mode " << modenum << ": \"" 
+                         << fmdesc.description 
+                         << "\" (0x" << hex << fmdesc.pixelformat << ")" 
+                         << dec << " compressed "
+                         << endl;
+                }
+            }
+            
+            ++modenum;
+        }
+        if (!videomodevalid)
+        {
+            cerr << "ERROR: " << videoDevice << " vo valid video mode found!" << endl;
+            return false;
+        }
 
         /* Select video input, video standard and tune here. */
 
@@ -512,18 +574,43 @@ namespace openvideo {
             /* Errors ignored. */
         }
 
+        /* setup converter if required */
+        switch (videoModePixelFormat)
+        {
+            case V4L2_PIX_FMT_YUYV:
+                cerr << " instanciating YUY2 -> RGB32 converter ..." << endl;
+                converter = new ConverterYUY2();
+                break;
+            case V4L2_PIX_FMT_YUV420:                
+                cerr << " instanciating YV12 -> RGB32 converter ..." << endl;
+                converter = new ConverterYV12();
+                break;
+            case V4L2_PIX_FMT_RGB32:
+            case V4L2_PIX_FMT_RGB24:
+                cerr << " camera deliver RGB -> no converter needed ..." 
+                     << endl;
+                break;                                
+            default:
+                cerr << "Converter for format 0x" 
+                     << hex << videoModePixelFormat << dec
+                     << " is missing!" << endl;
+                break;
+        }
         
         CLEAR (fmt);
 
         fmt.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
         fmt.fmt.pix.width       = videoWidth; 
         fmt.fmt.pix.height      = videoHeight;
-        fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
+        fmt.fmt.pix.pixelformat = videoModePixelFormat;
         fmt.fmt.pix.field       = V4L2_FIELD_INTERLACED;
 
         if (xioctl (videoFd, VIDIOC_S_FMT, &fmt) == -1)
+        {
+            cerr << "ERROR: " << videoDevice << " does not support the format" << endl;
             return false;
-        
+        }
+
         /* Note VIDIOC_S_FMT may change width and height. */
 
 	/* Buggy driver paranoia. */
@@ -547,6 +634,8 @@ namespace openvideo {
 		return initIOUserp (fmt.fmt.pix.sizeimage);
 		break;
 	};
+
+        return true;
     }
 
     bool 
@@ -567,6 +656,8 @@ namespace openvideo {
             cerr << "ERROR: Out of memory" << endl;
             return false;
 	}
+
+        return true;
     }
 
     bool V4L2Src::initIOMMap()
@@ -623,6 +714,8 @@ namespace openvideo {
             if (MAP_FAILED == buffers[nBuffers].start)
                 assert(0);
         }
+
+        return true;
     }
     
     bool 
@@ -659,6 +752,8 @@ namespace openvideo {
                 return false;
             }
         }
+
+        return true;
     }
     
     void
@@ -753,8 +848,8 @@ namespace openvideo {
 	}
 	else
 	{
-            fprintf(stderr, "This device doesn't support setting the framerate.\n");
-            exit(1);
+            fprintf(stderr, "This device doesn't support setting the framerate - continuing without ... \n");
+            //exit(1);
 	}
     }
     

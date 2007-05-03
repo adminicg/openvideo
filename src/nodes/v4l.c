@@ -322,9 +322,9 @@ int V4LMGetMMInfo(int fd, V4LMMInfo *v4lMMInfo)
 
 void V4LMSetFormat(V4LFormat *v4lFormat)
 {
-#if (0)
+  //#if (0)
   printf("V4LMSetFormat(%s, %i, %i)\n", V4LFormatName(v4lFormat->format), v4lFormat->width, v4lFormat->height);
-#endif
+  //#endif
   _v4lFormat = *v4lFormat;
 
   switch (_v4lFormat.format) {
