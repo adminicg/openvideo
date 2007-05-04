@@ -53,16 +53,32 @@
 
 #include <openvideo/Converter.h>
 
+namespace avm {
+    class IVideoDecoder;
+    class BitmapInfo;
+    class CImage;
+}
+
 namespace openvideo {
     
     class ConverterYV12 : public Converter
     {
     public:
+        ConverterYV12();
+	virtual void init();
+        virtual void deinit();
 
 	void convertToRGB32(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned int* nDstRGB32, bool nSwizzle34, int nCropX=0, int nCropY=0);
 
 	void convertToLum(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstLum, bool nSwizzle34, int nCropX=0, int nCropY=0);
 
+
+
+    protected:
+        avm::IVideoDecoder *ivdec;
+        avm::BitmapInfo *bihin;
+        avm::BitmapInfo *bihout;
+        avm::CImage *outimg;
     };
 
 

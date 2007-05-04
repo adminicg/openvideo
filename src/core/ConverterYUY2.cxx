@@ -104,8 +104,6 @@ ConverterYUY2::deinit()
     {
         using namespace std;
 
-	const int croppedWidth = nWidth-2*nCropX;
-	const int croppedHeight = nHeight-2*nCropY;     
         if (!ivdec)
         {
             CodecInfo ci;

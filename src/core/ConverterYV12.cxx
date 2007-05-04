@@ -49,321 +49,85 @@
 //
 
 #include <openvideo/ConverterYV12.h>
+#include <avifile-0.7/avifile.h>
+#include <avifile-0.7/avm_creators.h>
+#include <avifile-0.7/avm_fourcc.h>
 #include <memory.h>
-
+#include <iostream>
 
 namespace openvideo {
 
+    ConverterYV12::ConverterYV12()
+    {
+        using namespace std;
+        cerr << "ConverterYV12::ConverterYV12" << endl;
+
+        init();
+    }
+    
+    void
+    ConverterYV12::init()
+    {
+        using namespace std;
+        cerr << "ConverterYV12::init()" << endl;
+
+        Converter::init();
+
+        ivdec = NULL;
+        bihin = NULL;
+        bihout = NULL;
+        outimg = NULL;
+    }
+
+    void
+    ConverterYV12::deinit()
+    {    
+        Creators::FreeVideoDecoder(ivdec);
+
+        if (outimg) delete outimg;
+        if (bihin) delete bihin;
+        if (bihout) delete bihout;
+
+        Converter::deinit();   
+    }
 
 #define RGB888_to_RGB32(r, g, b)		( (unsigned int)( (((r&0xff))<<16) | (((g&0xff))<<8) | (((b&0xff))<<0) ) )
 
-void
-ConverterYV12::convertToRGB32(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned int* nDstRGB32, bool nSwizzle34, int nCropX, int nCropY)
-{
-	//
-	// Each U and V value can be used for 4 pixels: (x,y) (x+1,y) (x,y+1) (x+1,y+1)
-	// To make best use of that, we therefore do two lines at once.
-	// YV12 has one strange specialty: For each 4 pixels in a row, the pixels 3 and 4 are
-	// flipped. We therefore hard-code this special behavior by doing 4 pixels per line
-	// before looping. This sums up to 8 pixels per inner loop and a quite long inner loop!
-	//
-	// YV12 stores YUV pixel data in the following format:
-	// 1st block: Y at full res (8-bit)
-	// 2nd block: V at half res (8-bit)
-	// 3rd block: U at half res (8-bit)
-	//
-	// Basic formula to convert YUV to RGB:
-	//   R = 1.164*(i-16) + 1.596*(V - 128);
-	//   B = 1.164*(i-16) +                   2.018*(U - 128);
-	//   G = 1.164*(i-16) - 0.813*(V - 128) - 0.391*(U - 128);
-	//
-	// Each pixel is first converted to R, G, B (each 8-bits) and then
-	// merged into a 16-bits RGB565 pixel. This routine could therefore
-	// easily be modified to support any other RGB-based pixel format.
-	//
-	// The final picture will miss nCropX left *and* right. Width is therefore
-	// reduced by 2*nCropX Pixels. Take care that the resulting image must
-	// have a width which is a multiple of 4
-	//
-
-	const int V_OFFS = nWidth*nHeight;
-	const int U_OFFS = V_OFFS*5/4;
-	const int croppedWidth = nWidth-2*nCropX;
-	const int croppedHeight = nHeight-2*nCropY;
-	const int extendedWidth = nWidth+2*nCropX;
-	const int cropOffsY = nCropX + (nCropY/2)*nWidth;
-	const int cropOffsUV = nCropX/2 + (nCropY/4)*nWidth/2;
-
-	const unsigned char* srcU = nSrcYUV + U_OFFS + cropOffsUV;	// source pointer for U
-	const unsigned char* srcV = nSrcYUV + V_OFFS + cropOffsUV;	// source pointer for V
-	const unsigned char* srcY0 = nSrcYUV + cropOffsY;			// source pointer for even Y lines
-	const unsigned char* srcY1 = nSrcYUV + cropOffsY + nWidth;	// source pointer for odd Y lines
-
-	unsigned int* dst0 = nDstRGB32;							// destination pointer for even lines
-	unsigned int* dst1 = nDstRGB32+croppedWidth;				// destination pointer for odd lines
-
-	if(nSwizzle34)
-	{
-		int yl = croppedHeight/2 + 1;
-		while(--yl)							// pre-decrement with test for !=0 is faster than post-increment on ARM processors!
-		{
-			int xl=croppedWidth/4 + 1;		// pre-decrement with test for !=0 is faster than post-increment on ARM processors!
-			while(--xl)
-			{
-				// each run does 8 pixels: 4 pixels in two lines
-				//
-
-				int R,G,B, R0,G0,B0;
-				int U,V,Y, Y0;
-
-				// U and V can be used for 4 pixels
-				//
-				U = *srcU++;
-				V = *srcV++;
-
-				R0 = getV_for_Red(V);
-				B0 = getU_for_Blue(U);
-				G0 = getV_for_Green(V) + getU_for_Green(U);
-
-
-				Y = srcY0[0];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst0[0] = RGB888_to_RGB32(R,G,B);
-
-
-				Y = srcY0[1];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst0[1] = RGB888_to_RGB32(R,G,B);
-
-
-				Y = srcY1[0];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst1[0] = RGB888_to_RGB32(R,G,B);
-
-
-				Y = srcY1[1];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst1[1] = RGB888_to_RGB32(R,G,B);
-
-
-				// U and V can be used for 4 pixels
-				//
-				U = *srcU++;
-				V = *srcV++;
-
-				R0 = getV_for_Red(V);
-				B0 = getU_for_Blue(U);
-				G0 = getV_for_Green(V) + getU_for_Green(U);
-
-
-				Y = srcY0[3];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst0[2] = RGB888_to_RGB32(R,G,B);
-
-
-				Y = srcY0[2];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst0[3] = RGB888_to_RGB32(R,G,B);
-
-
-				Y = srcY1[3];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst1[2] = RGB888_to_RGB32(R,G,B);
-
-
-				Y = srcY1[2];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst1[3] = RGB888_to_RGB32(R,G,B);
-
-
-				dst0 += 4;
-				dst1 += 4;
-				srcY0 += 4;
-				srcY1 += 4;
-			}
-
-			dst0 += croppedWidth;
-			dst1 += croppedWidth;
-			srcU += nCropX;
-			srcV += nCropX;
-			srcY0 += extendedWidth;
-			srcY1 += extendedWidth;
-		}
-	}
-	else
-	{
-		int yl = croppedHeight/2 + 1;
-		while(--yl)							// pre-decrement with test for !=0 is faster than post-increment on ARM processors!
-		{
-			int xl=croppedWidth/4 + 1;		// pre-decrement with test for !=0 is faster than post-increment on ARM processors!
-			while(--xl)
-			{
-				// each run does 8 pixels: 4 pixels in two lines
-				//
-
-				int R,G,B, R0,G0,B0;
-				int U,V,Y, Y0;
-
-				// U and V can be used for 4 pixels
-				//
-				U = *srcU++;
-				V = *srcV++;
-
-				R0 = getV_for_Red(V);
-				B0 = getU_for_Blue(U);
-				G0 = getV_for_Green(V) + getU_for_Green(U);
-
-
-				Y = srcY0[0];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst0[0] = RGB888_to_RGB32(R,G,B);
-
-
-				Y = srcY0[1];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst0[1] = RGB888_to_RGB32(R,G,B);
-
-
-				Y = srcY1[0];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst1[0] = RGB888_to_RGB32(R,G,B);
-
-
-				Y = srcY1[1];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst1[1] = RGB888_to_RGB32(R,G,B);
-
-
-				// U and V can be used for 4 pixels
-				//
-				U = *srcU++;
-				V = *srcV++;
-
-				R0 = getV_for_Red(V);
-				B0 = getU_for_Blue(U);
-				G0 = getV_for_Green(V) + getU_for_Green(U);
-
-
-				Y = srcY0[2];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst0[2] = RGB888_to_RGB32(R,G,B);
-
-
-				Y = srcY0[3];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst0[3] = RGB888_to_RGB32(R,G,B);
-
-
-				Y = srcY1[2];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst1[2] = RGB888_to_RGB32(R,G,B);
-
-
-				Y = srcY1[3];
-				Y0 = getY(Y);
-
-				R = cap(Y0 + R0);
-				G = cap(Y0 + G0);
-				B = cap(Y0 + B0);
-
-				dst1[3] = RGB888_to_RGB32(R,G,B);
-
-
-				dst0 += 4;
-				dst1 += 4;
-				srcY0 += 4;
-				srcY1 += 4;
-			}
-
-			dst0 += croppedWidth;
-			dst1 += croppedWidth;
-			srcU += nCropX;
-			srcV += nCropX;
-			srcY0 += extendedWidth;
-			srcY1 += extendedWidth;
-		}
-	}
-}
-
-
-void
-ConverterYV12::convertToLum(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstLum, bool nSwizzle34, int nCropX, int nCropY)
-{
+    void
+    ConverterYV12::convertToRGB32(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned int* nDstRGB32, bool nSwizzle34, int nCropX, int nCropY)
+    {
+        using namespace std;
+        if (!ivdec)
+        {
+            CodecInfo ci;
+            cerr << "CodecInfo generated " << endl;
+            ci.fourcc = fccYV12;
+            
+            if (bihin) delete bihin;
+            bihin  = new BitmapInfo(nWidth, nHeight, 16);
+            bihin->SetSpace(IMG_FMT_YV12);
+            bihin->Print();
+
+            if (bihout) delete bihout;
+            bihout = new BitmapInfo(nWidth, nHeight, 32);
+            bihout->Print();
+
+            cerr << "BitmapInfo generated " << endl;
+            bihout->SetRGB();
+            cerr << "before decoder creation " << endl;
+            ivdec = Creators::CreateVideoDecoder(*bihin);
+            cerr << "decoder created " << endl;
+            outimg = new CImage(bihout,(uint8_t*)nDstRGB32, false);
+        }
+    
+        ivdec->DecodeFrame(outimg, nSrcYUV, nWidth*nHeight, 1);
+
+    }
+
+
+    void
+    ConverterYV12::convertToLum(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstLum, bool nSwizzle34, int nCropX, int nCropY)
+    {
 	// Converts from YV12 to Luminance (8-bit gray). Luminance is stored in full
 	// resolution as the first block in the YV12 image. Unfortunately, for every 
 	// four pixels we have to switch pixels 3 and 4.
@@ -380,42 +144,42 @@ ConverterYV12::convertToLum(const unsigned char* nSrcYUV, int nWidth, int nHeigh
 	int y = nHeight-2*nCropY+1;
 	while(--y)
 	{
-		// the algorithm's inner loop uses 7 variables. so everything
-		// should fit into registers on ARM processors...
-		//
-		int x = numRuns;												// +1 for pre-decriment (faster on ARM processors)
-		int v0,v1,v2,v3;
+            // the algorithm's inner loop uses 7 variables. so everything
+            // should fit into registers on ARM processors...
+            //
+            int x = numRuns;												// +1 for pre-decriment (faster on ARM processors)
+            int v0,v1,v2,v3;
 
-		if(nSwizzle34)
-		{
-			while(--x)	
-			{
-				// read 16 pixels
-				//
-				v0 = *src++;
-				v1 = *src++;
-				v2 = *src++;
-				v3 = *src++;
+            if(nSwizzle34)
+            {
+                while(--x)	
+                {
+                    // read 16 pixels
+                    //
+                    v0 = *src++;
+                    v1 = *src++;
+                    v2 = *src++;
+                    v3 = *src++;
 
-				// write 16 pixels. do byte swizzling to exchange pixels 3 and 4 of each quadruple
-				//
-				*dst++ = (v0&0x0000ffff) | ((v0>>8)&0x00ff0000) | ((v0<<8)&0xff000000);
-				*dst++ = (v1&0x0000ffff) | ((v1>>8)&0x00ff0000) | ((v1<<8)&0xff000000);
-				*dst++ = (v2&0x0000ffff) | ((v2>>8)&0x00ff0000) | ((v2<<8)&0xff000000);
-				*dst++ = (v3&0x0000ffff) | ((v3>>8)&0x00ff0000) | ((v3<<8)&0xff000000);
-			}
-		}
-		else
-		{
-			x--;
-			memcpy(dst,src, x*16);
-			src += x*4;
-			dst += x*4;
-		}
+                    // write 16 pixels. do byte swizzling to exchange pixels 3 and 4 of each quadruple
+                    //
+                    *dst++ = (v0&0x0000ffff) | ((v0>>8)&0x00ff0000) | ((v0<<8)&0xff000000);
+                    *dst++ = (v1&0x0000ffff) | ((v1>>8)&0x00ff0000) | ((v1<<8)&0xff000000);
+                    *dst++ = (v2&0x0000ffff) | ((v2>>8)&0x00ff0000) | ((v2<<8)&0xff000000);
+                    *dst++ = (v3&0x0000ffff) | ((v3>>8)&0x00ff0000) | ((v3<<8)&0xff000000);
+                }
+            }
+            else
+            {
+                x--;
+                memcpy(dst,src, x*16);
+                src += x*4;
+                dst += x*4;
+            }
 
-		src += nCropX/2;
+            src += nCropX/2;
 	}
-}
+    }
 
 
 }  // namespace openvideo
