@@ -1,3 +1,9 @@
+libopenvideo (1.0-5) unstable; urgency=low
+
+  * new version
+
+ -- Alexander Bornik <bornik@zarathustra.icg.tu-graz.ac.at>  Fri, 04 May 2007 11:21:19 +0200
+
 libopenvideo (1.0-4) unstable; urgency=low
 
   * new version - V4L2Src working! 
