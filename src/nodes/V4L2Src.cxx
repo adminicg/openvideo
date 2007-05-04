@@ -243,6 +243,7 @@ namespace openvideo {
 
         struct v4l2_buffer buf;
 	unsigned int i;
+        bool buffer4process = true;
 
 	switch (ioMode) 
         {
@@ -278,11 +279,13 @@ namespace openvideo {
                     switch (errno) 
                     {
             		case EAGAIN:
-                            return;
-                            
-			case EIO:
-                            /* Could ignore EIO, see spec. */
-                            
+                            return;                            
+                        case ENOMEM:
+                            /* insufficient memory */
+                            cerr << "ERROR: insufficient memory" << endl;
+			case EIO:                            
+                            /* internal error */
+                            cerr << "ERROR: internal error" << endl;
                             /* fall through */
                             
 			default:
@@ -291,11 +294,13 @@ namespace openvideo {
 		}
                 
                 assert (buf.index < nBuffers);
-                
-	        processImage ((char*)buffers[buf.index].start);
-
-		if (xioctl (videoFd, VIDIOC_QBUF, &buf) == -1)
-                    assert(0);
+                if (buffer4process)
+                {
+                    processImage ((char*)buffers[buf.index].start);
+                    
+                    if (xioctl (videoFd, VIDIOC_QBUF, &buf) == -1)
+                        assert(0);
+                }
 
 		break;
                 
@@ -540,7 +545,34 @@ namespace openvideo {
                          << endl;
                 }
             }
-            
+            /*
+            v4l2_frmsizeenum fsenum;
+            fsenum.pixelformat = fmdesc.pixelformat;
+            int actpixelfm =0;
+            int fsretval = 0;
+            while (fseretval != -1)
+            {
+                fsenum.index = actpixelfm;
+                fsretval = xioctl(videoFd, VIDEOC_ENUM_FRAMESIZES, &fsenum);
+                if (fsretval != -1)
+                {
+                    cerr << "    " <<;
+                    if (fsenum.type == V4l_FRMSIZE_TYPE_DISCRETE)
+                    {
+                        cerr << fsenum.width << " x " fsenum.height;
+                    }
+                    else
+                    {
+                        cerr << fsenum.min_width << " to " fsenum.max_width;
+                        cerr << " x ";
+                        cerr << fsenum.min_height << " to " fsenum.max_height;
+                    }
+                    cerr << endl;
+                }
+            */
+
+            }
+
             ++modenum;
         }
         if (!videomodevalid)
