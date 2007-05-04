@@ -568,10 +568,9 @@ namespace openvideo {
                         cerr << fsenum.min_height << " to " fsenum.max_height;
                     }
                     cerr << endl;
-                }
-            */
-
+                }           
             }
+            */
 
             ++modenum;
         }
