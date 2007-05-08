@@ -49,7 +49,7 @@
 //
 //
 
-#include <openvideo/ConverterYUY2.h>
+#include <openvideo/ConverterMJPEG.h>
 #include <avifile-0.7/avifile.h>
 #include <avifile-0.7/avm_creators.h>
 #include <avifile-0.7/avm_fourcc.h>
@@ -59,19 +59,19 @@
 
 namespace openvideo {
 
-    ConverterYUY2::ConverterYUY2()
+    ConverterMJPEG::ConverterMJPEG()
 {
     using namespace std;
-    cerr << "ConverterYUY2::ConverterYUY2" << endl;
+    cerr << "ConverterMJPEG::ConverterMJPEG" << endl;
 
     init();
 }
     
 void
-ConverterYUY2::init()
+ConverterMJPEG::init()
 {
     using namespace std;
-    cerr << "ConverterYUY2::init()" << endl;
+    cerr << "ConverterMJPEG::init()" << endl;
 
     Converter::init();
 
@@ -82,7 +82,7 @@ ConverterYUY2::init()
 }
 
 void
-ConverterYUY2::deinit()
+ConverterMJPEG::deinit()
 {    
     Creators::FreeVideoDecoder(ivdec);
 
@@ -98,7 +98,7 @@ ConverterYUY2::deinit()
 
 
     void
-    ConverterYUY2::convertToRGB32(const unsigned char* nSrcYUV, 
+    ConverterMJPEG::convertToRGB32(const unsigned char* nSrcYUV, 
                                   int nWidth, int nHeight, 
                                   unsigned char* nDstRGB32, 
                                   bool nSwizzle34, int nCropX, int nCropY)
@@ -109,11 +109,12 @@ ConverterYUY2::deinit()
         {
             CodecInfo ci;
             cerr << "CodecInfo generated " << endl;
-            ci.fourcc = fccYUY2;
+            ci.fourcc = fccMJPG;
 
             if (bihin) delete bihin;
             bihin  = new BitmapInfo(nWidth, nHeight, 16);
-            bihin->SetSpace(IMG_FMT_YUY2);
+            //bihin->SetSpace(IMG_FMT_MJPG);
+            bihin->biCompression = 4;
             bihin->Print();
 
             if (bihout) delete bihout;
@@ -135,7 +136,7 @@ ConverterYUY2::deinit()
     }
 
     void
-    ConverterYUY2::convertToRGB24(const unsigned char* nSrcYUV, 
+    ConverterMJPEG::convertToRGB24(const unsigned char* nSrcYUV, 
                                   int nWidth, int nHeight, 
                                   unsigned char* nDstRGB24, 
                                   bool nSwizzle34, int nCropX, int nCropY)
@@ -146,11 +147,12 @@ ConverterYUY2::deinit()
         {
             CodecInfo ci;
             cerr << "CodecInfo generated " << endl;
-            ci.fourcc = fccYUY2;
+            ci.fourcc = fccMJPG;
 
             if (bihin) delete bihin;
             bihin  = new BitmapInfo(nWidth, nHeight, 16);
-            bihin->SetSpace(IMG_FMT_YUY2);
+            bihin->biCompression = 4;
+            //bihin->SetSpace(IMG_FMT_MJPEG);
             //bihin->Print();
 
             if (bihout) delete bihout;
@@ -176,10 +178,10 @@ ConverterYUY2::deinit()
     }
 
     void
-    ConverterYUY2::convertToLum(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstLum, bool nSwizzle34, int nCropX, int nCropY)
+    ConverterMJPEG::convertToLum(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstLum, bool nSwizzle34, int nCropX, int nCropY)
     {
-	// Converts from YUY2 to Luminance (8-bit gray). Luminance is stored in full
-	// resolution as the first block in the YUY2 image. Unfortunately, for every 
+	// Converts from MJPEG to Luminance (8-bit gray). Luminance is stored in full
+	// resolution as the first block in the MJPEG image. Unfortunately, for every 
 	// four pixels we have to switch pixels 3 and 4.
 	//
 	// The final picture will miss nCropX left *and* right. Width is therefore

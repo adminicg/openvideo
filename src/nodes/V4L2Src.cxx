@@ -36,6 +36,7 @@
 #include <openvideo/nodes/V4L2Src.h>
 #include <openvideo/ConverterYV12.h>
 #include <openvideo/ConverterYUY2.h>
+#include <openvideo/ConverterMJPEG.h>
 #include <openvideo/Manager.h>
 #include <openvideo/State.h>
 
@@ -603,7 +604,7 @@ namespace openvideo {
         }
         if (!videomodevalid)
         {
-            cerr << "ERROR: " << videoDevice << " vo valid video mode found!" << endl;
+            cerr << "ERROR: " << videoDevice << " no valid video mode found!" << endl;
             return false;
         }
 
@@ -636,18 +637,22 @@ namespace openvideo {
         switch (videoModePixelFormat)
         {
             case V4L2_PIX_FMT_YUYV:
-                cerr << " instanciating YUY2 -> RGB32 converter ..." << endl;
+                cerr << " instanciating YUY2 -> RGB converter ..." << endl;
                 converter = new ConverterYUY2();
                 break;
             case V4L2_PIX_FMT_YUV420:                
-                cerr << " instanciating YV12 -> RGB32 converter ..." << endl;
+                cerr << " instanciating YV12 -> RGB converter ..." << endl;
                 converter = new ConverterYV12();
+                break;
+            case 0x47504a4d: //V4L_PIX_FMT_MJPEG:                
+                cerr << " instanciating MJPEG -> RGB converter ..." << endl;
+                converter = new ConverterMJPEG();
                 break;
             case V4L2_PIX_FMT_RGB32:
             case V4L2_PIX_FMT_RGB24:
                 cerr << " camera deliver RGB -> no converter needed ..." 
                      << endl;
-                break;                                
+                break;            
             default:
                 cerr << "Converter for format 0x" 
                      << hex << videoModePixelFormat << dec
