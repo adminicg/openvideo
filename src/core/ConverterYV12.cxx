@@ -76,7 +76,7 @@ namespace openvideo {
         ivdec = NULL;
         bihin = NULL;
         bihout = NULL;
-        outimg = NULL;
+        //outimg = NULL;
     }
 
     void
@@ -84,7 +84,7 @@ namespace openvideo {
     {    
         Creators::FreeVideoDecoder(ivdec);
 
-        if (outimg) delete outimg;
+        //if (outimg) delete outimg;
         if (bihin) delete bihin;
         if (bihout) delete bihout;
 
@@ -94,7 +94,7 @@ namespace openvideo {
 #define RGB888_to_RGB32(r, g, b)		( (unsigned int)( (((r&0xff))<<16) | (((g&0xff))<<8) | (((b&0xff))<<0) ) )
 
     void
-    ConverterYV12::convertToRGB32(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned int* nDstRGB32, bool nSwizzle34, int nCropX, int nCropY)
+    ConverterYV12::convertToRGB32(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstRGB32, bool nSwizzle34, int nCropX, int nCropY)
     {
         using namespace std;
         if (!ivdec)
@@ -117,10 +117,45 @@ namespace openvideo {
             cerr << "before decoder creation " << endl;
             ivdec = Creators::CreateVideoDecoder(*bihin);
             cerr << "decoder created " << endl;
-            outimg = new CImage(bihout,(uint8_t*)nDstRGB32, false);
+            //outimg = new CImage(bihout,(uint8_t*)nDstRGB32, false);
         }
-    
-        ivdec->DecodeFrame(outimg, nSrcYUV, nWidth*nHeight, 1);
+
+        CImage outimg(bihout, nDstRGB32, false);
+
+        ivdec->DecodeFrame(&outimg, nSrcYUV, nWidth*nHeight, 1);
+
+    }
+
+    void
+    ConverterYV12::convertToRGB24(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstRGB24, bool nSwizzle34, int nCropX, int nCropY)
+    {
+        using namespace std;
+        if (!ivdec)
+        {
+            CodecInfo ci;
+            cerr << "CodecInfo generated " << endl;
+            ci.fourcc = fccYV12;
+            
+            if (bihin) delete bihin;
+            bihin  = new BitmapInfo(nWidth, nHeight, 16);
+            bihin->SetSpace(IMG_FMT_YV12);
+            //bihin->Print();
+
+            if (bihout) delete bihout;
+            bihout = new BitmapInfo(nWidth, nHeight, 24);
+            //bihout->Print();
+
+            cerr << "BitmapInfo generated " << endl;
+            bihout->SetRGB();
+            cerr << "before decoder creation " << endl;
+            ivdec = Creators::CreateVideoDecoder(*bihin);
+            cerr << "decoder created " << endl;
+            //outimg = new CImage(bihout, nDstRGB24, false);
+        }
+
+        CImage outimg(bihout, nDstRGB24, false);
+
+        ivdec->DecodeFrame(&outimg, nSrcYUV, nWidth*nHeight, 1);
 
     }
 

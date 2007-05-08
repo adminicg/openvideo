@@ -74,7 +74,12 @@ public:
 	/**
 	*
 	*/
-	virtual const char*  getName();
+	virtual const char*  getName() const;
+
+	/**
+	 *  Retrungs the active pixel format
+	 */
+	PIXEL_FORMAT getCurrentPixelFormat() const;
 
 	/**
 	*	Is called once before the (process)traversal starts.

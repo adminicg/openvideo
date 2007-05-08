@@ -69,7 +69,8 @@ namespace openvideo {
 	virtual void init();
         virtual void deinit();
 
-	void convertToRGB32(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned int* nDstRGB32, bool nSwizzle34, int nCropX=0, int nCropY=0);
+	void convertToRGB32(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstRGB32, bool nSwizzle34, int nCropX=0, int nCropY=0);
+	void convertToRGB24(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstRGB24, bool nSwizzle34, int nCropX=0, int nCropY=0);
 
 	void convertToLum(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstLum, bool nSwizzle34, int nCropX=0, int nCropY=0);
 
@@ -77,7 +78,7 @@ namespace openvideo {
         avm::IVideoDecoder *ivdec;
         avm::BitmapInfo *bihin;
         avm::BitmapInfo *bihout;
-        avm::CImage *outimg;
+        //avm::CImage *outimg;
     };
 
 

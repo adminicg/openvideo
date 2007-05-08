@@ -106,7 +106,6 @@ namespace openvideo {
     
     // Initialize variable to default values.
     V4L2Src::V4L2Src() : videoWidth(640), videoHeight(480), fps(30),
-                         pixelFormat(FORMAT_R8G8B8X8), 
                          videoModeString(),
                          videoModePixelFormat(V4L2_PIX_FMT_RGB32),
                          videoFd(-1),
@@ -136,15 +135,16 @@ namespace openvideo {
 
         state->width=videoWidth;
         state->height=videoHeight;
-	state->format = pixelFormat;
+	state->format = curPixelFormat;
 
 	// make a double buffered state
 	Manager::getInstance()->getLogger()->logEx("V4L2Src: Using double buffering\n");        
+        int bytesperpixel = (PixelFormat::getBitsPerPixel(curPixelFormat)/8);
 	for(int i=0; i<2; i++)
 	{
-            unsigned char *pixels = (unsigned char*)malloc(videoWidth*videoHeight*sizeof(unsigned int));
+            unsigned char *pixels = (unsigned char*)malloc(videoWidth*videoHeight*bytesperpixel);
             // clear buffer
-            memset(pixels, 0, videoWidth*videoHeight*sizeof(unsigned int));
+            memset(pixels, 0, videoWidth*videoHeight*bytesperpixel);
 
             reinterpret_cast<V4L2SrcState*>(state)->getBuffers().push_back(new V4L2SrcBuffer(state, pixels));
 	}
@@ -165,6 +165,9 @@ namespace openvideo {
     void 
     V4L2Src::initPixelFormats() {
         pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8X8));
+        pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8X8));
+        pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8));
+        pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8));
     }
 
     void
@@ -359,7 +362,22 @@ namespace openvideo {
         if (converter)
         {
             // convert from YUV420 to RGBA32
-            converter->convertToRGB32((unsigned char*)p, videoWidth, videoHeight, reinterpret_cast<unsigned int*>(img), false);
+            if (PixelFormat::getBitsPerPixel(curPixelFormat) == 32)
+            {
+                //Manager::getInstance()->getLogger()->log("OpenVideo::converting to RGBX!\n");                
+                converter->convertToRGB32((unsigned char*)p, 
+                                          videoWidth, videoHeight, img, false);
+            }
+            else if (PixelFormat::getBitsPerPixel(curPixelFormat) == 24)
+            {
+                //Manager::getInstance()->getLogger()->log("OpenVideo::converting to RGB!\n");                
+                converter->convertToRGB24((unsigned char*)p, 
+                                          videoWidth, videoHeight, img, false);
+            }
+            else
+            {
+                Manager::getInstance()->getLogger()->log("OpenVideo::no suitable conversion routine for target format!\n");                
+            }
         }
         
         V4L2_State(state)->setCurrentBuffer(buffer);
@@ -402,17 +420,26 @@ namespace openvideo {
             this->fps=atoi(value.c_str());
             return true;
         }
-        else if (key=="format")
+        else if (key=="pixelformat")
         {
             PIXEL_FORMAT pf = PixelFormat::StringToFormat(value);
 
             switch(pf) {
                 case (FORMAT_R8G8B8X8):
-                    pixelFormat = pf;
+                    curPixelFormat = pf;
+                    break;
+                case (FORMAT_B8G8R8X8):
+                    curPixelFormat = pf;
+                    break;
+                case (FORMAT_R8G8B8):
+                    curPixelFormat = pf;
+                    break;
+                case (FORMAT_B8G8R8):
+                    curPixelFormat = pf;
                     break;
                 default:
                     cout << "PixelFormat " << value << " is not supported. "
-                         << "Using default value " << PixelFormat::FormatToString(pixelFormat) << endl;
+                         << "Using default value " << PixelFormat::FormatToString(curPixelFormat) << endl;
             }
       
             return true;
@@ -423,7 +450,7 @@ namespace openvideo {
         }
         else
         {
-            cout << "No key: " << key << endl;
+            cout << "No key: " << key << endl;            
         }
         return false;
     }

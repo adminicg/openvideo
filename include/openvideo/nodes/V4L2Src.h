@@ -138,9 +138,6 @@ namespace openvideo {
         /// Frames per second (requires v4l
         int fps;
 
-        /// Holds the pixel format used.
-        PIXEL_FORMAT pixelFormat;
-
         /// Holds video mode identifier
         std::string videoModeString;
         unsigned long videoModePixelFormat;

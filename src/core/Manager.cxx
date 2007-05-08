@@ -554,7 +554,9 @@ Manager::initTraversal()
       nodes[i]->initPixelFormats();
       if(!nodes[i]->validateCurrentPixelFormat())
         {
-          logPrintE("%s uses an unknown pixel format\n",nodes[i]->getName());
+          logPrintE("%s uses an unknown pixel format %s\n",
+		    nodes[i]->getName()," asdf");
+	  //PixelFormat::FormatToString(nodes[i]->getCurrentPixelFormat()));
           exit(-1);
         }
     }

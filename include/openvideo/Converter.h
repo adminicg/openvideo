@@ -51,7 +51,8 @@ namespace openvideo {
 
 	virtual ~Converter()  {  deinit();  }
 
-	virtual void convertToRGB32(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned int* nDstRGB32, bool nSwizzle34, int nCropX=0, int nCropY=0) = 0;
+	virtual void convertToRGB32(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstRGB32, bool nSwizzle34, int nCropX=0, int nCropY=0) = 0;
+	virtual void convertToRGB24(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstRGB24, bool nSwizzle34, int nCropX=0, int nCropY=0) = 0;
 
 	virtual void convertToLum(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstLum, bool nSwizzle34, int nCropX=0, int nCropY=0) = 0;
 

@@ -92,9 +92,14 @@ Node::validateCurrentPixelFormat()
 }
 
 const char* 
-Node::getName()
+Node::getName() const
 {
 	return this->name.c_str();
+}
+
+PIXEL_FORMAT Node::getCurrentPixelFormat() const
+{
+  return curPixelFormat;
 }
 
 void 

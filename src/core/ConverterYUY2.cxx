@@ -55,6 +55,7 @@
 #include <avifile-0.7/avm_fourcc.h>
 #include <memory.h>
 #include <iostream>
+#include <ace/OS.h>
 
 namespace openvideo {
 
@@ -77,7 +78,7 @@ ConverterYUY2::init()
     ivdec = NULL;
     bihin = NULL;
     bihout = NULL;
-    outimg = NULL;
+    //outimg = NULL;
 }
 
 void
@@ -85,7 +86,7 @@ ConverterYUY2::deinit()
 {    
     Creators::FreeVideoDecoder(ivdec);
 
-    if (outimg) delete outimg;
+    //if (outimg) delete outimg;
     if (bihin) delete bihin;
     if (bihout) delete bihout;
 
@@ -99,7 +100,7 @@ ConverterYUY2::deinit()
     void
     ConverterYUY2::convertToRGB32(const unsigned char* nSrcYUV, 
                                   int nWidth, int nHeight, 
-                                  unsigned int* nDstRGB32, 
+                                  unsigned char* nDstRGB32, 
                                   bool nSwizzle34, int nCropX, int nCropY)
     {
         using namespace std;
@@ -124,13 +125,55 @@ ConverterYUY2::deinit()
             cerr << "before decoder creation " << endl;
             ivdec = Creators::CreateVideoDecoder(*bihin);
             cerr << "decoder created " << endl;
-            outimg = new CImage(bihout,(uint8_t*)nDstRGB32, false);
+            //outimg = new CImage(bihout,(uint8_t*)nDstRGB32, false);
         }
-         
-        ivdec->DecodeFrame(outimg, nSrcYUV, nWidth*nHeight, 1);
+
+        CImage outimg(bihout, nDstRGB32, false);
+
+        ivdec->DecodeFrame(&outimg, nSrcYUV, nWidth*nHeight, 1);
 
     }
 
+    void
+    ConverterYUY2::convertToRGB24(const unsigned char* nSrcYUV, 
+                                  int nWidth, int nHeight, 
+                                  unsigned char* nDstRGB24, 
+                                  bool nSwizzle34, int nCropX, int nCropY)
+    {
+        using namespace std;
+
+        if (!ivdec)
+        {
+            CodecInfo ci;
+            cerr << "CodecInfo generated " << endl;
+            ci.fourcc = fccYUY2;
+
+            if (bihin) delete bihin;
+            bihin  = new BitmapInfo(nWidth, nHeight, 16);
+            bihin->SetSpace(IMG_FMT_YUY2);
+            //bihin->Print();
+
+            if (bihout) delete bihout;
+            bihout = new BitmapInfo(nWidth, nHeight, 24);
+            //bihout->Print();
+
+            cerr << "BitmapInfo generated " << endl;
+            bihout->SetRGB();
+            cerr << "before decoder creation " << endl;
+            ivdec = Creators::CreateVideoDecoder(*bihin);
+            cerr << "decoder created " << endl;
+            //outimg = new CImage(bihout, nDstRGB24, false); 
+        }
+
+        CImage outimg(bihout, nDstRGB24, false);
+        ACE_Time_Value tv1(ACE_OS::gettimeofday());
+
+        ivdec->DecodeFrame(&outimg, nSrcYUV, nWidth*nHeight, 1);
+        outimg.ByteSwap();
+
+        ACE_Time_Value tv2(ACE_OS::gettimeofday());    tv2 -= tv1;
+        cerr << "conversion took " << tv2.usec() << " usecs!" << endl;
+    }
 
     void
     ConverterYUY2::convertToLum(const unsigned char* nSrcYUV, int nWidth, int nHeight, unsigned char* nDstLum, bool nSwizzle34, int nCropX, int nCropY)
