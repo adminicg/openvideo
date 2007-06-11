@@ -184,7 +184,8 @@ public:
 
 	~DSVLSrcBuffer()
 	{
-		delete copyBuffer;
+        delete [] copyBuffer;
+        delete [] dsvlBuffer;
 	}
 
 	bool getNewFrame(unsigned int ctr)
@@ -314,7 +315,7 @@ DSVLSrc::~DSVLSrc()
 	// FIXME: is it sage to delete this here?
 	delete state;
 
-	delete dsvlSource;
+	delete [] dsvlSource;
 	dsvlSource = NULL;
 }
 
