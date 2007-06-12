@@ -43,13 +43,13 @@
 #  ifdef OV_IS_DEBUG
 #    pragma message (">>> Linking against debug build of simage")
 #    pragma comment(lib,"simage1d.lib")
-#    pragma message (">>> Linking against debug build of LibJPEG")
-#    pragma comment(lib,"JPEGd.lib")
+//#    pragma message (">>> Linking against debug build of LibJPEG")
+//#    pragma comment(lib,"JPEGd.lib")
 #  else	
 #    pragma message (">>> Linking against release build of simage")
 #    pragma comment(lib,"simage1.lib")
-#    pragma message (">>> Linking against release build of LibJPEG")
-#    pragma comment(lib,"JPEG.lib")
+//#    pragma message (">>> Linking against release build of LibJPEG")
+//#    pragma comment(lib,"JPEG.lib")
 #  endif
 #else //WIN32
 
