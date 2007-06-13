@@ -35,7 +35,7 @@
 #include <openvideo/openVideo.h>
 
 // If OpenCV is available
-#if ENABLE_OPENCV
+#ifdef ENABLE_OPENCV
 
 #include <openvideo/nodes/OpenCVSrc.h>
 #include <openvideo/NodeFactory.h>

@@ -185,7 +185,6 @@ public:
 	~DSVLSrcBuffer()
 	{
         delete [] copyBuffer;
-        delete [] dsvlBuffer;
 	}
 
 	bool getNewFrame(unsigned int ctr)

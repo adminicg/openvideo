@@ -25,6 +25,7 @@
 /** The source file for the OpenCVSrc class.
  *
  * @author Jorn Skaarud Karlsen
+ * @author Erick Mendez
  * 
  * $Id$
  * @file                                                                   
@@ -36,6 +37,27 @@
 
 // If OpenCV is available
 #ifdef ENABLE_OPENCV
+
+
+#ifdef OV_IS_WINXP
+#  define  OPENCV_NOT_DLL
+#  ifdef OV_IS_DEBUG
+#    pragma message (">>> Linking against release build of cv")
+#    pragma comment(lib,"cv.lib")
+#    pragma message (">>> Linking against release build of cvaux")
+#    pragma comment(lib,"cvaux.lib")
+#    pragma message (">>> Linking against release build of highgui")
+#    pragma comment(lib,"highgui.lib")
+#  else	
+#    pragma message (">>> Linking against release build of cv")
+#    pragma comment(lib,"cv.lib")
+#    pragma message (">>> Linking against release build of cvaux")
+#    pragma comment(lib,"cvaux.lib")
+#    pragma message (">>> Linking against release build of highgui")
+#    pragma comment(lib,"highgui.lib")
+#  endif
+#endif //WIN32
+
 
 // Standard includes
 #include <string>
@@ -61,53 +83,133 @@ using namespace openvideo;
 // PRIVATE CLASS DEFINITION
 // ********************************************************
 
+// ImageSrcFrame gives ImageSrc full access to openvideo::Buffer
+class OpenCVSrcBuffer : public Buffer
+{
+    friend class OpenCVSrc;
+public:
+    OpenCVSrcBuffer(State* state)
+    {
+        copyBuffer = NULL;
+        width = state->width;
+        height = state->height;
+        format = state->format;
+    }
+
+    ~OpenCVSrcBuffer()
+    {
+        delete [] copyBuffer;
+    }
+
+    void setUpdateCtr(unsigned int ctr)
+    {
+        updateCtr = ctr;
+    }
+
+    void copyImage(unsigned char *newFrame, bool flipV)
+    {
+        int bytesPerPixel = PixelFormat::getBitsPerPixel(format) / 8;		// assumes simple pixel-format (x times 8 bits)
+        int stride = bytesPerPixel*width;
+
+        if(copyBuffer==NULL)
+            copyBuffer = new unsigned char[stride*height];
+
+        if (flipV)
+        {
+            unsigned char* nSrc=newFrame;
+            unsigned char *nDst=copyBuffer;
+            nSrc += stride*(height-1);
+
+            for(int i=0; i<height; i++)
+            {
+                memcpy(nDst, nSrc, stride);
+                nDst += stride;
+                nSrc -= stride;
+            }
+        }
+        else
+            memcpy(copyBuffer, newFrame, height*stride);
+
+        buffer = copyBuffer;
+    }
+
+
+protected:
+    unsigned char *copyBuffer;
+};
+
+// ImageSrcState gives ImageSrc full access to openvideo::State
+class OpenCVSrcState : public State
+{
+public:
+    ~OpenCVSrcState()
+    {
+        for(size_t i=0; i<buffers.size(); i++)
+            delete buffers[i];
+        buffers.clear();
+    }
+
+    BufferVector& getBuffers()  {  return buffers;  }
+
+    void setCurrentBuffer(Buffer* buf)  {  currentBuffer = buf;  }
+};
+
+#define OPENCVSRC_State(_STATE)  reinterpret_cast<OpenCVSrcState*>(_STATE)
+
 class OpenCVSrcP
 {
 public:
-  // Constructor
-  OpenCVSrcP(OpenCVSrc * owner) {
-    this->owner = owner;
+    // Constructor
+    OpenCVSrcP(OpenCVSrc * owner) 
+    {
+        this->owner = owner;
 
-    this->captureFrom = CAPTURE_FROM_CAMERA;
-    this->capture = NULL;
-    
-    this->filename = "capture.avi";
-    this->cameraId = 0;
-    this->width    = 640;
-    this->height   = 480;
-    this->fps      = 15;
-  }
+        this->captureFrom = CAPTURE_FROM_CAMERA;
+        this->capture = NULL;
+
+        this->filename = "capture.avi";
+        this->cameraId = 0;
+        this->width    = 640;
+        this->height   = 480;
+        this->fps      = 15;
+        this->flipV    = false;
+        this->loop     = false;
+    }
   
   /// Destructor
-  ~OpenCVSrcP(void) {
-    if (capture != NULL) {
-      cvReleaseCapture(&capture);
+    ~OpenCVSrcP(void) 
+    {
+        if (capture != NULL)
+          cvReleaseCapture(&capture);
     }
-  }
 
-  /// Type of capture (either camera or file)
-  int captureFrom;
-  /// Filename of video source 
-  string filename;
-  /// Camera id
-  int cameraId;
-  /// Width of video stream
-  int width;
-  /// Height of video stream
-  int height;
-  /// Framerate of video stream
-  int fps;
+    /// Type of capture (either camera or file)
+    int captureFrom;
+    /// Filename of video source 
+    string filename;
+    /// Camera id
+    int cameraId;
+    /// Width of video stream
+    int width;
+    /// Height of video stream
+    int height;
+    /// Framerate of video stream
+    int fps;
+    /// Whether we should flip the image or not
+    bool flipV;
+    /// Whether the video should loop or not
+    bool loop;
 
-  /// CvCapture
-  CvCapture * capture;
+    /// CvCapture
+    CvCapture * capture;
 
-  // Capture type variables
-  const static int CAPTURE_FROM_CAMERA = 1;
-  const static int CAPTURE_FROM_FILE   = 2;
-  
+    // Capture type variables
+    const static int CAPTURE_FROM_CAMERA = 1;
+    const static int CAPTURE_FROM_FILE   = 2;
+
 private:
-  /// Parent class
-  OpenCVSrc * owner;
+    /// Parent class
+    OpenCVSrc * owner;
 };
 
 #undef PUBLIC
@@ -122,208 +224,215 @@ private:
 // constructor
 OpenCVSrc::OpenCVSrc()
 {
-#if OPENVIDEO_DEBUG && 0
-  cout << "OpenCVSrc::OpenCVSrc()" << endl;
-#endif
-
-  // Initialize private class
-  PRIVATE(this) = new OpenCVSrcP(this);
+    numBuffers = 2;
+    updateCtr = 1;
+    // Initialize private class
+    PRIVATE(this) = new OpenCVSrcP(this);
 }
 
 // destructor
 OpenCVSrc::~OpenCVSrc()
 {
-#if OPENVIDEO_DEBUG && 0
-  cout << "OpenCVSrc::~OpenCVSrc()" << endl;
-#endif
 }
 
 /**
  * Initializes the pixel formats
  */
-void 
-OpenCVSrc::initPixelFormats()
+void OpenCVSrc::initPixelFormats()
 {
-#if OPENVIDEO_DEBUG && 0
-  cout << "OpenCVSrc::initPixelFormats()" << endl;
-#endif
-
-  inherited::pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8));
+    inherited::pixelFormats.push_back(PIXEL_FORMAT(FORMAT_B8G8R8));
+    inherited::pixelFormats.push_back(PIXEL_FORMAT(FORMAT_R8G8B8));
 }
 
 /** 
  * Sets the parameters from the XML-file
  */
-bool 
-OpenCVSrc::setParameter(string key, string value)
+bool OpenCVSrc::setParameter(string key, string value)
 {
-#if OPENVIDEO_DEBUG && 0
-  cout << "OpenCVSrc::setParameter(): " << key << " " << value << endl;
-#endif
 
-  // Setup a string stream to read variables from the value string
-  istringstream iss(value);
+    // Setup a string stream to read variables from the value string
+    istringstream iss(value);
 
-  // Is the key handled by the parent?
-  if (inherited::setParameter(key, value)) {
-    return true;
-  }
-  
-  // Need to handle the key for our selves.
-  if (key == "capturefrom") {
-    if (value == "camera") {
-      PRIVATE(this)->captureFrom = OpenCVSrcP::CAPTURE_FROM_CAMERA;
-    }
-    else if (value == "file") {
-      PRIVATE(this)->captureFrom = OpenCVSrcP::CAPTURE_FROM_FILE;
-    }
-    else {
-      cerr << "Unknown capture from value: " << value << endl;
-      assert(0);
-    }
-    return true;
-  }
-  else if (key == "width") {
-    iss >> PRIVATE(this)->width;
-    return true;
-  }
-  else if (key == "height") {
-    iss >> PRIVATE(this)->height;
-    return true;
-  }
-  else if (key == "fps") {
-    iss >> PRIVATE(this)->fps;
-    return true;
-  }
-  else if (key == "cameraId") {
-    iss >> PRIVATE(this)->cameraId;
-    return true;
-  }
-  else if (key == "filename") {
-    iss >> PRIVATE(this)->filename;
-    return true;
-  }
-  else { // Key not recognized by any system
-    cout << "OpenCVSrc::setParameter(): Unable to parse key: '" << key << "' with value: '" << value << "'" << endl;
-  }
+    // Is the key handled by the parent?
+    if (inherited::setParameter(key, value)) 
+        return true;
 
-  // Return false if no system was able to recognize the key
-  return false;
+    // Need to handle the key for our selves.
+    if (key == "capturefrom") 
+    {
+        if (value == "camera")
+            PRIVATE(this)->captureFrom = OpenCVSrcP::CAPTURE_FROM_CAMERA;
+        else if (value == "file") 
+            PRIVATE(this)->captureFrom = OpenCVSrcP::CAPTURE_FROM_FILE;
+        else 
+        {
+            logPrintE ("Unknown capture from value: %s",value);
+            assert(0);
+        }
+        return true;
+    }
+    else if (key == "width") 
+    {
+        iss >> PRIVATE(this)->width;
+        return true;
+    }
+    else if (key == "height") 
+    {
+        iss >> PRIVATE(this)->height;
+        return true;
+    }
+    else if (key == "fps") 
+    {
+        iss >> PRIVATE(this)->fps;
+        return true;
+    }
+    else if (key == "cameraId") 
+    {
+        iss >> PRIVATE(this)->cameraId;
+        return true;
+    }
+    else if (key == "filename") 
+    {
+        iss >> PRIVATE(this)->filename;
+        return true;
+    }
+    else if (key == "flipV") 
+    {
+        if ((value == "true")|(value == "TRUE"))
+            PRIVATE(this)->flipV=true;
+        return true;
+    }
+    else if (key == "loop") 
+    {
+        if ((value == "true")|(value == "TRUE"))
+            PRIVATE(this)->loop=true;
+        return true;
+    }
+    else 
+    { // Key not recognized by any system
+        logPrintW("OpenCVSrc::setParameter(): Unable to parse key: ' %s ' with value: ' %s ]'\n", key, value); 
+    }
+
+    // Return false if no system was able to recognize the key
+    return false;
 }
 
 /**
  * Initializes the video stream
  */
-void 
-OpenCVSrc::init()
+void OpenCVSrc::init()
 {
-#if OPENVIDEO_DEBUG && 0
-  cout << "OpenCVSrc::init()" << endl;
-#endif
+    // Make sure the stream-tree is correctly defined
+    assert(inherited::getInDegree() == 0);
 
-  // Make sure the stream-tree is correctly defined
-  assert(inherited::getInDegree() == 0);
+    state = new OpenCVSrcState();
+    state->clear();
+    state->width=PRIVATE(this)->width;
+    state->height=PRIVATE(this)->height;
+    state->format = curPixelFormat;
 
-  // Initialize state variable
-  inherited::state = new State();
-  inherited::state->clear();
-  inherited::state->width = PRIVATE(this)->width;
-  inherited::state->height = PRIVATE(this)->height;
+    for(int i=0; i<numBuffers; i++)
+        OPENCVSRC_State(state)->getBuffers().push_back(new OpenCVSrcBuffer(state));
 }
 
 /**
  * Starts the capturing thread
  */
-void 
-OpenCVSrc::start() 
+void OpenCVSrc::start() 
 {
-#if OPENVIDEO_DEBUG && 0
-  cout << "OpenCVSrc::start()" << endl;
-#endif 
-
-  // Set up capture process
-  if (PRIVATE(this)->captureFrom == OpenCVSrcP::CAPTURE_FROM_FILE) {
-    // FIXME: Use cvCaptureFromAVI instead?
-    PRIVATE(this)->capture = cvCaptureFromFile(PRIVATE(this)->filename.c_str());
-  }
-  else if (PRIVATE(this)->captureFrom == OpenCVSrcP::CAPTURE_FROM_CAMERA) { // Capture from video camera(s)
-    PRIVATE(this)->capture = cvCaptureFromCAM(PRIVATE(this)->cameraId);
-  }
-
-  // Check if the capture object is invalid...
-  if (PRIVATE(this)->capture == NULL) {
-    cerr << "Unable to open input video stream" << endl;
-  }
-  else {
-    // Set user-defined height and width
-    cvSetCaptureProperty(PRIVATE(this)->capture, CV_CAP_PROP_FRAME_WIDTH, PRIVATE(this)->width);
-    cvSetCaptureProperty(PRIVATE(this)->capture, CV_CAP_PROP_FRAME_HEIGHT, PRIVATE(this)->height);
-    cvSetCaptureProperty(PRIVATE(this)->capture, CV_CAP_PROP_FPS, PRIVATE(this)->fps);
-
-    // Retrieve actual values used
-    PRIVATE(this)->width  = (int) cvGetCaptureProperty(PRIVATE(this)->capture, CV_CAP_PROP_FRAME_WIDTH);
-    PRIVATE(this)->height = (int) cvGetCaptureProperty(PRIVATE(this)->capture, CV_CAP_PROP_FRAME_HEIGHT);
-    PRIVATE(this)->fps    = (int) cvGetCaptureProperty(PRIVATE(this)->capture, CV_CAP_PROP_FPS);
-
-    // FIXME: Have to fake width here because wrong capture property is
-    // sometimes returned.
-    if (PRIVATE(this)->width == 0) {
-      PRIVATE(this)->width = 640;
+    // Set up capture process
+    if (PRIVATE(this)->captureFrom == OpenCVSrcP::CAPTURE_FROM_FILE) 
+    {
+        // FIXME: Use cvCaptureFromAVI instead?
+        PRIVATE(this)->capture = cvCaptureFromFile(PRIVATE(this)->filename.c_str());
     }
-    if (PRIVATE(this)->height == 0) {
-      PRIVATE(this)->height = 480;
+    else if (PRIVATE(this)->captureFrom == OpenCVSrcP::CAPTURE_FROM_CAMERA) 
+    { // Capture from video camera(s)
+        PRIVATE(this)->capture = cvCaptureFromCAM(PRIVATE(this)->cameraId);
     }
-  }
+
+    // Check if the capture object is invalid...
+    if (PRIVATE(this)->capture == NULL) 
+    {
+        cerr << "Unable to open input video stream" << endl;
+    }
+    else 
+    {
+        // Set user-defined height and width
+        cvSetCaptureProperty(PRIVATE(this)->capture, CV_CAP_PROP_FRAME_WIDTH, PRIVATE(this)->width);
+        cvSetCaptureProperty(PRIVATE(this)->capture, CV_CAP_PROP_FRAME_HEIGHT, PRIVATE(this)->height);
+        cvSetCaptureProperty(PRIVATE(this)->capture, CV_CAP_PROP_FPS, PRIVATE(this)->fps);
+
+        // Retrieve actual values used
+        PRIVATE(this)->width  = (int) cvGetCaptureProperty(PRIVATE(this)->capture, CV_CAP_PROP_FRAME_WIDTH);
+        PRIVATE(this)->height = (int) cvGetCaptureProperty(PRIVATE(this)->capture, CV_CAP_PROP_FRAME_HEIGHT);
+        PRIVATE(this)->fps    = (int) cvGetCaptureProperty(PRIVATE(this)->capture, CV_CAP_PROP_FPS);
+
+        // FIXME: Have to fake width here because wrong capture property is
+        // sometimes returned.
+        if (PRIVATE(this)->width == 0) 
+        {
+            PRIVATE(this)->width = 640;
+        }
+        if (PRIVATE(this)->height == 0) 
+        {
+            PRIVATE(this)->height = 480;
+        }
+    }
 }
 
 /**
  * Stops the capturing thread
  */
-void
-OpenCVSrc::stop() 
+void OpenCVSrc::stop() 
 {
-#if OPENVIDEO_DEBUG && 0
-  cout << "OpenCVSrc::stop()" << endl;
-#endif 
-
-  // Close down capture process
-  cvReleaseCapture(&PRIVATE(this)->capture);
-  PRIVATE(this)->capture = NULL;
+    // Close down capture process
+    cvReleaseCapture(&PRIVATE(this)->capture);
+    PRIVATE(this)->capture = NULL;
 }
 
 /**
  * Processes the video stream
  */
-void 
-OpenCVSrc::process()
+void OpenCVSrc::process()
 {
-#if OPENVIDEO_DEBUG && 0
-  cout << "OpenCVSrc::process()" << endl;
-#endif
+    if(OpenCVSrcBuffer* buffer = reinterpret_cast<OpenCVSrcBuffer*>(state->findFreeBuffer()))
+    {
+        IplImage * image = cvQueryFrame(PRIVATE(this)->capture);
+        if (image) 
+        {
+            inherited::state->width  = image->width;
+            inherited::state->height = image->height;
+            inherited::state->format = PIXEL_FORMAT(FORMAT_R8G8B8);
 
-  IplImage * image = cvQueryFrame(PRIVATE(this)->capture);
-  if (image) {
-    inherited::state->width  = image->width;
-    inherited::state->height = image->height;
-    inherited::state->format = FORMAT_R8G8B8;
-    inherited::state->frame  = (unsigned char *) image->imageData;
-  }
-  else {
-    cerr << "OpenCVSrc::process(): ERROR: Unable to capture image..." << endl;
-  }
+            buffer->copyImage((unsigned char *) image->imageData, PRIVATE(this)->flipV);
+            OPENCVSRC_State(state)->setCurrentBuffer(buffer);
+            buffer->setUpdateCtr(updateCtr++);
+        }
+        else 
+        {
+            if ((PRIVATE(this)->captureFrom == OpenCVSrcP::CAPTURE_FROM_FILE)&(PRIVATE(this)->loop))
+            {
+                stop();
+                start();
+            }
+            else
+                logPrintE("OpenCVSrc::process(): ERROR: Unable to capture image...\n");
+        }
+    }
+    else
+        logPrintW("OpenCVSrc all frames locked, can not read a new image!\n");
 }
 
 /**
  * Postprocesses after processing
  */
-void
-OpenCVSrc::postProcess()
+void OpenCVSrc::postProcess()
 {
-#if OPENVIDEO_DEBUG && 0
-  cout << "OpenCVSrc::postProcess()" << endl;
-#endif 
-
-  this->state->frame = NULL;
+    //  this->state->frame = NULL;
+    //openvideo::Buffer *tmpBuffer=inherited::state->getCurrentBuffer();
+    //const unsigned char *frame=tmpBuffer->getPixels();
+    //frame = NULL;
 }
 
 #endif // ENABLE_OPENCV

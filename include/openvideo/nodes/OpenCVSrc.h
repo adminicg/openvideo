@@ -37,7 +37,7 @@
 #include <openvideo/openVideo.h>
 
 // If OpenCV is available
-#if ENABLE_OPENCV
+#ifdef ENABLE_OPENCV
 
 #include <string>
 #include <openvideo/Node.h>
@@ -58,8 +58,7 @@ namespace openvideo {
     * @author Jorn Skaarud Karlsen
     */
   // Define source class
-  class OPENVIDEO_API OpenCVSrc :
-    public openvideo::Node 
+  class OPENVIDEO_API OpenCVSrc : public openvideo::Node 
   {
     /// Typedef inherited for clean access
     typedef Node inherited;
@@ -117,6 +116,10 @@ namespace openvideo {
      * Private class
      */
     OpenCVSrcP * pimpl;
+
+    int numBuffers;
+    unsigned int updateCtr;
+
   };
 
 } // namespace openvideo {
