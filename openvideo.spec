@@ -1,13 +1,12 @@
-Summary:	OpenVideo
+Summary:	Support for video data
 Name:		openvideo
 Version:	1.0.0
-Release:	1
+Release:	%(date '+%Y%m%d')
 License:	GPL
 Group:		Development/Libraries
 Source:		%{name}-%{version}.tar.bz2
-#Source1:	%{name}-scons.tar.gz
-#Vendor:		...
-#URL:		http://www.grinninglizard.com/tinyxml
+URL:		http://studierstube.icg.tugraz.at/openvideo
+Vendor:		Institute for Computer Graphics and Vision, Graz University of Technology, Austria
 Packager:	Institute for Computer Graphics and Vision, Graz University of Technology, Austria
 Prefix:		/usr
 BuildRoot: 	%{_tmppath}/buildroot-%{name}-%{version}
@@ -17,7 +16,12 @@ BuildRequires:	ICGBuilder tinyxmlmod-devel giflib-devel ACE-devel simage-devel
 %define _prefix %{prefix}
 
 %description
-...
+OpenVideo is a general data integration and processing software with special
+support for video data. It implements a hardware abstraction layer by
+interfacing several different device drivers either directly or through the
+functionality of a third party video libraries. OpenVideo is designed to be as
+extensible and easily configurable as possible. OpenVideo is currently
+implemented on windows and on linux systems.
 
 %prep
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
@@ -25,7 +29,6 @@ BuildRequires:	ICGBuilder tinyxmlmod-devel giflib-devel ACE-devel simage-devel
 
 %build
 scons
-#PREFIX=%{_prefix} LIBDIR=%{_libdir} INCLUDEDIR=%{_includedir}
 
 %install
 scons --cache-disable DESTDIR=$RPM_BUILD_ROOT PREFIX=%{_prefix} LIBDIR=%{_libdir} INCLUDEDIR=%{_includedir} install
