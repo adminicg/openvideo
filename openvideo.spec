@@ -10,8 +10,8 @@ Vendor:		Institute for Computer Graphics and Vision, Graz University of Technolo
 Packager:	Institute for Computer Graphics and Vision, Graz University of Technology, Austria
 Prefix:		/usr
 BuildRoot: 	%{_tmppath}/buildroot-%{name}-%{version}
-Requires:	tinyxmlmod giflib ACE simage
-BuildRequires:	ICGBuilder tinyxmlmod-devel giflib-devel ACE-devel simage-devel
+Requires:	tinyxmlmod giflib ACE simage avifile
+BuildRequires:	ICGBuilder tinyxmlmod-devel giflib-devel ACE-devel simage-devel avifile-devel
 
 %define _prefix %{prefix}
 
@@ -45,7 +45,7 @@ scons -c
 %package devel
 Summary:	OpenVideo headers
 Group:		Development/Libraries
-Requires:	%{name} = %{version} ICGBuilder tinyxmlmod-devel ACE-devel simage-devel
+Requires:	%{name} = %{version} ICGBuilder tinyxmlmod-devel ACE-devel simage-devel avifile-devel
 
 %description devel
 This package contains header files and include files that are needed for development using OpenVideo.
