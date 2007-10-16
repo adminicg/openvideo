@@ -70,7 +70,7 @@
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/openVideod.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(ACEROOT)&quot;;&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(ACEROOT)\lib&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLROOT)\lib\win32&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;&quot;$(DSVLROOT)/lib&quot;;&quot;$(SIMAGEROOT)/lib/Win32&quot;;&quot;$(LIBJPEGROOT)/lib/Win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib&quot;;&quot;$(OPENCVROOT)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(ACEROOT)&quot;;&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(ACEROOT)\lib&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLROOT)\lib\win32&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;&quot;$(DSVLROOT)/lib&quot;;&quot;$(SIMAGEROOT)/lib/Win32&quot;;&quot;$(LIBJPEGROOT)/lib/Win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib&quot;;&quot;$(OPENCVROOT)\lib&quot;;&quot;$(SIMAGEROOT)/lib&quot;"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
