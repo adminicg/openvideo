@@ -53,6 +53,8 @@
 #include <avifile-0.7/avifile.h>
 #include <avifile-0.7/avm_creators.h>
 #include <avifile-0.7/avm_fourcc.h>
+#include <avifile-0.7/image.h>
+#include <avifile-0.7/videodecoder.h>
 #include <memory.h>
 #include <iostream>
 //#include <ace/OS.h>
@@ -112,13 +114,13 @@ ConverterMJPEG::deinit()
             ci.fourcc = fccMJPG;
 
             if (bihin) delete bihin;
-            bihin  = new BitmapInfo(nWidth, nHeight, 16);
+            bihin  = new avm::BitmapInfo(nWidth, nHeight, 16);
             //bihin->SetSpace(IMG_FMT_MJPG);
             bihin->biCompression = 4;
             bihin->Print();
 
             if (bihout) delete bihout;
-            bihout = new BitmapInfo(nWidth, nHeight, 32);
+            bihout = new avm::BitmapInfo(nWidth, nHeight, 32);
             bihout->Print();
 
             cerr << "BitmapInfo generated " << endl;
@@ -150,13 +152,13 @@ ConverterMJPEG::deinit()
             ci.fourcc = fccMJPG;
 
             if (bihin) delete bihin;
-            bihin  = new BitmapInfo(nWidth, nHeight, 16);
+            bihin  = new avm::BitmapInfo(nWidth, nHeight, 16);
             bihin->biCompression = 4;
             //bihin->SetSpace(IMG_FMT_MJPEG);
             //bihin->Print();
 
             if (bihout) delete bihout;
-            bihout = new BitmapInfo(nWidth, nHeight, 24);
+            bihout = new avm::BitmapInfo(nWidth, nHeight, 24);
             //bihout->Print();
 
             cerr << "BitmapInfo generated " << endl;

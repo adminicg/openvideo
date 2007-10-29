@@ -53,6 +53,8 @@
 #include <avifile-0.7/avifile.h>
 #include <avifile-0.7/avm_creators.h>
 #include <avifile-0.7/avm_fourcc.h>
+#include <avifile-0.7/image.h>
+#include <avifile-0.7/videodecoder.h>
 #include <memory.h>
 #include <iostream>
 //#include <ace/OS.h>
