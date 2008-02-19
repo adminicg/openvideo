@@ -1,6 +1,8 @@
+%define build_type MinSizeRel
+
 Summary:	Support for video data
-Name:		openvideo
-Version:	1.0.0
+Name:		${CPACK_PACKAGE_NAME}
+Version:	${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}
 Release:	%(date '+%Y%m%d')
 License:	GPL
 Group:		Development/Libraries
@@ -26,20 +28,27 @@ implemented on windows and on linux systems.
 %prep
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 %setup
+sed -i 's/\@\@/\@/g' openvideo.pc.in
 
 %build
-scons
+cmake \
+-DCMAKE_BUILD_TYPE:STRING=%{build_type} \
+-DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} \
+-DCMAKE_INSTALL_LIBDIR:PATH=%{_libdir} \
+.
+make
+#make doc
 
 %install
-scons --cache-disable DESTDIR=$RPM_BUILD_ROOT PREFIX=%{_prefix} LIBDIR=%{_libdir} INCLUDEDIR=%{_includedir} install
+DESTDIR=$RPM_BUILD_ROOT make install
 
 %clean
-scons -c
+make clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{_bindir}/openvideo
+%{_bindir}/%{name}-bin
 %{_libdir}/*.so*
 
 %package devel
