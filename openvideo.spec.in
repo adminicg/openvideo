@@ -61,6 +61,7 @@ This package contains header files and include files that are needed for develop
 
 %files devel
 %defattr(-,root,root)
+%{_datadir}/cmake/Modules/*
 %{_libdir}/pkgconfig/*
 %{_prefix}/include/*
 
