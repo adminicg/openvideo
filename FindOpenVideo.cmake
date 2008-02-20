@@ -48,7 +48,7 @@ else (OPENVIDEO_INCLUDE_DIR AND OPENVIDEO_LIBRARIES)
   endif (WIN32)
   
   if (OPENVIDEO_FOUND)
-    if (NOT openvideo_FIND_QUIETLY)
+    if (NOT OpenVideo_FIND_QUIETLY)
       message(STATUS "Found OPENVIDEO: ${OPENVIDEO_LIBRARIES}")
     endif (NOT OpenVideo_FIND_QUIETLY)
   else (OPENVIDEO_FOUND)
