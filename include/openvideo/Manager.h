@@ -35,6 +35,7 @@
 
 #include "openVideo.h"
 
+#include <string>
 #include <vector>
 
 #ifdef WIN32

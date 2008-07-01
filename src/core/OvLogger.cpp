@@ -32,6 +32,7 @@
 #include <openvideo/OvLogger.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 
 namespace openvideo {
@@ -126,7 +127,7 @@ namespace openvideo {
   OvLogger::OvLogger()
   {
     logMode = MODE_CONSOLE;
-    logFileName = "ov_log.txt";
+    logFileName = (char *)"ov_log.txt";
   }
 
   OvLogger::~OvLogger()

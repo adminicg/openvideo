@@ -1,4 +1,5 @@
 PROJECT(openvideo)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 
 INCLUDE(UsePkgConfig)
 
