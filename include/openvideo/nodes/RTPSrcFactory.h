@@ -22,48 +22,47 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The node configuration file.
+/** The header file for the RTPSrcFactory class.
   *
-  * @author Denis Kalkofen
+  * @author Alessandro Mulloni
   *
-  * $Id$
+  * $Id: RTPSrcFactory.h 148 2006-05-26 14:53:05Z daniel $
   * @file                                                                   */
  /* ======================================================================= */
+#ifndef _RTPSRCFACTORY_H
+#define _RTPSRCFACTORY_H
+#include <openvideo/openVideo.h>
+#ifdef ENABLE_RTPSRC
+#include <openvideo/nodes/RTPSrc.h>
+#include <openvideo/NodeFactory.h>
 
-//enable/disable nodes
 
 
-#ifndef _WIN32_WCE
-#  define  ENABLE_DSVLSRC
-//#  define  ENABLE_VIDEOWRAPPERSRC
-//#  define  ENABLE_RTPSRC
-#  ifndef HAVE_NO_GLUT
-#    define  ENABLE_GLUTSINK
-#  endif
-#  define  ENABLE_GL_TEXTURE_2D_SINK
-#endif
+namespace openvideo {
+/**
+*@ingroup nodes
+*	A factory to create TestSrc nodes.
+*/
+class OPENVIDEO_API  RTPSrcFactory :
+	public openvideo::NodeFactory
+{
+public:
+	/**
+	*	constructor
+	*/
+	RTPSrcFactory(){};
 
-#define  ENABLE_TESTSRC
-#define  ENABLE_VIDEOSINK
-//#define  ENABLE_IMAGESRC
+	/**
+	*	creates TestSrc nodes
+	*/
+	virtual const char* getNodeTypeId();
+	
+	/**
+	*	returns TestSrc as the type of known objects
+	*/
+	virtual openvideo::RTPSrc* createNode();
+};
+} //namespace openvideo {
 
-#ifdef _WIN32_WCE
-#  define ENABLE_SPECTECSRC
-#endif
-
-//
-// if using TinyXML_MOD, uncomment one of the next two
-// definitions to choose between DLL and static linking
-//
-#ifndef TINYXML_MOD_DLL
-#  define TINYXML_MOD_DLL
-#endif
-
-//#ifndef TINYXML_MOD_STATIC
-//#  define TINYXML_MOD_STATIC
-//#endif
-
-#if defined(TINYXML_MOD_DLL) && defined(TINYXML_MOD_STATIC)
-#  pragma message(">>> ERROR: can not define TINYXML_MOD_DLL and TINYXML_MOD_STATIC at the same time!")
-#  pragma error(">>> ERROR: can not define TINYXML_MOD_DLL and TINYXML_MOD_STATIC at the same time!")
+#endif //#ifdef ENABLE_RTPSRC
 #endif

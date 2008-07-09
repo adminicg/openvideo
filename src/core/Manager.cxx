@@ -56,6 +56,10 @@
 #include <openvideo/nodes/GLUTSinkFactory.h>
 #endif
 
+#ifdef ENABLE_RTPSRC
+#include <openvideo/nodes/RTPSrcFactory.h>
+#endif
+
 #ifdef ENABLE_TESTSRC
 #include <openvideo/nodes/TestSrcFactory.h>
 #endif
@@ -693,6 +697,10 @@ Manager::initNodeFactories()
 
 #ifdef ENABLE_GL_TEXTURE_2D_SINK
   factories.push_back(new GL_TEXTURE_2D_SinkFactory());
+#endif
+
+#ifdef ENABLE_RTPSRC
+  factories.push_back(new RTPSrcFactory());
 #endif
 
 #ifdef ENABLE_TESTSRC

@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;&quot;$(TINYXMLMODROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLROOT)\include&quot;;&quot;$(GLEWROOT)\include&quot;;&quot;$(DSVLROOT)/src&quot;;&quot;$(SIMAGEROOT)/include&quot;;&quot;$(OPENCVROOT)/cv/include&quot;;&quot;$(OPENCVROOT)/cvaux/include&quot;;&quot;$(OPENCVROOT)/otherlibs/highgui&quot;;&quot;$(OPENCVROOT)/cxcore/include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;&quot;$(TINYXMLMODROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLROOT)\include&quot;;&quot;$(GLEWROOT)\include&quot;;&quot;$(DSVLROOT)/src&quot;;&quot;$(SIMAGEROOT)/include&quot;;&quot;$(OPENCVROOT)/cv/include&quot;;&quot;$(OPENCVROOT)/cvaux/include&quot;;&quot;$(OPENCVROOT)/otherlibs/highgui&quot;;&quot;$(OPENCVROOT)/cxcore/include&quot;;&quot;$(LIVE555ROOT)\liveMedia\include&quot;;&quot;$(LIVE555ROOT)\BasicUsageEnvironment\include&quot;;&quot;$(LIVE555ROOT)\groupSock\include&quot;;&quot;$(LIVE555ROOT)\UsageEnvironment\include&quot;"
 				PreprocessorDefinitions="HAVE_CONFIGOV_H;WIN32;_DEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
@@ -70,7 +70,7 @@
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/openVideod.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(ACEROOT)&quot;;&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(ACEROOT)\lib&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLROOT)\lib\win32&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;&quot;$(DSVLROOT)/lib&quot;;&quot;$(SIMAGEROOT)/lib/Win32&quot;;&quot;$(LIBJPEGROOT)/lib/Win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib&quot;;&quot;$(OPENCVROOT)\lib&quot;;&quot;$(SIMAGEROOT)/lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(ACEROOT)&quot;;&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(ACEROOT)\lib&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLROOT)\lib\win32&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;&quot;$(DSVLROOT)/lib&quot;;&quot;$(SIMAGEROOT)/lib/Win32&quot;;&quot;$(LIBJPEGROOT)/lib/Win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib&quot;;&quot;$(OPENCVROOT)\lib&quot;;&quot;$(SIMAGEROOT)/lib&quot;;&quot;$(LIVE555ROOT)/bin&quot;"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
@@ -241,6 +241,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\nodes\RTPSrc.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\nodes\RTPSrcFactory.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\nodes\TestSrc.cxx"
 					>
 				</File>
@@ -327,9 +335,21 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\include\openvideo\configOV.h"
+				>
+			</File>
 			<Filter
 				Name="Nodes"
 				>
+				<File
+					RelativePath="..\..\include\openvideo\nodes\DSVLSrc.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\openvideo\nodes\DSVLSrcFactory.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\include\openvideo\nodes\GL_TEXTURE_2D_Sink.h"
 					>
@@ -360,6 +380,14 @@
 				</File>
 				<File
 					RelativePath="..\..\include\openvideo\nodes\OpenCVSrcFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\openvideo\nodes\RTPSrc.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\openvideo\nodes\RTPSrcFactory.h"
 					>
 				</File>
 				<File

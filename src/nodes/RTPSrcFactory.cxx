@@ -22,48 +22,27 @@
  * ========================================================================
  * PROJECT: OpenVideo
  * ======================================================================== */
-/** The node configuration file.
+/** The source file for the TestSrcFactory class.
   *
   * @author Denis Kalkofen
-  *
-  * $Id$
-  * @file                                                                   */
- /* ======================================================================= */
+  * 
+  * $Id: RTPSrcFactory.cxx 232 2007-03-13 11:04:16Z bornik $
+  * @file                                                                   
+  * ======================================================================= */
+#include <openvideo/nodes/RTPSrcFactory.h>
+#include <openvideo/openVideo.h>
+#ifdef ENABLE_RTPSRC
+using namespace openvideo;
 
-//enable/disable nodes
+RTPSrc* 
+RTPSrcFactory::createNode()
+{
+	return (new RTPSrc());
+}
 
-
-#ifndef _WIN32_WCE
-#  define  ENABLE_DSVLSRC
-//#  define  ENABLE_VIDEOWRAPPERSRC
-//#  define  ENABLE_RTPSRC
-#  ifndef HAVE_NO_GLUT
-#    define  ENABLE_GLUTSINK
-#  endif
-#  define  ENABLE_GL_TEXTURE_2D_SINK
-#endif
-
-#define  ENABLE_TESTSRC
-#define  ENABLE_VIDEOSINK
-//#define  ENABLE_IMAGESRC
-
-#ifdef _WIN32_WCE
-#  define ENABLE_SPECTECSRC
-#endif
-
-//
-// if using TinyXML_MOD, uncomment one of the next two
-// definitions to choose between DLL and static linking
-//
-#ifndef TINYXML_MOD_DLL
-#  define TINYXML_MOD_DLL
-#endif
-
-//#ifndef TINYXML_MOD_STATIC
-//#  define TINYXML_MOD_STATIC
-//#endif
-
-#if defined(TINYXML_MOD_DLL) && defined(TINYXML_MOD_STATIC)
-#  pragma message(">>> ERROR: can not define TINYXML_MOD_DLL and TINYXML_MOD_STATIC at the same time!")
-#  pragma error(">>> ERROR: can not define TINYXML_MOD_DLL and TINYXML_MOD_STATIC at the same time!")
-#endif
+const char* 
+RTPSrcFactory::getNodeTypeId()
+{
+	return "RTPSrc";
+}
+#endif //#ifdef ENABLE_TESTSRC

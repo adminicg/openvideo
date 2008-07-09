@@ -119,6 +119,7 @@ TestSrc::init()
 
     state->width=width;
     state->height=height;
+	state->format=PIXEL_FORMAT(FORMAT_R8G8B8);
 
 	// make a double buffered state
 	for(int i=0; i<2; i++)
