@@ -143,27 +143,27 @@ RTPSrc::init()
 	TaskScheduler* scheduler = BasicTaskScheduler::createNew();
 	if (scheduler == NULL)
 	{
-		logPrintE("Could not create the Live555 scheduler object");
+		logPrintE("Could not create the Live555 scheduler object\n");
 		return;
 	}
 
 	UsageEnvironment* env = BasicUsageEnvironment::createNew(*scheduler);
 	if (env == NULL)
 	{
-		logPrintE("Could not create the Live555 UsageEnvironment object");
+		logPrintE("Could not create the Live555 UsageEnvironment object\n");
 		return;
 	}
 
 	RTSPClient *client = RTSPClient::createNew(*env, 0, "OpenVideo", 0);
 	if (client == NULL)
 	{
-		logPrintE("Could not create the Live555 RTSP client object");
+		logPrintE("Could not create the Live555 RTSP client object\n");
 		return;
 	}
 
-	const char *serverURL = "rtsp://localhost:8554/scout";
+	const char *serverURL = serverUrl.c_str();//"rtsp://localhost:8554/scout";
 	char* SDP = client->describeURL(serverURL);
-	if (SDP) logPrintS("Successfully connected to RTSP stream %s\n", serverURL);
+	if (SDP) logPrintS("Successfully connected to RTSP stream %s\n", serverUrl.c_str());
 	else
 	{
 		logPrintE("Could not create the Live555 SDP client object");
@@ -189,7 +189,7 @@ RTPSrc::init()
 
 			// one second threshold.. change this if you need less lag, but it might
 			// give you more lost packets
-			subsession->rtpSource()->setPacketReorderingThresholdTime(1000000);
+			subsession->rtpSource()->setPacketReorderingThresholdTime(100000);
 
 			// sets up the client connection
 			client->setupMediaSubsession(*subsession);
@@ -243,6 +243,38 @@ RTPSrc::process()
 	srcBuffer->incUpdateCounter();
 }
 
+bool 
+RTPSrc::setParameter(std::string key, std::string value)
+{
+    if(Node::setParameter(key,value))
+        return true;
+
+    if(key=="pixelformat")
+    {
+        //pixelformat = value;
+        return true;
+    }
+
+    if(key=="width")
+    {
+        width=atoi(value.c_str());
+        return true;
+    }
+
+    if(key=="height")
+    {
+        height=atoi(value.c_str());
+        return true;
+    }
+
+    if(key=="serverUrl")
+    {
+        serverUrl = value.c_str();
+        return true;
+    }
+
+    return false;
+}
 
 }  // namespace openvideo
 

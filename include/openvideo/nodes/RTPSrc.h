@@ -80,11 +80,15 @@ public:
 	
 	virtual void initPixelFormats();
 
+    virtual bool setParameter(std::string key, std::string value);
+
  protected:
 	/**
-	*	image widht and height
+	*	image width and height
 	*/
 	int width,height;
+
+    std::string serverUrl;
 
 	/**
 	*	current square position. 
