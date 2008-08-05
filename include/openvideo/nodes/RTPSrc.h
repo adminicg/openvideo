@@ -31,6 +31,7 @@
  /* ======================================================================= */
 #ifndef _RTPSRC_H
 #define _RTPSRC_H
+
 #include <openvideo/openVideo.h>
 
 #ifdef ENABLE_RTPSRC
@@ -42,10 +43,13 @@
 
 #include <liveMedia.hh>
 #include <BasicUsageEnvironment.hh>
+#include <GroupsockHelper.hh>
 
+#ifdef _DEBUG
 # pragma comment(lib,"live555d.lib")
-# pragma comment(lib,"libJPEGd.lib")
-
+#else
+# pragma comment(lib,"live555.lib")
+#endif
 
 namespace openvideo {
 /**
@@ -73,6 +77,8 @@ public:
 	*/
 	virtual void init();
 
+	bool connect();
+
 	/**
 	*	updates the image by moving the three squares by one pixel.
 	*/
@@ -89,6 +95,7 @@ public:
 	int width,height;
 
     std::string serverUrl;
+	unsigned int timeout;		// NOTE: in seconds!
 
 	/**
 	*	current square position. 
@@ -96,12 +103,18 @@ public:
 	int posX,posY;
 	unsigned int updateCtr;
 
-	enum { bufferWidth = 320, bufferHeight = 240 };
+	unsigned int bufferWidth, bufferHeight;
 	unsigned char *buffer;
 
 	HANDLE bufferMutex;
 
 	MediaSubsession *subsession;
+	BasicUsageEnvironment *env;
+	RTSPClient *client;
+	MediaSession *session;
+
+	timeval lastFrame;
+	timeval lastConnectTry;
 };
 
 } //namespace openvideo {

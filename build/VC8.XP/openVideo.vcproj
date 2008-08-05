@@ -128,7 +128,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;&quot;$(TINYXMLMODROOT)/include&quot;;&quot;$(TINYXMLROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(GLEWROOT)\include&quot;;&quot;$(DSVLROOT)/src&quot;;&quot;$(SIMAGEROOT)/include&quot;;&quot;$(OPENCVROOT)/cv/include&quot;;&quot;$(OPENCVROOT)/cvaux/include&quot;;&quot;$(OPENCVROOT)/otherlibs/highgui&quot;;&quot;$(OPENCVROOT)/cxcore/include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ACEROOT)&quot;;&quot;$(OPENVIDEOROOT)/include&quot;;&quot;$(VIDEOWRAPPERROOT)/include&quot;;&quot;$(TINYXMLMODROOT)/src&quot;;&quot;$(TINYXMLMODROOT)/include&quot;;&quot;$(TINYXMLROOT)&quot;;&quot;$(TINYXMLROOT)\include&quot;;&quot;$(GLEWROOT)\include&quot;;&quot;$(DSVLROOT)/src&quot;;&quot;$(SIMAGEROOT)/include&quot;;&quot;$(OPENCVROOT)/cv/include&quot;;&quot;$(OPENCVROOT)/cvaux/include&quot;;&quot;$(OPENCVROOT)/otherlibs/highgui&quot;;&quot;$(OPENCVROOT)/cxcore/include&quot;;&quot;$(LIVE555ROOT)\liveMedia\include&quot;;&quot;$(LIVE555ROOT)\BasicUsageEnvironment\include&quot;;&quot;$(LIVE555ROOT)\groupSock\include&quot;;&quot;$(LIVE555ROOT)\UsageEnvironment\include&quot;"
 				PreprocessorDefinitions="HAVE_CONFIGOV_H; WIN32;NDEBUG;_WINDOWS;_USRDLL;OPENVIDEO_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
@@ -154,7 +154,7 @@
 				AdditionalDependencies="ace.lib"
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/openVideo.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(ACEROOT)\lib&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLROOT)\lib\win32&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;&quot;$(DSVLROOT)/lib&quot;;&quot;$(SIMAGEROOT)/lib/Win32&quot;;&quot;$(SIMAGEROOT)/lib&quot;;&quot;$(LIBJPEGROOT)/lib/Win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib&quot;;&quot;$(OPENCVROOT)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(ACEROOT)\lib&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLROOT)\lib\win32&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;&quot;$(DSVLROOT)/lib&quot;;&quot;$(SIMAGEROOT)/lib/Win32&quot;;&quot;$(SIMAGEROOT)/lib&quot;;&quot;$(LIBJPEGROOT)/lib/Win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib&quot;;&quot;$(OPENCVROOT)\lib&quot;;&quot;$(LIVE555ROOT)/bin&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OPENVIDEOROOT)/lib/win32/openVideo.pdb"
 				SubSystem="2"
