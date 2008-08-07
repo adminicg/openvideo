@@ -103,6 +103,8 @@ RTPSrc::RTPSrc()
     state=new RTPSrcState();
 	bufferWidth = bufferHeight = 0;
     updateCtr = 1;
+    packetReorderTime = 1000000;
+    timeout = 5;
 }
 
 // destructor
@@ -210,8 +212,8 @@ RTPSrc::connect()
 
 			// one second threshold.. change this if you need less lag, but it might
 			// give you more lost packets
-			subsession->rtpSource()->setPacketReorderingThresholdTime(100000);
-
+			subsession->rtpSource()->setPacketReorderingThresholdTime(packetReorderTime);
+            logPrintI("setPacketReorderingThresholdTime %i\n", packetReorderTime);
 			// sets up the client connection
 			client->setupMediaSubsession(*subsession);
 
@@ -266,7 +268,7 @@ RTPSrc::process()
 		timeval now;
 		gettimeofday(&now, NULL);
 
-		if (!sink || (now.tv_sec - lastFrame.tv_sec > 5))
+		if (!sink || (now.tv_sec - lastFrame.tv_sec > timeout))
 		{
 			if (now.tv_sec != lastConnectTry.tv_sec)
 			{
@@ -318,6 +320,11 @@ RTPSrc::setParameter(std::string key, std::string value)
 		timeout = atoi(value.c_str());
 		return true;
 	}
+    else if (key=="packetReorderTime")
+    {
+        packetReorderTime = atoi(value.c_str());
+        return true;
+    }
 
     return false;
 }

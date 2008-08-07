@@ -100,7 +100,7 @@ public:
 	/**
 	*	current square position. 
 	*/
-	int posX,posY;
+	int posX,posY, packetReorderTime;
 	unsigned int updateCtr;
 
 	unsigned int bufferWidth, bufferHeight;
