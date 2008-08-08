@@ -103,12 +103,17 @@ public:
 	int posX,posY, packetReorderTime;
 	unsigned int updateCtr;
 
-	unsigned int bufferWidth, bufferHeight;
-	unsigned char *buffer;
+	unsigned char *videoBuffer;
+	unsigned int videoWidth, videoHeight;
+	HANDLE videoMutex;
 
-	HANDLE bufferMutex;
+	unsigned char *trackingBuffer;
+	unsigned int trackingSize;
+	HANDLE trackingMutex;
 
-	MediaSubsession *subsession;
+	MediaSubsession *subsessionVideo;
+	MediaSubsession *subsessionTracking;
+
 	BasicUsageEnvironment *env;
 	RTSPClient *client;
 	MediaSession *session;

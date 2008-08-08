@@ -97,11 +97,12 @@ public:
 
 // constructor
 RTPSrc::RTPSrc()
-: subsession(NULL), client(NULL), session(NULL)
+	: subsessionVideo(NULL), videoBuffer(NULL), videoWidth(0), videoHeight(0), videoMutex(NULL),
+	  subsessionTracking(NULL), trackingBuffer(NULL), trackingSize(0), trackingMutex(NULL),
+	  client(NULL), session(NULL)
 {
 	name = typeName = "RTPSrc";
     state=new RTPSrcState();
-	bufferWidth = bufferHeight = 0;
     updateCtr = 1;
     packetReorderTime = 1000000;
     timeout = 5;
@@ -153,15 +154,15 @@ RTPSrc::init()
 
 	state->clear();
 
-	state->width=bufferWidth;
-	state->height=bufferHeight;
+	state->width=videoWidth;
+	state->height=videoHeight;
 	state->format=PIXEL_FORMAT(FORMAT_R8G8B8);
 
 	// make a double buffered state
 	for(int i=0; i<2; i++)
 	{
-		unsigned char *pixels = new unsigned char[bufferWidth * bufferHeight * 3];
-		memset(pixels, 255, bufferWidth * bufferHeight * 3);
+		unsigned char *pixels = new unsigned char[videoWidth * videoHeight * 3];
+		memset(pixels, 255, videoWidth * videoHeight * 3);
 
 		reinterpret_cast<RTPSrcState*>(state)->getBuffers().push_back(new RTPSrcBuffer(pixels, state));
 	}
@@ -201,9 +202,10 @@ RTPSrc::connect()
 	}
 
 	MediaSubsessionIterator iter(*session);
+	MediaSubsession *subsession;
 	while ((subsession = iter.next()) != NULL)
 	{
-		if (strcmp(subsession->codecName(), "JPEG") == 0)
+		if (strcmp(subsession->mediumName(), "video") == 0)
 		{
 			if (!subsession->initiate()) continue;
 			logPrintS("Initialized receiver for %s/%s\n", subsession->mediumName(), subsession->codecName());
@@ -219,33 +221,63 @@ RTPSrc::connect()
 
 			client->playMediaSession(*session);
 
-			logPrintS("RTSP stream setup, ready to receive data...\n");
+			logPrintS("RTSP stream setup, ready to receive video data...\n");
 
-			bufferWidth = subsession->videoWidth();
-			bufferHeight = subsession->videoHeight();
-			if (bufferWidth == 0 || bufferHeight == 0)
+			videoWidth = subsession->videoWidth();
+			videoHeight = subsession->videoHeight();
+			if (videoWidth == 0 || videoHeight == 0)
 			{
 				logPrintE("SDP description returned zero-sized video!!!\n");
 				return false;
 			}
 
-			logPrintS("RTSP video stream of size %dx%d (R8G8B8)\n", bufferWidth, bufferHeight);
-			buffer = new unsigned char[bufferWidth * bufferHeight * 3];
-			bufferMutex = CreateMutex(NULL, FALSE, NULL);
-			if (buffer == NULL || bufferMutex == NULL) return false;
+			logPrintS("RTSP video stream of size %dx%d (R8G8B8)\n", videoWidth, videoHeight);
+			videoBuffer = new unsigned char[videoWidth * videoHeight * 3];
+			videoMutex = CreateMutex(NULL, FALSE, NULL);
+			if (videoBuffer == NULL || videoMutex == NULL) return false;
 
-			MemorySink* memSink = MemorySink::createNew(*env, buffer, bufferWidth, bufferHeight, bufferMutex);
+			MemorySinkJPEG* memSink = MemorySinkJPEG::createNew(*env, videoBuffer, videoWidth, videoHeight, videoMutex);
 			subsession->sink = memSink;
 
 			subsession->sink->startPlaying(*(subsession->readSource()), NULL, subsession);
 
-			break;
+			subsessionVideo = subsession;
+		}
+		else if (strcmp(subsession->mediumName(), "custom") == 0)
+		{
+			if (!subsession->initiate()) continue;
+			logPrintS("Initialized receiver for %s/%s\n", subsession->mediumName(), subsession->codecName());
+
+			if (!subsession->rtpSource()) continue;
+
+			// one second threshold.. change this if you need less lag, but it might
+			// give you more lost packets
+			subsession->rtpSource()->setPacketReorderingThresholdTime(100000);
+
+			// sets up the client connection
+			client->setupMediaSubsession(*subsession);
+
+			client->playMediaSession(*session);
+
+			logPrintS("RTSP stream setup, ready to receive tracking data...\n");
+
+			trackingSize = 20;
+			trackingBuffer = new unsigned char[trackingSize];
+			trackingMutex = CreateMutex(NULL, FALSE, NULL);
+			if (trackingBuffer == NULL || trackingMutex == NULL) return false;
+
+			MemorySink* memSink = MemorySink::createNew(*env, trackingBuffer, trackingSize, trackingMutex);
+			subsession->sink = memSink;
+
+			subsession->sink->startPlaying(*(subsession->readSource()), NULL, subsession);
+
+			subsessionTracking = subsession;
 		}
 	}
 
-	if (subsession == NULL)
+	if (!subsessionVideo || !subsessionTracking)
 	{
-		logPrintE("Could not find a valid JPEG video session!!!\n");
+		logPrintE("Could not find a valid scout stream!!!\n");
 		return false;
 	}
 
@@ -259,49 +291,51 @@ RTPSrc::connect()
 void 
 RTPSrc::process()
 {
-	if (!buffer || !subsession) return;
-
-	MemorySink *sink = (MemorySink*)subsession->sink;
-
-	if (!sink || !sink->hasNewFrame())
+	if (subsessionVideo && videoBuffer)
 	{
-		timeval now;
-		gettimeofday(&now, NULL);
+		MemorySinkJPEG *sink = (MemorySinkJPEG*)subsessionVideo->sink;
 
-		if (!sink || (now.tv_sec - lastFrame.tv_sec > timeout))
+		if (!sink || !sink->hasNewFrame())
 		{
-			if (now.tv_sec != lastConnectTry.tv_sec)
+			timeval now;
+			gettimeofday(&now, NULL);
+
+			if (!sink || (now.tv_sec - lastFrame.tv_sec > timeout))
 			{
-				lastConnectTry = now;
-				connect();
+				if (now.tv_sec != lastConnectTry.tv_sec)
+				{
+					lastConnectTry = now;
+					connect();
+				}
 			}
 		}
-	}
-	else
-	{
-		using namespace std;
-		//cerr << "errr" << endl;
-		RTPSrcBuffer* srcBuffer = reinterpret_cast<RTPSrcBuffer*>(state->findFreeBuffer());
-
-		if(!srcBuffer)
+		else
 		{
-			logPrintW("RTPSrc all buffers locked, can not read a new camera image!\n");
-			return;
+			using namespace std;
+			//cerr << "errr" << endl;
+			RTPSrcBuffer* srcBuffer = reinterpret_cast<RTPSrcBuffer*>(state->findFreeBuffer());
+
+			if(!srcBuffer)
+			{
+				logPrintW("RTPSrc all buffers locked, can not read a new camera image!\n");
+				return;
+			}
+
+			reinterpret_cast<RTPSrcState*>(state)->setCurrentBuffer(srcBuffer);
+			updateCtr++;
+
+			unsigned char* img = const_cast<unsigned char*>(srcBuffer->getPixels());
+
+			sink->Lock();
+			memcpy(img, videoBuffer, videoWidth*videoHeight*3);
+			sink->Release();
+
+			gettimeofday(&lastFrame, NULL);
+
+			srcBuffer->incUpdateCounter();
 		}
-
-		reinterpret_cast<RTPSrcState*>(state)->setCurrentBuffer(srcBuffer);
-		updateCtr++;
-
-		unsigned char* img = const_cast<unsigned char*>(srcBuffer->getPixels());
-
-		sink->Lock();
-		memcpy(img, buffer, bufferWidth*bufferHeight*3);
-		sink->Release();
-
-		gettimeofday(&lastFrame, NULL);
-
-		srcBuffer->incUpdateCounter();
 	}
+
 }
 
 bool 
