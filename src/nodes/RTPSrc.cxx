@@ -99,7 +99,8 @@ public:
 RTPSrc::RTPSrc()
 	: subsessionVideo(NULL), videoBuffer(NULL), videoWidth(0), videoHeight(0), videoMutex(NULL),
 	  subsessionTracking(NULL), trackingBuffer(NULL), trackingSize(0), trackingMutex(NULL),
-	  client(NULL), session(NULL)
+	  client(NULL), session(NULL), currentStatus(STATUS_DISCONNECTED), stateInitialized(false),
+	  hThread(NULL)
 {
 	name = typeName = "RTPSrc";
     state=new RTPSrcState();
@@ -141,30 +142,6 @@ RTPSrc::init()
 	{
 		logPrintE("Could not create the Live555 UsageEnvironment object\n");
 		return;
-	}
-
-	gettimeofday(&lastConnectTry, NULL);
-	if (!connect())
-	{
-		logPrintE("Could not initialize Live555 RTSP video\n");
-		return;
-	}
-
-	CreateThread(NULL, 0, ServerThread, env, 0, NULL);
-
-	state->clear();
-
-	state->width=videoWidth;
-	state->height=videoHeight;
-	state->format=PIXEL_FORMAT(FORMAT_R8G8B8);
-
-	// make a double buffered state
-	for(int i=0; i<2; i++)
-	{
-		unsigned char *pixels = new unsigned char[videoWidth * videoHeight * 3];
-		memset(pixels, 255, videoWidth * videoHeight * 3);
-
-		reinterpret_cast<RTPSrcState*>(state)->getBuffers().push_back(new RTPSrcBuffer(pixels, state));
 	}
 
 	posX=posY=0;
@@ -277,11 +254,33 @@ RTPSrc::connect()
 
 	if (!subsessionVideo || !subsessionTracking)
 	{
-		logPrintE("Could not find a valid scout stream!!!\n");
+		logPrintI("Could not find a valid scout server, scout seems to be offline.\n");
 		return false;
 	}
 
+	if (!stateInitialized)
+	{
+		state->clear();
+		state->width=videoWidth;
+		state->height=videoHeight;
+		state->format=PIXEL_FORMAT(FORMAT_R8G8B8);
+
+		// make a double buffered state
+		for(int i=0; i<2; i++)
+		{
+			unsigned char *pixels = new unsigned char[videoWidth * videoHeight * 3];
+			memset(pixels, 255, videoWidth * videoHeight * 3);
+
+			reinterpret_cast<RTPSrcState*>(state)->getBuffers().push_back(new RTPSrcBuffer(pixels, state));
+		}
+
+		stateInitialized = true;
+	}
+
 	gettimeofday(&lastFrame, NULL);
+	currentStatus = STATUS_CONNECTED;
+
+	hThread = CreateThread(NULL, 0, ServerThread, env, 0, NULL);
 
 	return true;
 }
@@ -291,51 +290,69 @@ RTPSrc::connect()
 void 
 RTPSrc::process()
 {
-	if (subsessionVideo && videoBuffer)
+	if (currentStatus == STATUS_DISCONNECTED)
 	{
-		MemorySinkJPEG *sink = (MemorySinkJPEG*)subsessionVideo->sink;
+		timeval now;
+		gettimeofday(&now, NULL);
 
-		if (!sink || !sink->hasNewFrame())
+		if (now.tv_sec != lastConnectTry.tv_sec)
 		{
-			timeval now;
-			gettimeofday(&now, NULL);
-
-			if (!sink || (now.tv_sec - lastFrame.tv_sec > timeout))
-			{
-				if (now.tv_sec != lastConnectTry.tv_sec)
-				{
-					lastConnectTry = now;
-					connect();
-				}
-			}
-		}
-		else
-		{
-			using namespace std;
-			//cerr << "errr" << endl;
-			RTPSrcBuffer* srcBuffer = reinterpret_cast<RTPSrcBuffer*>(state->findFreeBuffer());
-
-			if(!srcBuffer)
-			{
-				logPrintW("RTPSrc all buffers locked, can not read a new camera image!\n");
-				return;
-			}
-
-			reinterpret_cast<RTPSrcState*>(state)->setCurrentBuffer(srcBuffer);
-			updateCtr++;
-
-			unsigned char* img = const_cast<unsigned char*>(srcBuffer->getPixels());
-
-			sink->Lock();
-			memcpy(img, videoBuffer, videoWidth*videoHeight*3);
-			sink->Release();
-
-			gettimeofday(&lastFrame, NULL);
-
-			srcBuffer->incUpdateCounter();
+			lastConnectTry = now;
+			connect();
 		}
 	}
 
+	if (currentStatus == STATUS_CONNECTED)
+	{
+		if (subsessionVideo && videoBuffer)
+		{
+			MemorySinkJPEG *sink = (MemorySinkJPEG*)subsessionVideo->sink;
+
+			if (!sink || !sink->hasNewFrame())
+			{
+				timeval now;
+				gettimeofday(&now, NULL);
+
+				if (!sink || (now.tv_sec - lastFrame.tv_sec > timeout))
+				{
+					subsessionVideo = NULL;
+					
+					if (hThread)
+					{
+						TerminateThread(hThread, 0);
+						hThread = NULL;
+					}
+
+					currentStatus = STATUS_DISCONNECTED;
+				}
+			}
+			else
+			{
+				using namespace std;
+				//cerr << "errr" << endl;
+				RTPSrcBuffer* srcBuffer = reinterpret_cast<RTPSrcBuffer*>(state->findFreeBuffer());
+
+				if(!srcBuffer)
+				{
+					logPrintW("RTPSrc all buffers locked, can not read a new camera image!\n");
+					return;
+				}
+
+				reinterpret_cast<RTPSrcState*>(state)->setCurrentBuffer(srcBuffer);
+				updateCtr++;
+
+				unsigned char* img = const_cast<unsigned char*>(srcBuffer->getPixels());
+
+				sink->Lock();
+				memcpy(img, videoBuffer, videoWidth*videoHeight*3);
+				sink->Release();
+
+				gettimeofday(&lastFrame, NULL);
+
+				srcBuffer->incUpdateCounter();
+			}
+		}
+	}
 }
 
 bool 

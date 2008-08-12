@@ -88,6 +88,9 @@ public:
 
     virtual bool setParameter(std::string key, std::string value);
 
+	enum STATUS { STATUS_CONNECTED, STATUS_DISCONNECTED };
+	unsigned int getStatus() { return currentStatus; }
+
  protected:
 	/**
 	*	image width and height
@@ -120,6 +123,12 @@ public:
 
 	timeval lastFrame;
 	timeval lastConnectTry;
+
+	unsigned int currentStatus;
+
+	bool stateInitialized;
+
+	HANDLE hThread;
 };
 
 } //namespace openvideo {
