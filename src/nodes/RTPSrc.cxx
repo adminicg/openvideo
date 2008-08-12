@@ -59,9 +59,10 @@ class RTPSrcBuffer : public Buffer
 {
 friend class RTPSrc;
 public:
-	RTPSrcBuffer(unsigned char* pixbuffer, State* state)
+	RTPSrcBuffer(unsigned char* pixbuffer, unsigned char *trackBuffer, State* state)
 	{
 		buffer = pixbuffer;
+		usrData = trackBuffer;
 		width = state->width;
 		height = state->height;
 		format = state->format;
@@ -71,6 +72,9 @@ public:
 	{
 		delete buffer;
 		buffer = NULL;
+
+		delete usrData;
+		usrData = NULL;
 	}
 
 	//void setState(Frame::STATE newstate)  {  state = newstate;  }
@@ -238,7 +242,7 @@ RTPSrc::connect()
 
 			logPrintS("RTSP stream setup, ready to receive tracking data...\n");
 
-			trackingSize = 20;
+			trackingSize = 100;
 			trackingBuffer = new unsigned char[trackingSize];
 			trackingMutex = CreateMutex(NULL, FALSE, NULL);
 			if (trackingBuffer == NULL || trackingMutex == NULL) return false;
@@ -269,9 +273,12 @@ RTPSrc::connect()
 		for(int i=0; i<2; i++)
 		{
 			unsigned char *pixels = new unsigned char[videoWidth * videoHeight * 3];
-			memset(pixels, 255, videoWidth * videoHeight * 3);
+			memset(pixels, 0, videoWidth * videoHeight * 3);
 
-			reinterpret_cast<RTPSrcState*>(state)->getBuffers().push_back(new RTPSrcBuffer(pixels, state));
+			unsigned char *tracking = new unsigned char[trackingSize];
+			memset(tracking, 0, trackingSize);
+
+			reinterpret_cast<RTPSrcState*>(state)->getBuffers().push_back(new RTPSrcBuffer(pixels, tracking, state));
 		}
 
 		stateInitialized = true;
@@ -304,18 +311,20 @@ RTPSrc::process()
 
 	if (currentStatus == STATUS_CONNECTED)
 	{
-		if (subsessionVideo && videoBuffer)
+		if (subsessionVideo && videoBuffer && subsessionTracking && trackingBuffer)
 		{
-			MemorySinkJPEG *sink = (MemorySinkJPEG*)subsessionVideo->sink;
+			MemorySinkJPEG *sinkVideo = (MemorySinkJPEG*)subsessionVideo->sink;
+			MemorySink *sinkTracking = (MemorySink*)subsessionTracking->sink;
 
-			if (!sink || !sink->hasNewFrame())
+			if (!sinkVideo || !sinkVideo->hasNewFrame())
 			{
 				timeval now;
 				gettimeofday(&now, NULL);
 
-				if (!sink || (now.tv_sec - lastFrame.tv_sec > timeout))
+				if (!sinkVideo || (now.tv_sec - lastFrame.tv_sec > timeout))
 				{
 					subsessionVideo = NULL;
+					subsessionTracking = NULL;
 					
 					if (hThread)
 					{
@@ -328,8 +337,6 @@ RTPSrc::process()
 			}
 			else
 			{
-				using namespace std;
-				//cerr << "errr" << endl;
 				RTPSrcBuffer* srcBuffer = reinterpret_cast<RTPSrcBuffer*>(state->findFreeBuffer());
 
 				if(!srcBuffer)
@@ -338,18 +345,29 @@ RTPSrc::process()
 					return;
 				}
 
-				reinterpret_cast<RTPSrcState*>(state)->setCurrentBuffer(srcBuffer);
-				updateCtr++;
+				if (sinkVideo)
+				{
+					unsigned char* img = const_cast<unsigned char*>(srcBuffer->getPixels());
 
-				unsigned char* img = const_cast<unsigned char*>(srcBuffer->getPixels());
+					sinkVideo->Lock();
+					memcpy(img, videoBuffer, videoWidth*videoHeight*3);
+					sinkVideo->Release();
+				}
 
-				sink->Lock();
-				memcpy(img, videoBuffer, videoWidth*videoHeight*3);
-				sink->Release();
+				if (sinkTracking)
+				{
+					unsigned char* track = (unsigned char*)(srcBuffer->getUserData());
+
+					sinkTracking->Lock();
+					memcpy(track, trackingBuffer, trackingSize);
+					sinkTracking->Release();
+				}
 
 				gettimeofday(&lastFrame, NULL);
 
+				reinterpret_cast<RTPSrcState*>(state)->setCurrentBuffer(srcBuffer);
 				srcBuffer->incUpdateCounter();
+				updateCtr++;
 			}
 		}
 	}

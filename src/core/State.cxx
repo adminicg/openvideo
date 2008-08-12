@@ -39,7 +39,7 @@
 namespace openvideo {
 
 
-Buffer::Buffer() : buffer(NULL)
+Buffer::Buffer() : buffer(NULL), usrData(NULL)
 {
 	lockCtr = 0;
 	updateCtr = 0;

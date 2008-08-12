@@ -77,6 +77,9 @@ public:
 
 	virtual unsigned int getUpdateCounter() const  {  return updateCtr;  }
 
+	virtual void setUserData(void *ptr) { usrData = ptr; }
+	virtual void *getUserData() const { return usrData; }
+
 protected:
 	unsigned char*		buffer;
 	int					lockCtr;
@@ -84,6 +87,8 @@ protected:
 	ACE_Thread_Mutex*	mutex;
 	int					width,height;
 	PIXEL_FORMAT		format;
+
+	void*				usrData;
 };
 
 
