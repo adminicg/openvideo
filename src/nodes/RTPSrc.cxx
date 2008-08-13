@@ -110,7 +110,7 @@ RTPSrc::RTPSrc()
     state=new RTPSrcState();
     updateCtr = 1;
     packetReorderTime = 1000000;
-    timeout = 5;
+    timeout = 5000;
 }
 
 // destructor
@@ -171,14 +171,14 @@ RTPSrc::connect()
 		Medium::close(client);
 		client = NULL;
 
-		logPrintE("Could not create the Live555 SDP client object");
+		logPrintE("Could not create the Live555 SDP client object\n");
 		return false;
 	}
 
 	session = MediaSession::createNew(*env, SDP);
 	if (session == NULL)
 	{
-		logPrintE("Could not create the Live555 media session");
+		logPrintE("Could not create the Live555 media session\n");
 		return false;
 	}
 
@@ -284,7 +284,8 @@ RTPSrc::connect()
 		stateInitialized = true;
 	}
 
-	gettimeofday(&lastFrame, NULL);
+	lastFrame = GetTickCount();
+
 	currentStatus = STATUS_CONNECTED;
 
 	hThread = CreateThread(NULL, 0, ServerThread, env, 0, NULL);
@@ -299,10 +300,10 @@ RTPSrc::process()
 {
 	if (currentStatus == STATUS_DISCONNECTED)
 	{
-		timeval now;
-		gettimeofday(&now, NULL);
+		unsigned int now = GetTickCount();
 
-		if (now.tv_sec != lastConnectTry.tv_sec)
+		// try to reconnect every 2 seconds..
+		if (now - lastConnectTry > 2000)
 		{
 			lastConnectTry = now;
 			connect();
@@ -318,10 +319,9 @@ RTPSrc::process()
 
 			if (!sinkVideo || !sinkVideo->hasNewFrame())
 			{
-				timeval now;
-				gettimeofday(&now, NULL);
+				unsigned int now = GetTickCount();
 
-				if (!sinkVideo || (now.tv_sec - lastFrame.tv_sec > timeout))
+				if (!sinkVideo || ((now - lastFrame) > timeout))
 				{
 					subsessionVideo = NULL;
 					subsessionTracking = NULL;
@@ -345,29 +345,36 @@ RTPSrc::process()
 					return;
 				}
 
-				if (sinkVideo)
+				if (sinkVideo->isCorruptedFrame())
 				{
-					unsigned char* img = const_cast<unsigned char*>(srcBuffer->getPixels());
-
-					sinkVideo->Lock();
-					memcpy(img, videoBuffer, videoWidth*videoHeight*3);
-					sinkVideo->Release();
+					logPrintW("RTPSrc didn't output a frame: JPEG was corrupted\n");
 				}
-
-				if (sinkTracking)
+				else
 				{
-					unsigned char* track = (unsigned char*)(srcBuffer->getUserData());
+					if (sinkVideo)
+					{
+						unsigned char* img = const_cast<unsigned char*>(srcBuffer->getPixels());
 
-					sinkTracking->Lock();
-					memcpy(track, trackingBuffer, trackingSize);
-					sinkTracking->Release();
+						sinkVideo->Lock();
+						memcpy(img, videoBuffer, videoWidth*videoHeight*3);
+						sinkVideo->Release();
+					}
+
+					if (sinkTracking)
+					{
+						unsigned char* track = (unsigned char*)(srcBuffer->getUserData());
+
+						sinkTracking->Lock();
+						memcpy(track, trackingBuffer, trackingSize);
+						sinkTracking->Release();
+					}
 				}
-
-				gettimeofday(&lastFrame, NULL);
 
 				reinterpret_cast<RTPSrcState*>(state)->setCurrentBuffer(srcBuffer);
 				srcBuffer->incUpdateCounter();
 				updateCtr++;
+
+				lastFrame = GetTickCount();
 			}
 		}
 	}
@@ -386,7 +393,8 @@ RTPSrc::setParameter(std::string key, std::string value)
     }
 	else if (key=="timeout")
 	{
-		timeout = atoi(value.c_str());
+		// NOTE: convert from seconds to milliseconds..
+		timeout = atoi(value.c_str()) * 1000;
 		return true;
 	}
     else if (key=="packetReorderTime")

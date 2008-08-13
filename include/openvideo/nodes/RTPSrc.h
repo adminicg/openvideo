@@ -121,8 +121,8 @@ public:
 	RTSPClient *client;
 	MediaSession *session;
 
-	timeval lastFrame;
-	timeval lastConnectTry;
+	unsigned int lastFrame;
+	unsigned int lastConnectTry;
 
 	unsigned int currentStatus;
 
