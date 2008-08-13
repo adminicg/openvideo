@@ -88,8 +88,9 @@ public:
 
     virtual bool setParameter(std::string key, std::string value);
 
-	enum STATUS { STATUS_CONNECTED, STATUS_DISCONNECTED };
-	unsigned int getStatus() { return currentStatus; }
+	enum STATUS { STATUS_CONNECTED, STATUS_CONNECTING, STATUS_DISCONNECTED };
+	STATUS getStatus() { return currentStatus; }
+	void setStatus(STATUS s);
 
  protected:
 	/**
@@ -124,7 +125,8 @@ public:
 	unsigned int lastFrame;
 	unsigned int lastConnectTry;
 
-	unsigned int currentStatus;
+	STATUS currentStatus;
+	HANDLE currentStatusMutex;
 
 	bool stateInitialized;
 

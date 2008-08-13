@@ -53,6 +53,12 @@ DWORD WINAPI ServerThread(LPVOID lpParam)
 	return 0;
 }
 
+DWORD WINAPI ConnectThread(LPVOID lpParam)
+{
+	RTPSrc* src = (RTPSrc*)lpParam;
+	return src->connect();
+}
+
 
 // Allows TestSrc to set internal data of openvideo::Frame
 class RTPSrcBuffer : public Buffer
@@ -111,6 +117,8 @@ RTPSrc::RTPSrc()
     updateCtr = 1;
     packetReorderTime = 1000000;
     timeout = 5000;
+
+	currentStatusMutex = CreateMutex(NULL, FALSE, NULL);
 }
 
 // destructor
@@ -120,6 +128,16 @@ RTPSrc::~RTPSrc()
 
 
 }
+
+
+void
+RTPSrc::setStatus(STATUS s)
+{
+	WaitForSingleObject(currentStatusMutex, INFINITE);
+	currentStatus = s;
+	ReleaseMutex(currentStatusMutex);
+}
+
 
 void 
 RTPSrc::initPixelFormats()
@@ -160,6 +178,7 @@ RTPSrc::connect()
 	if (client == NULL)
 	{
 		logPrintE("Could not create the Live555 RTSP client object\n");
+		setStatus(STATUS_DISCONNECTED);
 		return false;
 	}
 
@@ -172,6 +191,7 @@ RTPSrc::connect()
 		client = NULL;
 
 		logPrintE("Could not create the Live555 SDP client object\n");
+		setStatus(STATUS_DISCONNECTED);
 		return false;
 	}
 
@@ -179,6 +199,7 @@ RTPSrc::connect()
 	if (session == NULL)
 	{
 		logPrintE("Could not create the Live555 media session\n");
+		setStatus(STATUS_DISCONNECTED);
 		return false;
 	}
 
@@ -209,6 +230,7 @@ RTPSrc::connect()
 			if (videoWidth == 0 || videoHeight == 0)
 			{
 				logPrintE("SDP description returned zero-sized video!!!\n");
+				setStatus(STATUS_DISCONNECTED);
 				return false;
 			}
 
@@ -259,6 +281,7 @@ RTPSrc::connect()
 	if (!subsessionVideo || !subsessionTracking)
 	{
 		logPrintI("Could not find a valid scout server, scout seems to be offline.\n");
+		setStatus(STATUS_DISCONNECTED);
 		return false;
 	}
 
@@ -286,7 +309,7 @@ RTPSrc::connect()
 
 	lastFrame = GetTickCount();
 
-	currentStatus = STATUS_CONNECTED;
+	setStatus(STATUS_CONNECTED);
 
 	hThread = CreateThread(NULL, 0, ServerThread, env, 0, NULL);
 
@@ -298,84 +321,94 @@ RTPSrc::connect()
 void 
 RTPSrc::process()
 {
-	if (currentStatus == STATUS_DISCONNECTED)
+	switch (getStatus())
 	{
-		unsigned int now = GetTickCount();
+		case STATUS_CONNECTING:
+			return;
 
-		// try to reconnect every 2 seconds..
-		if (now - lastConnectTry > 2000)
+		case STATUS_DISCONNECTED:
 		{
-			lastConnectTry = now;
-			connect();
-		}
-	}
+			unsigned int now = GetTickCount();
 
-	if (currentStatus == STATUS_CONNECTED)
-	{
-		if (subsessionVideo && videoBuffer && subsessionTracking && trackingBuffer)
-		{
-			MemorySinkJPEG *sinkVideo = (MemorySinkJPEG*)subsessionVideo->sink;
-			MemorySink *sinkTracking = (MemorySink*)subsessionTracking->sink;
-
-			if (!sinkVideo || !sinkVideo->hasNewFrame())
+			// try to reconnect every 2 seconds..
+			if (now - lastConnectTry > 2000)
 			{
-				unsigned int now = GetTickCount();
+				lastConnectTry = now;
 
-				if (!sinkVideo || ((now - lastFrame) > timeout))
-				{
-					subsessionVideo = NULL;
-					subsessionTracking = NULL;
-					
-					if (hThread)
-					{
-						TerminateThread(hThread, 0);
-						hThread = NULL;
-					}
-
-					currentStatus = STATUS_DISCONNECTED;
-				}
+				setStatus(STATUS_CONNECTING);
+				CreateThread(NULL, 0, ConnectThread, this, 0, NULL);
 			}
-			else
+		}
+		break;
+
+		case STATUS_CONNECTED:
+		{
+			if (subsessionVideo && videoBuffer && subsessionTracking && trackingBuffer)
 			{
-				RTPSrcBuffer* srcBuffer = reinterpret_cast<RTPSrcBuffer*>(state->findFreeBuffer());
+				MemorySinkJPEG *sinkVideo = (MemorySinkJPEG*)subsessionVideo->sink;
+				MemorySink *sinkTracking = (MemorySink*)subsessionTracking->sink;
 
-				if(!srcBuffer)
+				if (!sinkVideo || !sinkVideo->hasNewFrame())
 				{
-					logPrintW("RTPSrc all buffers locked, can not read a new camera image!\n");
-					return;
-				}
+					unsigned int now = GetTickCount();
 
-				if (sinkVideo->isCorruptedFrame())
-				{
-					logPrintW("RTPSrc didn't output a frame: JPEG was corrupted\n");
+					if (!sinkVideo || ((now - lastFrame) > timeout))
+					{
+						subsessionVideo = NULL;
+						subsessionTracking = NULL;
+						
+						if (hThread)
+						{
+							TerminateThread(hThread, 0);
+							hThread = NULL;
+						}
+
+						setStatus(STATUS_DISCONNECTED);
+					}
 				}
 				else
 				{
-					if (sinkVideo)
-					{
-						unsigned char* img = const_cast<unsigned char*>(srcBuffer->getPixels());
+					RTPSrcBuffer* srcBuffer = reinterpret_cast<RTPSrcBuffer*>(state->findFreeBuffer());
 
-						sinkVideo->Lock();
-						memcpy(img, videoBuffer, videoWidth*videoHeight*3);
-						sinkVideo->Release();
+					if(!srcBuffer)
+					{
+						logPrintW("RTPSrc all buffers locked, can not read a new camera image!\n");
+						return;
 					}
 
-					if (sinkTracking)
+					if (sinkVideo->isCorruptedFrame())
 					{
-						unsigned char* track = (unsigned char*)(srcBuffer->getUserData());
-
-						sinkTracking->Lock();
-						memcpy(track, trackingBuffer, trackingSize);
-						sinkTracking->Release();
+						logPrintW("RTPSrc didn't output a frame: JPEG was corrupted\n");
 					}
+					else
+					{
+						if (sinkVideo)
+						{
+							unsigned char* img = const_cast<unsigned char*>(srcBuffer->getPixels());
+
+							sinkVideo->Lock();
+							memcpy(img, videoBuffer, videoWidth*videoHeight*3);
+							sinkVideo->Release();
+						}
+
+						if (sinkTracking)
+						{
+							unsigned char* track = (unsigned char*)(srcBuffer->getUserData());
+
+							sinkTracking->Lock();
+							memcpy(track, trackingBuffer, trackingSize);
+							sinkTracking->Release();
+						}
+					}
+
+					reinterpret_cast<RTPSrcState*>(state)->setCurrentBuffer(srcBuffer);
+					srcBuffer->incUpdateCounter();
+					updateCtr++;
+
+					lastFrame = GetTickCount();
 				}
-
-				reinterpret_cast<RTPSrcState*>(state)->setCurrentBuffer(srcBuffer);
-				srcBuffer->incUpdateCounter();
-				updateCtr++;
-
-				lastFrame = GetTickCount();
 			}
+			break;
 		}
 	}
 }
