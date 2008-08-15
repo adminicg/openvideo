@@ -110,13 +110,14 @@ RTPSrc::RTPSrc()
 	: subsessionVideo(NULL), videoBuffer(NULL), videoWidth(0), videoHeight(0), videoMutex(NULL),
 	  subsessionTracking(NULL), trackingBuffer(NULL), trackingSize(0), trackingMutex(NULL),
 	  client(NULL), session(NULL), currentStatus(STATUS_DISCONNECTED), stateInitialized(false),
-	  hThread(NULL)
+	  hThread(NULL), scheduler(NULL), env(NULL)
 {
 	name = typeName = "RTPSrc";
     state=new RTPSrcState();
     updateCtr = 1;
     packetReorderTime = 1000000;
     timeout = 5000;
+	reconnectRate = 3000;	// try to reconnect every 3 seconds..
 
 	currentStatusMutex = CreateMutex(NULL, FALSE, NULL);
 }
@@ -150,22 +151,6 @@ RTPSrc::init()
 {
     logPrintS("Building RTPSrc\n");
 
-	// Begin by setting up our usage environment:
-	logPrintS("Initializing Live555\n");
-	TaskScheduler* scheduler = BasicTaskScheduler::createNew();
-	if (scheduler == NULL)
-	{
-		logPrintE("Could not create the Live555 scheduler object\n");
-		return;
-	}
-
-	env = BasicUsageEnvironment::createNew(*scheduler);
-	if (env == NULL)
-	{
-		logPrintE("Could not create the Live555 UsageEnvironment object\n");
-		return;
-	}
-
 	posX=posY=0;
 }
 
@@ -174,7 +159,25 @@ RTPSrc::init()
 bool
 RTPSrc::connect()
 {
-	client = RTSPClient::createNew(*env, 0, "OpenVideo", 0);
+	// Begin by setting up our usage environment:
+	logPrintS("Initializing Live555\n");
+	scheduler = BasicTaskScheduler::createNew();
+	if (scheduler == NULL)
+	{
+		logPrintE("Could not create the Live555 scheduler object\n");
+		setStatus(STATUS_DISCONNECTED);
+		return false;
+	}
+
+	env = BasicUsageEnvironment::createNew(*scheduler);
+	if (env == NULL)
+	{
+		logPrintE("Could not create the Live555 UsageEnvironment object\n");
+		setStatus(STATUS_DISCONNECTED);
+		return false;
+	}
+
+	client = RTSPClient::createNew(*env, 3, "OpenVideo", 0);
 	if (client == NULL)
 	{
 		logPrintE("Could not create the Live555 RTSP client object\n");
@@ -255,7 +258,7 @@ RTPSrc::connect()
 
 			// one second threshold.. change this if you need less lag, but it might
 			// give you more lost packets
-			subsession->rtpSource()->setPacketReorderingThresholdTime(100000);
+			subsession->rtpSource()->setPacketReorderingThresholdTime(packetReorderTime);
 
 			// sets up the client connection
 			client->setupMediaSubsession(*subsession);
@@ -317,6 +320,35 @@ RTPSrc::connect()
 }
 
 
+bool
+RTPSrc::disconnect()
+{
+	if (subsessionVideo)
+	{
+		subsessionVideo->sink->stopPlaying();
+		Medium::close(subsessionVideo->sink);
+		subsessionVideo = NULL;
+	}
+
+	if (subsessionTracking)
+	{
+		subsessionTracking->sink->stopPlaying();
+		Medium::close(subsessionTracking->sink);
+		subsessionTracking = NULL;
+	}
+
+	if (client) Medium::close(client);
+
+	if (scheduler) delete scheduler;
+	if (env) env->reclaim();
+
+	//if (hThread) TerminateThread(hThread, 0);
+	hThread = NULL;
+
+	return true;
+}
+
+
 
 void 
 RTPSrc::process()
@@ -330,8 +362,8 @@ RTPSrc::process()
 		{
 			unsigned int now = GetTickCount();
 
-			// try to reconnect every 2 seconds..
-			if (now - lastConnectTry > 2000)
+			// try to reconnect every reconnectRate uSeconds..
+			if (now - lastConnectTry > reconnectRate)
 			{
 				lastConnectTry = now;
 
@@ -425,6 +457,12 @@ RTPSrc::setParameter(std::string key, std::string value)
         return true;
     }
 	else if (key=="timeout")
+	{
+		// NOTE: convert from seconds to milliseconds..
+		timeout = atoi(value.c_str()) * 1000;
+		return true;
+	}
+	else if (key=="reconnectRate")
 	{
 		// NOTE: convert from seconds to milliseconds..
 		timeout = atoi(value.c_str()) * 1000;

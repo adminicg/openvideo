@@ -78,6 +78,7 @@ public:
 	virtual void init();
 
 	bool connect();
+	bool disconnect();
 
 	/**
 	*	updates the image by moving the three squares by one pixel.
@@ -99,7 +100,8 @@ public:
 	int width,height;
 
     std::string serverUrl;
-	unsigned int timeout;		// NOTE: in seconds!
+	unsigned int timeout;		// NOTE: in MILLIseconds!
+	unsigned int reconnectRate;	// NOTE: in MILLIseconds (time before a new reconnect trial)!
 
 	/**
 	*	current square position. 
@@ -118,6 +120,7 @@ public:
 	MediaSubsession *subsessionVideo;
 	MediaSubsession *subsessionTracking;
 
+	TaskScheduler* scheduler;
 	BasicUsageEnvironment *env;
 	RTSPClient *client;
 	MediaSession *session;
