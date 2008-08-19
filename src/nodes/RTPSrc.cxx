@@ -193,7 +193,7 @@ RTPSrc::connect()
 		Medium::close(client);
 		client = NULL;
 
-		logPrintE("Could not create the Live555 SDP client object\n");
+		logPrintD("Could not create the Live555 SDP client object\n");
 		setStatus(STATUS_DISCONNECTED);
 		return false;
 	}
@@ -267,7 +267,7 @@ RTPSrc::connect()
 
 			logPrintS("RTSP stream setup, ready to receive tracking data...\n");
 
-			trackingSize = 100;
+			trackingSize = 256;
 			trackingBuffer = new unsigned char[trackingSize];
 			trackingMutex = CreateMutex(NULL, FALSE, NULL);
 			if (trackingBuffer == NULL || trackingMutex == NULL) return false;
@@ -368,7 +368,8 @@ RTPSrc::process()
 				lastConnectTry = now;
 
 				setStatus(STATUS_CONNECTING);
-				CreateThread(NULL, 0, ConnectThread, this, 0, NULL);
+				HANDLE hThread = CreateThread(NULL, 0, ConnectThread, this, 0, NULL);
+                SetThreadPriority(hThread, -1);
 			}
 		}
 		break;
@@ -465,7 +466,7 @@ RTPSrc::setParameter(std::string key, std::string value)
 	else if (key=="reconnectRate")
 	{
 		// NOTE: convert from seconds to milliseconds..
-		timeout = atoi(value.c_str()) * 1000;
+		reconnectRate = atoi(value.c_str()) * 1000;
 		return true;
 	}
     else if (key=="packetReorderTime")
