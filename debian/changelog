@@ -1,3 +1,9 @@
+libopenvideo (1.0-7) unstable; urgency=low
+
+  * version built using CMake 
+
+ -- Alexander Bornik <bornik@zarathustra.icg.tu-graz.ac.at>  Thu, 06 Nov 2008 10:35:00 +0100
+
 libopenvideo (1.0-6) unstable; urgency=low
 
   * new version

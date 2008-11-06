@@ -9,23 +9,22 @@ Package: libopenvideo1
 Architecture: any
 Depends: ${shlibs:Depends}
 Description: OpenVideo video stream transport library (library)
- OpenVideo
+  OpenVideo is a general data integration and processing software with special support for video data. It implements a hardware abstraction layer by interfacing several different device drivers either directly or through the functionality of a third party video libraries. OpenVideo is designed to be as extensible and easily configurable as possible. OpenVideo is currently implemented on windows and on linux systems.
 
 Package: libopenvideo1-dev
 Architecture: any 
 Depends: libopenvideo1 (= ${Source-Version}), pkg-config
 Description: OpenVideo video stream transport library (development)
- OpenVideo
+  OpenVideo is a general data integration and processing software with special support for video data. It implements a hardware abstraction layer by interfacing several different device drivers either directly or through the functionality of a third party video libraries. OpenVideo is designed to be as extensible and easily configurable as possible. OpenVideo is currently implemented on windows and on linux systems.
 
 Package: libopenvideo1-runtime
 Architecture: any
 Depends: libopenvideo1 (= ${Source-Version}), ${shlibs:Depends}
 Description: OpenVideo video stream transport library (runtime)
- OpenVideo
+  OpenVideo is a general data integration and processing software with special support for video data. It implements a hardware abstraction layer by interfacing several different device drivers either directly or through the functionality of a third party video libraries. OpenVideo is designed to be as extensible and easily configurable as possible. OpenVideo is currently implemented on windows and on linux systems.
 
-Package: libopenvideo1-doc
-Architecture: any
-Suggests: libopenvideo1-dev (= ${Source-Version})
-Description: OpenVideo video stream transport library (documentation)
- OpenVideo
-
+#Package: libopenvideo1-doc
+#Architecture: any
+#Suggests: libopenvideo1-dev (= ${Source-Version})
+#Description: OpenVideo video stream transport library (documentation)
+#  OpenVideo is a general data integration and processing software with special support for video data. It implements a hardware abstraction layer by interfacing several different device drivers either directly or through the functionality of a third party video libraries. OpenVideo is designed to be as extensible and easily configurable as possible. OpenVideo is currently implemented on windows and on linux systems.
