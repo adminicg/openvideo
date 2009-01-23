@@ -49,6 +49,8 @@
 //
 //
 
+#ifdef OT_USE_AVIFILE64
+
 #include <openvideo/ConverterMJPEG.h>
 #include <avifile-0.7/avifile.h>
 #include <avifile-0.7/avm_creators.h>
@@ -237,6 +239,8 @@ ConverterMJPEG::deinit()
 
 
 }  // namespace openvideo
+
+#endif // ifdef OT_USE_AVIFILE64
 
 //========================================================================
 // End of $FILENAME$

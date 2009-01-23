@@ -48,6 +48,8 @@
 //
 //
 
+#ifdef OT_USE_AVIFILE64
+
 #include <openvideo/ConverterYV12.h>
 #include <avifile-0.7/avifile.h>
 #include <avifile-0.7/avm_creators.h>
@@ -220,6 +222,8 @@ namespace openvideo {
 
 
 }  // namespace openvideo
+
+#endif // ifdef OT_USE_AVIFILE64
 
 //========================================================================
 // End of $FILENAME$
