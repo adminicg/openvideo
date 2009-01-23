@@ -12,32 +12,53 @@ IF(WIN32)
    SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${openvideo_SOURCE_DIR}/lib/win32)
 ENDIF(WIN32)
 
-#INCLUDE(UsePkgConfig)
+IF(UNIX)
+   INCLUDE(UsePkgConfig)
+ENDIF(UNIX)
 
 FIND_PACKAGE(ACE REQUIRED)
 FIND_PACKAGE(TinyXMLMod REQUIRED)
 FIND_PACKAGE(OpenGL REQUIRED)
 
-#IF(WIN32)
-#   # this is necessary for FindGLUT to work correctly under win32
-#   SET(GLUT_ROOT_PATH $ENV{GLUT_ROOT_PATH})
-#ENDIF()
-FIND_PACKAGE(GLUT_ICG) # use the ICG own FindGLUT version
+IF(WIN32)
+   ## this is necessary for FindGLUT to work correctly under win32
+   #SET(GLUT_ROOT_PATH $ENV{GLUT_ROOT_PATH}) -> only for original FindGLUT!
+   FIND_PACKAGE(GLUT_ICG) # use the ICG own FindGLUT version
+ELSE(WIN32)
+   FIND_PACKAGE(GLUT)   
+ENDIF(WIN32)
 IF(GLUT_FOUND)
    OPTION(OT_USE_GLUT "Build with GLUT support?" ON)
+ELSE(GLUT_FOUND)
+   OPTION(OT_USE_GLUT "Build with GLUT support?" OFF)
 ENDIF(GLUT_FOUND)
 
-#FIND_PACKAGE(OpenCV)
+IF(WIN32)
+   #FIND_PACKAGE(DSVL)
+   IF(DSVL_FOUND)
+      OPTION(OT_USE_DSVL "Build with Windows DirectShow Video Library support?" ON)
+   ELSE(DSVL_FOUND)
+      OPTION(OT_USE_DSVL "Build with Windows DirectShow Video Library support?" OFF)
+   ENDIF(DSVL_FOUND)
+ENDIF(WIN32)
+
+FIND_PACKAGE(OpenCV)
 IF(OpenCV_FOUND)
-   OPTION(OT_USE_OPENCV "Build with OpenVC support?" ON)
+   OPTION(OT_USE_OPENCV "Build with OpenCV support?" ON)
+ELSE(OpenCV_FOUND)
+   OPTION(OT_USE_OPENCV "Build with OpenCV support?" OFF)
 ENDIF(OpenCV_FOUND)
 
 FIND_PACKAGE(AVIFile64)
-IF(AVIFile64_FOUND)
-   OPTION(OT_USE_AVIFILE64 "Build with AVIFile64 support (not on Windows!)" ON)
-ELSE()
+IF(AVIFILE_FOUND)
+   IF(UNIX)
+      OPTION(OT_USE_AVIFILE64 "Build with AVIFile64 support (not on Windows!)" ON)
+   ELSE(UNIX)
+      OPTION(OT_USE_AVIFILE64 "Build with AVIFile64 support (not on Windows!)" OFF)
+   ENDIF(UNIX)
+ELSE(AVIFILE_FOUND)
    OPTION(OT_USE_AVIFILE64 "Build with AVIFile64 support (not on Windows!)" OFF)
-ENDIF()
+ENDIF(AVIFILE_FOUND)
 
 
 IF(UNIX)
