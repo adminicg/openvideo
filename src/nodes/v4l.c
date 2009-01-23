@@ -14,6 +14,8 @@
 // 02/03/01 Fixed missing "case" keywords in V4LMSetFormat switch.
 //---------------------------------------------------------------------------------
 
+#ifndef WIN32
+
 #include <stdio.h> // debug
 
 #include <errno.h>
@@ -462,4 +464,5 @@ int V4LGetAudio(int fd, V4LAudio *v4lAudio)
 
 } // end V4LGetAudio
 
+#endif //ifndef WIN32
 //---------------------------------------------------------------------------------
