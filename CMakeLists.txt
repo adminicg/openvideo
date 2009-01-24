@@ -142,9 +142,11 @@ ADD_SUBDIRECTORY(standalone)
 
 INSTALL(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX} PATTERN ".svn" EXCLUDE)
 
-#IF(UNIX)
-#  INSTALL(FILES FindOpenVideo.cmake DESTINATION /usr/share/cmake/Modules)
-#ENDIF(UNIX)
+# better create "OpenVideoConfig.cmake" instead, but for now install "FindOpenVideo.cmake"
+# to avoid breaking existing installations:
+IF(UNIX)
+  INSTALL(FILES FindOpenVideo.cmake DESTINATION /usr/share/cmake/Modules)
+ENDIF(UNIX)
 
 #IF(WIN32)
 #  INSTALL(FILES FindOpenVideo.cmake DESTINATION $ENV{CMAKE_MODULE_PATH})
@@ -155,15 +157,15 @@ INSTALL(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX} PATTERN ".svn" EXC
 SET(CPACK_IGNORE_FILES
   ".depend"
   ".scon*"
-  "SCons*"
   "/#.*#$"
+  "/CVS/"
   "/log"
   "/trunk/build/"
   "CMakeCache\\\\.txt"
   "CMakeFiles"
   "CPack.*Config\\\\.cmake"
-  "CVS"
   "Makefile"
+  "SCons*"
   "\\\\.#"
   "\\\\.a$"
   "\\\\.aux$"
@@ -193,11 +195,11 @@ SET(CPACK_IGNORE_FILES
   "cgparams$"
   "cmake_install.cmake"
   "cvs_import"
-  "pkgconfig"
   "install.sh"
   "install_manifest.txt"
   "makedist.sh"
   "moc_"
+  "pkgconfig"
   "progress.make"
   "~$"
 )
