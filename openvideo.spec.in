@@ -12,8 +12,8 @@ Vendor:		Institute for Computer Graphics and Vision, Graz University of Technolo
 Packager:	Institute for Computer Graphics and Vision, Graz University of Technology, Austria
 Prefix:		/usr
 BuildRoot: 	%{_tmppath}/buildroot-%{name}-%{version}
-Requires:	tinyxmlmod giflib ace simage avifile
-BuildRequires:	tinyxmlmod-devel giflib-devel ace-devel simage-devel avifile-devel
+Requires:	tinyxmlmod giflib ace simage avifile openvideo
+BuildRequires:	tinyxmlmod-devel giflib-devel ace-devel simage-devel avifile-devel openvideo-devel
 
 %define _prefix %{prefix}
 
