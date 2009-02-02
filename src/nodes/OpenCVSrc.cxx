@@ -266,7 +266,7 @@ bool OpenCVSrc::setParameter(string key, string value)
             PRIVATE(this)->captureFrom = OpenCVSrcP::CAPTURE_FROM_FILE;
         else 
         {
-            logPrintE ("Unknown capture from value: %s",value);
+            logPrintE ("Unknown capture from value: %s",value.c_str());
             assert(0);
         }
         return true;
@@ -310,7 +310,7 @@ bool OpenCVSrc::setParameter(string key, string value)
     }
     else 
     { // Key not recognized by any system
-        logPrintW("OpenCVSrc::setParameter(): Unable to parse key: ' %s ' with value: ' %s ]'\n", key, value); 
+        logPrintW("OpenCVSrc::setParameter(): Unable to parse key: ' %s ' with value: ' %s ]'\n", key.c_str(), value.c_str()); 
     }
 
     // Return false if no system was able to recognize the key
