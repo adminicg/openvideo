@@ -142,16 +142,7 @@ ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(standalone)
 
 INSTALL(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX} PATTERN ".svn" EXCLUDE)
-
-# better create "OpenVideoConfig.cmake" instead, but for now install "FindOpenVideo.cmake"
-# to avoid breaking existing installations:
-IF(UNIX)
-  INSTALL(FILES FindOpenVideo.cmake DESTINATION /usr/share/cmake/Modules)
-ENDIF(UNIX)
-
-#IF(WIN32)
-#  INSTALL(FILES FindOpenVideo.cmake DESTINATION $ENV{CMAKE_MODULE_PATH})
-#ENDIF(WIN32)
+INSTALL(FILES OpenVideoConfig.cmake DESTINATION lib/OpenVideo)
 
 # packaging:
 
