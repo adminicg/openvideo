@@ -7,7 +7,7 @@
 #  OPENVIDEO_LINK_DIRECTORIES - link directories, useful for rpath
 #
 
-meessage(FATAL "This file is obsolete! Remove it from your CMAKE_MODULE_PATH and use OpenVideoConfig.cmake instead (i.e., write \"find_package(OpenVideo)\" in your \"CMakeLists.txt\".")
+message(FATAL "This file is obsolete! Remove it from your CMAKE_MODULE_PATH and use OpenVideoConfig.cmake instead (i.e., write \"find_package(OpenVideo)\" in your \"CMakeLists.txt\".")
 
 if (OPENVIDEO_INCLUDE_DIR AND OPENVIDEO_LIBRARIES)
 
