@@ -22,8 +22,8 @@ else(OPENVIDEO_INCLUDE_DIRS AND OPENVIDEO_LIBRARIES)
     get_filename_component(OPENVIDEO_ROOT "${OPENVIDEO_ROOT}" PATH)
   endif(NOT EXISTS ${OPENVIDEO_ROOT}/CMakeLists.txt)
 
-  set(OPENVIDEO_INCLUDE_DIRS "${OPENVIDEO_ROOT}/include" CACHE STRING "TinyXMLMod include directory")
-  set(OPENVIDEO_LIBRARIES "TinyXML_Mod" CACHE STRING "TinyXMLMod library name")
+  set(OPENVIDEO_INCLUDE_DIRS "${OPENVIDEO_ROOT}/include" CACHE STRING "OpenVideo include directory")
+  set(OPENVIDEO_LIBRARIES "OpenVideo" CACHE STRING "OpenVideo library name")
 
   # search for the library (if we are in the source tree, it might not exist):
   find_library(OPENVIDEO_LIBRARY_PATH "${OPENVIDEO_LIBRARIES}" PATHS
@@ -39,18 +39,18 @@ else(OPENVIDEO_INCLUDE_DIRS AND OPENVIDEO_LIBRARIES)
   if(OPENVIDEO_LIBRARY_PATH)
     # store library directory in cache:
     get_filename_component(OPENVIDEO_LIBRARY_DIRS "${OPENVIDEO_LIBRARY_PATH}" PATH)
-    set(OPENVIDEO_LIBRARY_DIRS "${OPENVIDEO_LIBRARY_DIRS}" CACHE STRING "TinyXMLMod library directory")
+    set(OPENVIDEO_LIBRARY_DIRS "${OPENVIDEO_LIBRARY_DIRS}" CACHE STRING "OpenVideo library directory")
     set(OPENVIDEO_FOUND TRUE)
   endif(OPENVIDEO_LIBRARY_PATH)
 
   if(OPENVIDEO_FOUND)
-    if(NOT TinyXMLMod_FIND_QUIETLY)
-      message(STATUS "Found TinyXMLMod: ${OPENVIDEO_LIBRARY_DIRS} ${OPENVIDEO_INCLUDE_DIRS}")
-    endif(NOT TinyXMLMod_FIND_QUIETLY)
+    if(NOT OpenVideo_FIND_QUIETLY)
+      message(STATUS "Found OpenVideo: ${OPENVIDEO_LIBRARY_DIRS} ${OPENVIDEO_INCLUDE_DIRS}")
+    endif(NOT OpenVideo_FIND_QUIETLY)
   else(OPENVIDEO_FOUND)
-    if(TinyXMLMod_FIND_REQUIRED)
-      message(FATAL_ERROR "Could not find TinyXMLMod")
-    endif(TinyXMLMod_FIND_REQUIRED)
+    if(OpenVideo_FIND_REQUIRED)
+      message(FATAL_ERROR "Could not find OpenVideo")
+    endif(OpenVideo_FIND_REQUIRED)
   endif(OPENVIDEO_FOUND)
 
 endif(OPENVIDEO_INCLUDE_DIRS AND OPENVIDEO_LIBRARIES)
