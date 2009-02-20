@@ -242,7 +242,7 @@ RTPSrc::connect()
 			videoMutex = CreateMutex(NULL, FALSE, NULL);
 			if (videoBuffer == NULL || videoMutex == NULL) return false;
 
-			MemorySinkJPEG* memSink = MemorySinkJPEG::createNew(*env, videoBuffer, videoWidth, videoHeight, videoMutex);
+			MemorySinkJPEG* memSink = MemorySinkJPEG::createNew(*env, videoBuffer, videoWidth, videoHeight);
 			subsession->sink = memSink;
 
 			subsession->sink->startPlaying(*(subsession->readSource()), NULL, subsession);
@@ -272,7 +272,7 @@ RTPSrc::connect()
 			trackingMutex = CreateMutex(NULL, FALSE, NULL);
 			if (trackingBuffer == NULL || trackingMutex == NULL) return false;
 
-			MemorySink* memSink = MemorySink::createNew(*env, trackingBuffer, trackingSize, trackingMutex);
+			MemorySink* memSink = MemorySink::createNew(*env, trackingBuffer, trackingSize);
 			subsession->sink = memSink;
 
 			subsession->sink->startPlaying(*(subsession->readSource()), NULL, subsession);
@@ -419,18 +419,18 @@ RTPSrc::process()
 						{
 							unsigned char* img = const_cast<unsigned char*>(srcBuffer->getPixels());
 
-							sinkVideo->Lock();
+							//sinkVideo->Lock();
 							memcpy(img, videoBuffer, videoWidth*videoHeight*3);
-							sinkVideo->Release();
+							//sinkVideo->Release();
 						}
 
 						if (sinkTracking)
 						{
 							unsigned char* track = (unsigned char*)(srcBuffer->getUserData());
 
-							sinkTracking->Lock();
+							//sinkTracking->Lock();
 							memcpy(track, trackingBuffer, trackingSize);
-							sinkTracking->Release();
+							//sinkTracking->Release();
 						}
 					}
 

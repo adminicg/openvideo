@@ -38,12 +38,13 @@
 
 #include <openvideo/Node.h>
 
-#include <winsock2.h>
-#include <windows.h>
-
 #include <liveMedia.hh>
 #include <BasicUsageEnvironment.hh>
 #include <GroupsockHelper.hh>
+
+#include <winsock2.h>
+#include <windows.h>
+
 
 #ifdef _DEBUG
 # pragma comment(lib,"live555d.lib")
@@ -109,9 +110,9 @@ public:
 	int posX,posY, packetReorderTime;
 	unsigned int updateCtr;
 
-	unsigned char *videoBuffer;
-	unsigned int videoWidth, videoHeight;
-	HANDLE videoMutex;
+	unsigned char *videoBuffer, *depthBuffer;
+	unsigned int videoWidth, videoHeight, videoComp;
+	HANDLE videoMutex, depthMutex;
 
 	unsigned char *trackingBuffer;
 	unsigned int trackingSize;
