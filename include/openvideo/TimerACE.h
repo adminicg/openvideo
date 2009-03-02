@@ -81,6 +81,8 @@ private:
 	*/
 	TimerHandlerACE *htimer;
 
+    void *reactor;
+
 };
 
 }//openvideo {

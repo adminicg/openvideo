@@ -40,6 +40,7 @@ namespace openvideo{
 TimerACE::TimerACE()
 {
 	htimer=NULL;
+    reactor = (void *)new ACE_Reactor;
 }
 
 // destructor
@@ -48,6 +49,8 @@ TimerACE::~TimerACE()
 {
 	if(htimer)
 		delete htimer;
+    ((ACE_Reactor*)reactor)->end_reactor_event_loop();
+    delete (ACE_Reactor*)reactor;
 }
 
 
@@ -60,16 +63,21 @@ TimerACE::schedule(void (*timerCB)(void*),void* data,double interval)
 	ACE_Time_Value initialDelay (0);
 	ACE_Time_Value tickVal;
 	tickVal.set(interval);
-	ACE_Reactor::instance()->schedule_timer (htimer,
-											0,
-											initialDelay,
-											tickVal);
+    ((ACE_Reactor*)reactor)->schedule_timer(htimer,
+        0,
+        initialDelay,
+        tickVal);
+	//ACE_Reactor::instance()->schedule_timer (htimer,
+	//										0,
+	//										initialDelay,
+	//										tickVal);
 
 }
 
 void 
 TimerACE::runEventLoop()
 {
-	ACE_Reactor::run_event_loop();
+    ((ACE_Reactor*)reactor)->run_reactor_event_loop();
+	//ACE_Reactor::run_event_loop();
 }
 }//namespace openvideo{
