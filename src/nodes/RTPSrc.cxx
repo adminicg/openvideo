@@ -222,9 +222,17 @@ RTPSrc::connect()
 			subsession->rtpSource()->setPacketReorderingThresholdTime(packetReorderTime);
             logPrintI("setPacketReorderingThresholdTime %i\n", packetReorderTime);
 			// sets up the client connection
-			client->setupMediaSubsession(*subsession);
+			if(!client->setupMediaSubsession(*subsession))
+            {
+                logPrintE("Could not set up media session for %s/%s.\n", subsession->mediumName(), subsession->codecName());
+                logPrintE("    Live555 message: %s\n", client->envir().getResultMsg());
+            }
 
-			client->playMediaSession(*session);
+            if(!client->playMediaSession(*session))
+            {
+                logPrintE("Could not play media session for %s/%s.\n", subsession->mediumName(), subsession->codecName());
+                logPrintE("    Live555 message: %s\n", client->envir().getResultMsg());
+            }
 
 			logPrintS("RTSP stream setup, ready to receive video data...\n");
 
@@ -261,9 +269,17 @@ RTPSrc::connect()
 			subsession->rtpSource()->setPacketReorderingThresholdTime(packetReorderTime);
 
 			// sets up the client connection
-			client->setupMediaSubsession(*subsession);
+            if(!client->setupMediaSubsession(*subsession))
+            {
+                logPrintE("Could not set up media session for %s/%s.\n", subsession->mediumName(), subsession->codecName());
+                logPrintE("    Live555 message: %s\n", client->envir().getResultMsg());
+            }
 
-			client->playMediaSession(*session);
+            if(!client->playMediaSession(*session))
+            {
+                logPrintE("Could not play media session for %s/%s.\n", subsession->mediumName(), subsession->codecName());
+                logPrintE("    Live555 message: %s\n", client->envir().getResultMsg());
+            }
 
 			logPrintS("RTSP stream setup, ready to receive tracking data...\n");
 
@@ -323,6 +339,11 @@ RTPSrc::connect()
 bool
 RTPSrc::disconnect()
 {
+    if (hThread) TerminateThread(hThread, 0);
+    hThread = NULL;
+
+    //client->teardownMediaSession(*session);
+
 	if (subsessionVideo)
 	{
 		subsessionVideo->sink->stopPlaying();
@@ -337,13 +358,10 @@ RTPSrc::disconnect()
 		subsessionTracking = NULL;
 	}
 
-	if (client) Medium::close(client);
+    if (client) Medium::close(client);
 
 	if (scheduler) delete scheduler;
 	if (env) env->reclaim();
-
-	//if (hThread) TerminateThread(hThread, 0);
-	hThread = NULL;
 
 	return true;
 }
@@ -478,6 +496,10 @@ RTPSrc::setParameter(std::string key, std::string value)
     return false;
 }
 
+void RTPSrc::stop()
+{
+    disconnect();
+}
 }  // namespace openvideo
 
 

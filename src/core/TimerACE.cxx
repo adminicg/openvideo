@@ -37,7 +37,7 @@
 namespace openvideo{
 
 // constructor
-TimerACE::TimerACE()
+    TimerACE::TimerACE() 
 {
 	htimer=NULL;
     reactor = (void *)new ACE_Reactor;
@@ -47,10 +47,16 @@ TimerACE::TimerACE()
 
 TimerACE::~TimerACE()
 {
-	if(htimer)
-		delete htimer;
-    ((ACE_Reactor*)reactor)->end_reactor_event_loop();
-    delete (ACE_Reactor*)reactor;
+   /* if(reactor)
+    {   
+        ((ACE_Reactor*)reactor)->end_reactor_event_loop();
+            
+    }*/
+    // all other ways to stop the reactor result in errors
+    ((ACE_Reactor*)reactor)->cancel_timer(htimer);
+    ((ACE_Reactor*)reactor)->close();
+    if(htimer)
+        delete htimer;
 }
 
 
@@ -77,7 +83,7 @@ TimerACE::schedule(void (*timerCB)(void*),void* data,double interval)
 void 
 TimerACE::runEventLoop()
 {
+    // calling this method starts an infinite while loop
     ((ACE_Reactor*)reactor)->run_reactor_event_loop();
-	//ACE_Reactor::run_event_loop();
 }
 }//namespace openvideo{

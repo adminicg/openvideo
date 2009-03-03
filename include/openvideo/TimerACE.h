@@ -49,7 +49,7 @@ public:
 	/**
 	*	Constructor
 	*/	
-	TimerACE();
+    TimerACE();
 
 	/**
 	*	Destructor
@@ -73,7 +73,7 @@ public:
 	/**
 	* Boolean to prevent multiple calls to ACE_Reactor::run_event_loop();
 	*/
-	static bool isEventLoopRunning;
+	bool isEventLoopRunning;
 
 private:
 	/**
