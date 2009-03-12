@@ -180,6 +180,7 @@ public:
 		width = state->width;
 		height = state->height;
 		format = state->format;
+		sampleCtr = 0;
 	}
 
 	~DSVLSrcBuffer()
@@ -272,10 +273,10 @@ protected:
 	unsigned char		*dsvlBuffer, *copyBuffer;
 	bool				flipV;
 	bool				checkedOut;
-	static unsigned int	sampleCtr;
+	unsigned int		sampleCtr;
 };
 
-unsigned int DSVLSrcBuffer::sampleCtr = 0;
+//unsigned int DSVLSrcBuffer::sampleCtr = 0;
 
 
 // DSVLSrcState gives DSVLSrc full access to openvideo::State
@@ -334,7 +335,8 @@ DSVLSrc::init()
 	if(::CoInitialize(NULL) == S_FALSE)
 	{
 		logPrintE("DSVLSrc CoInitialize() failed\n");
-		return;
+		// only needed once for multiple dsvl sources
+		//return;
 	}
 
 	dsvlSource = new DSVL_VideoSource();
