@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="openVideo"
 	ProjectGUID="{02FA65DB-E047-4F78-8653-AE8BCAC6F36D}"
 	RootNamespace="openVideo"
@@ -70,7 +70,7 @@
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/openVideod.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(ACEROOT)&quot;;&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(ACEROOT)\lib&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLROOT)\lib\win32&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;&quot;$(DSVLROOT)/lib&quot;;&quot;$(SIMAGEROOT)/lib/Win32&quot;;&quot;$(LIBJPEGROOT)/lib/Win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib&quot;;&quot;$(OPENCVROOT)\lib&quot;;&quot;$(SIMAGEROOT)/lib&quot;;&quot;$(LIVE555ROOT)/bin&quot;"
+				AdditionalLibraryDirectories="&quot;$(ACEROOT)&quot;;&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(ACEROOT)\lib&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLROOT)\lib\win32&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;&quot;$(DSVLROOT)/lib&quot;;&quot;$(SIMAGEROOT)/lib/Win32&quot;;&quot;$(LIBJPEGROOT)/lib/Win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib&quot;;&quot;$(OPENCVROOT)\lib&quot;;&quot;$(SIMAGEROOT)/lib&quot;;&quot;$(LIVE555ROOT)/lib&quot;"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
@@ -154,7 +154,7 @@
 				AdditionalDependencies="ace.lib"
 				OutputFile="$(OPENVIDEOROOT)/bin/win32/openVideo.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(ACEROOT)\lib&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLROOT)\lib\win32&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;&quot;$(DSVLROOT)/lib&quot;;&quot;$(SIMAGEROOT)/lib/Win32&quot;;&quot;$(SIMAGEROOT)/lib&quot;;&quot;$(LIBJPEGROOT)/lib/Win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib&quot;;&quot;$(OPENCVROOT)\lib&quot;;&quot;$(LIVE555ROOT)/bin&quot;"
+				AdditionalLibraryDirectories="&quot;$(ACEROOT)\lib\win32&quot;;&quot;$(ACEROOT)\lib&quot;;&quot;$(VIDEOWRAPPERROOT)\lib\win32&quot;;&quot;$(TINYXMLROOT)\lib&quot;;&quot;$(TINYXMLROOT)\lib\win32&quot;;&quot;$(TINYXMLMODROOT)\lib\win32&quot;;&quot;$(DSVLROOT)/lib&quot;;&quot;$(SIMAGEROOT)/lib/Win32&quot;;&quot;$(SIMAGEROOT)/lib&quot;;&quot;$(LIBJPEGROOT)/lib/Win32&quot;;&quot;$(VIDEOWRAPPERROOT)\lib&quot;;&quot;$(OPENCVROOT)\lib&quot;;&quot;$(LIVE555ROOT)/lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OPENVIDEOROOT)/lib/win32/openVideo.pdb"
 				SubSystem="2"
@@ -241,7 +241,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\nodes\RTPSrc.cxx"
+					RelativePath="..\..\src\nodes\rtpsrc.cxx"
 					>
 				</File>
 				<File
