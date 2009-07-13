@@ -1,3 +1,3 @@
-ADD_EXECUTABLE(openvideo-bin main.cxx)
-TARGET_LINK_LIBRARIES(openvideo-bin openvideo)
-INSTALL(TARGETS openvideo-bin DESTINATION ${CMAKE_INSTALL_BINDIR})
+add_executable(openvideo-bin main.cxx)
+target_link_libraries(openvideo-bin openvideo)
+install(TARGETS openvideo-bin DESTINATION ${CMAKE_INSTALL_BINDIR})
