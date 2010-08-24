@@ -310,13 +310,10 @@ DSVLSrc::DSVLSrc()
 	
 DSVLSrc::~DSVLSrc()
 {
-	state->unlockAllBuffers();
+	/*state->unlockAllBuffers();
 
 	// FIXME: is it sage to delete this here?
-	delete state;
-
-	delete [] dsvlSource;
-	dsvlSource = NULL;
+	delete state;*/
 }
 
 void 
@@ -447,6 +444,25 @@ DSVLSrc::postProcess()
 {
 }
 
+void
+DSVLSrc::stop()
+{
+	if (dsvlSource)
+	{
+		if (FAILED(dsvlSource->Stop()))
+		{
+			logPrintE("DSVL failed to stop\n");
+			return;
+		}
+		if (FAILED(dsvlSource->ReleaseGraph()))
+		{
+			logPrintE("DSVL failed to release graph\n");
+			return;
+		}
+		delete dsvlSource;
+	}
+	CoUninitialize();
+}
 
 bool 
 DSVLSrc::setParameter(std::string key, std::string value)

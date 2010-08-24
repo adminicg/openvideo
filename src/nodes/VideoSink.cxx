@@ -82,6 +82,13 @@ VideoSink::init()
 	state=inputs[0]->getState();
 }
 
+void
+VideoSink::stop()
+{
+	//
+    //////////////////////////////////////////////
+    isRunning=false;
+}
 
 void
 VideoSink::process()

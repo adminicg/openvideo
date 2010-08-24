@@ -90,6 +90,7 @@ public:
 
 	virtual void preProcess();
 	virtual void initPixelFormats();
+	virtual void stop();
 
 protected:
 	/// name of the DSVL config file

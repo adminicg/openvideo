@@ -460,19 +460,19 @@ Manager::run()
 
 #ifndef OV_IS_WINCE
   //start control  thread
-  ACE_hthread_t* controlThreadHandle = new ACE_hthread_t();
+  /*controlThreadHandle = new ACE_hthread_t();
   if(ACE_Thread::spawn((ACE_THR_FUNC)Manager::startUserInterface,
       0, 	
      THR_NEW_LWP|THR_JOINABLE, 	
       0, 	
-     controlThreadHandle,
+     (ACE_hthread_t*)controlThreadHandle,
       0, 	
       0, 	
      0
      )==-1)
   { 
       logPrintE("Error spawning thread\n"); 
-  }
+  }*/
 #endif // OV_IS_WINCE
 
   scheduler->run();
@@ -541,11 +541,15 @@ void
 Manager::stop()
 {
     scheduler->stop();
+	/*ACE_Thread::join((ACE_hthread_t*)controlThreadHandle);
+	delete controlThreadHandle;*/
     
     for(int i=(int)nodes.size()-1;  i>=0; i--) {
 	logPrintI("Closing node %s\n",nodes[i]->getName());
 	nodes[i]->stop();
     }
+	hasParsed=false;
+	nodes.clear();
 }
 
 
@@ -642,6 +646,13 @@ Manager::addNodeFactory(NodeFactory *aFactory)
   factories.push_back(aFactory);	
 }
 
+void 
+Manager::removeNodeFactory(NodeFactory *aFactory)
+{
+  std::vector<NodeFactory*>::iterator factory = std::find(factories.begin(),factories.end(),aFactory);
+  if (factory != factories.end())
+	factories.erase(factory);
+}
 
 
 Node* 

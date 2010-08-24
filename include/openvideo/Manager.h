@@ -128,9 +128,14 @@ class OPENVIDEO_API Manager
 	void updateSingleThreaded();
 
     /** 
-	*	adds a NodeFactory to the list of known factories'
+	*	adds a NodeFactory to the list of known factories.
 	*/
 	void addNodeFactory(openvideo::NodeFactory *aFactory);
+
+    /** 
+	*	removes a NodeFactory to the list of known factories.
+	*/
+	void removeNodeFactory(openvideo::NodeFactory *aFactory);
     
     void parseConfiguration(TiXmlElement* element);
 

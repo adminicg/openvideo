@@ -62,6 +62,7 @@ SchedulerPC::scheduleIdle()
     {
         Manager::update(NULL);
     }
+	exitIdle=false;
 }
 void 
 SchedulerPC::scheduleTimer()
